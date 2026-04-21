@@ -1,0 +1,2551 @@
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --safra-navy:#0D2B55;
+  --safra-blue:#1A4A8A;
+  --safra-mid:#2563C0;
+  --safra-accent:#C8922A;
+  --safra-gold:#E8B84B;
+  --safra-light:#EDF2FA;
+  --safra-border:#D0DCEF;
+  --safra-border-dark:#A8BEDB;
+  --safra-text:#0D2B55;
+  --safra-text-2:#3A5278;
+  --safra-text-3:#6B83A4;
+  --safra-white:#FFFFFF;
+  --safra-bg:#F4F7FB;
+  --green:#1A7A52;
+  --green-bg:#E6F5EE;
+  --amber:#A0620D;
+  --amber-bg:#FEF3DC;
+  --red:#B02020;
+  --red-bg:#FDEAEA;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body,html{font-family:'DM Sans',sans-serif;}
+
+/* HEADER */
+.safra-header{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px 14px;
+  background:var(--safra-navy);
+  border-radius:10px 10px 0 0;
+  margin-bottom:0;
+}
+.safra-logo-mark{
+  width:36px;height:36px;border-radius:7px;
+  background:linear-gradient(135deg,#2563C0,#1A4A8A);
+  border:1.5px solid rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:13px;font-weight:500;
+  color:var(--safra-gold);letter-spacing:-0.5px;flex-shrink:0;
+}
+.safra-header-title{
+  font-size:13px;font-weight:500;color:rgba(255,255,255,0.9);letter-spacing:0.01em;
+}
+.safra-header-sub{
+  font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px;letter-spacing:0.03em;text-transform:uppercase;
+}
+
+/* TABS */
+.tabs{
+  display:flex;gap:0;margin-bottom:1.5rem;
+  background:var(--safra-navy);
+  border-radius:0 0 10px 10px;
+  padding:0 18px 12px;
+  flex-wrap:wrap;gap:6px;
+}
+.tab{
+  padding:6px 16px;
+  border-radius:6px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:transparent;
+  color:rgba(255,255,255,0.55);
+  font-size:12px;font-weight:500;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  letter-spacing:0.02em;
+  transition:all 0.15s ease;
+}
+.tab:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);}
+.tab.active{
+  background:var(--safra-accent);
+  color:#fff;
+  border-color:var(--safra-accent);
+  font-weight:600;
+}
+
+.section{display:none;}.section.active{display:block;}
+
+/* CARDS */
+.card{
+  background:var(--safra-white);
+  border:1px solid var(--safra-border);
+  border-radius:10px;
+  padding:1.1rem 1.25rem;
+  margin-bottom:1rem;
+  box-shadow:0 1px 4px rgba(13,43,85,0.06);
+}
+.card-title{
+  font-size:13px;font-weight:600;color:var(--safra-navy);
+  letter-spacing:0.01em;margin-bottom:1rem;
+  display:flex;align-items:center;gap:8px;
+}
+.card-title::before{
+  content:'';display:block;width:3px;height:16px;
+  background:var(--safra-accent);border-radius:2px;flex-shrink:0;
+}
+
+/* METRICS */
+.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px;margin-bottom:1rem;}
+.metric{
+  background:var(--safra-light);
+  border:1px solid var(--safra-border);
+  border-radius:8px;padding:10px 12px;
+  position:relative;overflow:hidden;
+}
+.metric::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--safra-border);
+}
+.metric.m-blue::after{background:var(--safra-mid);}
+.metric.m-green::after{background:var(--green);}
+.metric.m-amber::after{background:var(--safra-accent);}
+.metric.m-lv::after{background:#1A7A52;}
+.mlabel{font-size:10px;font-weight:500;color:var(--safra-text-3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;}
+.mval{font-size:22px;font-weight:600;color:var(--safra-navy);font-family:'DM Mono',monospace;line-height:1;}
+.mval.blue{color:var(--safra-mid);}
+.mval.green{color:var(--green);}
+.mval.amber{color:var(--safra-accent);}
+
+/* FORM */
+label{font-size:12px;font-weight:500;color:var(--safra-text-2);display:block;margin-bottom:4px;margin-top:10px;letter-spacing:0.01em;}
+input,textarea,select{
+  width:100%;padding:8px 11px;
+  border-radius:7px;border:1px solid var(--safra-border);
+  background:var(--safra-white);color:var(--safra-text);
+  font-size:13px;font-family:'DM Sans',sans-serif;
+  transition:border-color 0.15s;outline:none;
+}
+input:focus,textarea:focus,select:focus{border-color:var(--safra-mid);box-shadow:0 0 0 3px rgba(37,99,192,0.1);}
+textarea{resize:vertical;min-height:55px;}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B83A4' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+
+.btn{
+  padding:8px 18px;border-radius:7px;
+  border:1px solid var(--safra-border);
+  background:var(--safra-white);color:var(--safra-text-2);
+  font-size:13px;font-weight:500;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.15s;
+}
+.btn:hover{background:var(--safra-light);border-color:var(--safra-border-dark);}
+.btn-primary{
+  background:var(--safra-navy);color:#fff;
+  border-color:var(--safra-navy);font-weight:600;
+  letter-spacing:0.02em;
+}
+.btn-primary:hover{background:var(--safra-blue);border-color:var(--safra-blue);}
+
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+.stitle{
+  font-size:10px;font-weight:600;color:var(--safra-text-3);
+  text-transform:uppercase;letter-spacing:0.08em;
+  margin:1.25rem 0 0.5rem;
+  display:flex;align-items:center;gap:8px;
+}
+.stitle::after{content:'';flex:1;height:1px;background:var(--safra-border);}
+
+/* AVATAR */
+.avatar{
+  width:38px;height:38px;border-radius:8px;
+  background:var(--safra-navy);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:600;font-size:12px;color:var(--safra-gold);
+  flex-shrink:0;letter-spacing:0.03em;
+  font-family:'DM Mono',monospace;
+}
+
+/* BADGES */
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:5px;margin:2px 2px 0 0;letter-spacing:0.03em;}
+.b-blue{background:#DDEAF8;color:#1A4A8A;}
+.b-green{background:var(--green-bg);color:var(--green);}
+.b-amber{background:var(--amber-bg);color:var(--amber);}
+.b-coral{background:var(--red-bg);color:var(--red);}
+.b-purple{background:#EDE9FB;color:#4535A3;}
+
+/* LISTA VERDE */
+.lv-flag{
+  display:inline-flex;align-items:center;gap:3px;
+  background:var(--green);color:#fff;
+  font-size:10px;font-weight:600;padding:2px 8px;
+  border-radius:5px;letter-spacing:0.03em;
+}
+
+/* RETORNO ITEM */
+.retorno-item{
+  border-left:3px solid var(--safra-mid);
+  padding:6px 12px;margin-top:8px;font-size:13px;
+  background:var(--safra-light);border-radius:0 7px 7px 0;
+}
+.retorno-item.lv-border{border-left-color:var(--green);background:var(--green-bg);}
+.ret-date{font-size:11px;color:var(--safra-text-3);margin-top:2px;}
+
+/* EMPTY */
+.empty{
+  color:var(--safra-text-3);font-size:13px;text-align:center;
+  padding:2.5rem 1rem;
+  border:1.5px dashed var(--safra-border);
+  border-radius:10px;background:var(--safra-light);
+}
+
+/* TABLE */
+.rtable{width:100%;border-collapse:collapse;font-size:12px;}
+.rtable th{
+  text-align:left;color:var(--safra-text-3);font-weight:600;
+  padding:7px 10px;border-bottom:1px solid var(--safra-border);
+  font-size:10px;text-transform:uppercase;letter-spacing:0.06em;
+  background:var(--safra-light);
+}
+.rtable th:first-child{border-radius:8px 0 0 0;}
+.rtable th:last-child{border-radius:0 8px 0 0;}
+.rtable td{padding:9px 10px;border-bottom:1px solid var(--safra-border);color:var(--safra-text);}
+.rtable tr:last-child td{border-bottom:none;}
+.rtable tr:hover td{background:var(--safra-light);}
+
+/* TAGS RETORNO */
+.tag-ret{
+  font-size:11px;font-weight:600;
+  background:var(--amber-bg);color:var(--amber);
+  border-radius:5px;padding:3px 8px;white-space:nowrap;
+}
+.tag-ret.venc{background:var(--red-bg);color:var(--red);}
+
+.flex-end{display:flex;justify-content:flex-end;gap:8px;margin-top:1.1rem;}
+
+/* LV TOGGLE */
+.lv-toggle{
+  display:flex;align-items:center;gap:10px;margin-top:10px;
+  padding:11px 14px;border-radius:8px;
+  border:1.5px solid var(--safra-border);
+  background:var(--safra-light);cursor:pointer;user-select:none;
+  transition:all 0.2s;
+}
+.lv-toggle:hover{border-color:var(--safra-border-dark);}
+.lv-toggle.on{border-color:var(--green);background:var(--green-bg);}
+.lv-toggle-dot{
+  width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--safra-border);
+  background:var(--safra-white);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+  transition:all 0.2s;
+}
+.lv-toggle.on .lv-toggle-dot{background:var(--green);border-color:var(--green);color:#fff;}
+.lv-toggle-label{font-size:13px;color:var(--safra-text-2);font-weight:500;}
+.lv-toggle.on .lv-toggle-label{color:var(--green);font-weight:600;}
+
+/* VIAB BUTTONS */
+.viab-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.viab-btn{
+  padding:6px 14px;border-radius:6px;
+  border:1px solid var(--safra-border);
+  background:var(--safra-white);color:var(--safra-text-2);
+  font-size:12px;font-weight:500;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.15s;
+}
+.viab-btn:hover{background:var(--safra-light);}
+.viab-btn.sel-credito{background:#DDEAF8;color:#1A4A8A;border-color:#7AAAD8;font-weight:600;}
+.viab-btn.sel-safrapay{background:#EDE9FB;color:#4535A3;border-color:#9B8FE0;font-weight:600;}
+.viab-btn.sel-cobranca{background:var(--amber-bg);color:var(--amber);border-color:#D4A030;font-weight:600;}
+.viab-btn.sel-ativos{background:var(--green-bg);color:var(--green);border-color:#3D9E6B;font-weight:600;}
+.viab-btn.sel-margem{background:var(--red-bg);color:var(--red);border-color:#CC4444;font-weight:600;}
+
+/* GG VIEW */
+.g-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.g-name{font-weight:600;font-size:14px;color:var(--safra-navy);}
+.agencia-tag{font-size:11px;color:var(--safra-text-3);margin-top:1px;}
+.rank-num{
+  font-size:14px;font-weight:700;color:var(--safra-text-3);
+  min-width:24px;font-family:'DM Mono',monospace;
+}
+.rank-num.top{color:var(--safra-accent);}
+.hint{font-size:11px;color:var(--safra-text-3);margin-top:4px;}
+
+.ag-label{
+  font-size:10px;font-weight:700;color:var(--safra-navy);
+  text-transform:uppercase;letter-spacing:0.1em;
+  margin:1rem 0 0.5rem;
+  display:flex;align-items:center;gap:8px;
+}
+.ag-label::before{
+  content:'';width:3px;height:14px;
+  background:var(--safra-accent);border-radius:2px;flex-shrink:0;
+}
+
+/* MSG */
+#msg{
+  margin-top:8px;font-size:12px;font-weight:600;
+  color:var(--green);
+  background:var(--green-bg);border:1px solid #A8DCC0;
+  border-radius:7px;padding:8px 12px;
+  display:none;
+  animation:fadeIn 0.2s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* FILTROS */
+.filter-bar{
+  display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;
+  background:var(--safra-white);
+  border:1px solid var(--safra-border);
+  border-radius:8px;padding:10px 14px;
+  align-items:center;
+}
+.filter-bar select{max-width:180px;margin:0;}
+
+/* ── MOBILE ── */
+@media (max-width: 600px){
+  /* Wrapper geral */
+  div[style*="padding:0.5rem"]{padding:0!important;}
+
+  /* Header */
+  .safra-header{border-radius:0;padding:12px 14px;}
+  .safra-header-title{font-size:14px;}
+  .safra-header-sub{display:none;}
+
+  /* Tabs — scroll horizontal */
+  .tabs{
+    padding:0 10px 10px;
+    gap:5px;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{font-size:12px;padding:7px 12px;white-space:nowrap;flex-shrink:0;}
+
+  /* Cards */
+  .card{padding:0.85rem 1rem;border-radius:8px;}
+  .card-title{font-size:13px;margin-bottom:0.75rem;}
+
+  /* Formulário — tudo em coluna única */
+  .frow,.frow3{grid-template-columns:1fr!important;gap:8px;}
+
+  /* Inputs maiores para toque */
+  input,textarea,select{
+    padding:11px 12px;
+    font-size:15px;
+    border-radius:8px;
+  }
+  label{font-size:13px;margin-top:12px;}
+
+  /* Botões maiores */
+  .btn{padding:11px 18px;font-size:14px;}
+  .btn-primary{padding:13px 20px;font-size:15px;}
+  .flex-end{flex-direction:column;gap:8px;}
+  .flex-end .btn{width:100%;text-align:center;}
+
+  /* Métricas — 2 colunas no mobile */
+  .metric-row{grid-template-columns:1fr 1fr!important;}
+  div[style*="grid-template-columns:repeat(auto-fit"]{grid-template-columns:1fr 1fr!important;}
+  .mval{font-size:20px;}
+
+  /* Viab buttons — maiores */
+  .viab-btn{padding:9px 14px;font-size:13px;}
+
+  /* Tabelas — scroll horizontal */
+  .card[style*="overflow-x:auto"],.rtable{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:480px;}
+
+  /* Tabela de metas — compacta */
+  .rtable th,.rtable td{padding:7px 8px;font-size:11px;}
+
+  /* Filter bar */
+  .filter-bar{flex-direction:column;align-items:stretch;padding:10px;}
+  .filter-bar select,.filter-bar input{max-width:100%!important;width:100%!important;}
+
+  /* Avatar */
+  .avatar{width:34px;height:34px;font-size:11px;}
+
+  /* Stitle */
+  .stitle{font-size:10px;margin:1rem 0 0.4rem;}
+
+  /* GG/Retorno cards */
+  .g-name{font-size:14px;}
+  .agencia-tag{font-size:11px;}
+  .retorno-item{font-size:13px;}
+
+  /* Novo mês card */
+  .card[style*="max-width:520px"]{max-width:100%!important;}
+
+  /* Gerenciar gerentes */
+  #tab-gerentes .frow{grid-template-columns:1fr!important;}
+  #tab-gerentes input[style*="margin:0"]{width:100%!important;}
+}
+
+/* QUARTIS — classificação por contas abertas */
+.q-flag{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:28px;height:20px;padding:0 6px;
+  border-radius:5px;font-size:10px;font-weight:700;
+  font-family:'DM Mono',monospace;letter-spacing:0.02em;
+  border:1px solid transparent;
+}
+.q-flag.q1{background:#E6F5EE;color:#1A7A52;border-color:#A8D4BF;}
+.q-flag.q2{background:#DDEAF8;color:#1A4A8A;border-color:#7AAAD8;}
+.q-flag.q3{background:#FEF3DC;color:#A0620D;border-color:#D4A030;}
+.q-flag.q4{background:#FDEAEA;color:#B02020;border-color:#CC4444;}
+
+/* Badge NOVO — gerente com menos de 12 meses de casa */
+.badge-novo{
+  display:inline-flex;align-items:center;gap:2px;
+  background:#FFE8CC;color:#A0620D;
+  font-size:9px;font-weight:700;
+  padding:2px 6px;border-radius:10px;
+  border:1px solid #E8A55D;
+  letter-spacing:0.03em;
+  white-space:nowrap;
+}
+
+/* Tags de origem do retorno */
+.tag-origem{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:9px;font-weight:700;
+  padding:2px 7px;border-radius:10px;
+  letter-spacing:0.03em;
+  white-space:nowrap;
+  border:1px solid transparent;
+}
+.tag-origem.tipo-prospeccao{background:#E6F0FF;color:#1A4A8A;border-color:#7AAAD8;}
+.tag-origem.tipo-base     {background:#E0F0EA;color:#1A5A52;border-color:#5AAA8A;}
+.tag-origem.tipo-fgi      {background:#F3E6FF;color:#5A1A8A;border-color:#B07ACE;}
+.tag-origem.tipo-altobacen{background:#FFE6F0;color:#8A1A4A;border-color:#D87AAA;}
+.tag-origem.tipo-viabilizamais{background:#FEF3DC;color:#A0620D;border-color:#D4A030;}
+.tag-origem.tipo-retorno  {background:#EEF2F8;color:#2A3B5F;border-color:#9DB0CC;}
+
+/* Badge "Virou conta" */
+.badge-conta-sim{background:#E6F5EE;color:#1A7A52;border:1px solid #A8D4BF;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:2px;}
+.badge-conta-nao{background:#F1F3F7;color:#6B7280;border:1px solid #C9D0DD;font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:2px;}
+</style>
+
+<h2 class="sr-only">Painel de acompanhamento de gerentes por agência — Banco Safra</h2>
+
+<div style="padding:0.5rem 0 0.75rem;">
+
+<div class="safra-header">
+  <div class="safra-logo-mark">SF</div>
+  <div style="flex:1">
+    <div class="safra-header-title">Painel de Gerentes</div>
+    <div class="safra-header-sub">Banco Safra · Acompanhamento de Agências</div>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+    <button onclick="showTabById('gerentes')" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);border-radius:7px;color:rgba(255,255,255,0.9);font-size:12px;font-weight:500;padding:6px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">⚙️ Gerentes</button>
+    <button onclick="showTabById('novomes')" style="background:rgba(176,32,32,0.25);border:1px solid rgba(255,150,150,0.4);border-radius:7px;color:#ffcccc;font-size:12px;font-weight:500;padding:6px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">🗓 Novo mês</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('registrar',this)">Registrar dia</button>
+  <button class="tab" onclick="showTab('gg',this)">Visão GG</button>
+  <button class="tab" onclick="showTab('retornos',this)">Retornos</button>
+  <button class="tab" onclick="showTab('regional',this)">Regional</button>
+  <button class="tab" onclick="showTab('trimestre',this)">📊 Trimestre</button>
+</div>
+
+<!-- ABA GERENTES -->
+<div id="tab-gerentes" class="section">
+  <div class="card" style="border-color:var(--safra-border-dark);">
+    <div class="card-title">⚙️ Gerenciar gerentes por agência</div>
+    <div class="frow" style="margin-bottom:10px;">
+      <div>
+        <label>Agência</label>
+        <select id="ger-ed-ag" onchange="renderGerList()" style="margin:0;">
+          <option value="">Selecione...</option>
+          <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+          <option>JK</option><option>Lapa</option><option>Osasco</option>
+          <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+          <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
+        </select>
+      </div>
+      <div>
+        <label>Adicionar gerente</label>
+        <div style="display:flex;gap:6px;">
+          <input type="text" id="ger-ed-nome" placeholder="Nome do gerente" style="margin:0;">
+          <button class="btn btn-primary" onclick="adicionarGerente()" style="white-space:nowrap;padding:8px 14px;">+ Adicionar</button>
+        </div>
+      </div>
+    </div>
+    <div id="ger-ed-lista"><div class="empty" style="padding:1rem;">Selecione uma agência.</div></div>
+  </div>
+</div>
+
+<!-- REGISTRAR -->
+<div id="tab-registrar" class="section active">
+<div class="card">
+  <div class="card-title">Registrar atividades do dia</div>
+  <div class="frow">
+    <div>
+      <label>Agência</label>
+      <select id="f-agencia" onchange="atualizaGerentes()">
+        <option value="">Selecione...</option>
+        <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+        <option>JK</option><option>Lapa</option><option>Osasco</option>
+        <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+        <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
+      </select>
+    </div>
+    <div>
+      <label>Data</label>
+      <input type="date" id="f-data">
+    </div>
+  </div>
+  <div>
+    <label>Gerente</label>
+    <select id="f-gerente"><option value="">Selecione a agência primeiro</option></select>
+    <div class="hint" id="hint-gerente"></div>
+  </div>
+
+  <div class="stitle">Contatos</div>
+  <div class="frow3">
+    <div><label>Total contatos</label><input type="number" id="f-contatos" placeholder="0" min="0"></div>
+    <div><label>Efetivos</label><input type="number" id="f-efetivos" placeholder="0" min="0"></div>
+    <div><label>E-mails enviados</label><input type="number" id="f-emails" placeholder="0" min="0"></div>
+  </div>
+  <div class="frow">
+    <div><label>Agendamentos</label><input type="text" id="f-agendamentos" placeholder="Ex: Empório Pão de Queijo"></div>
+  </div>
+
+  <div class="stitle" style="margin-top:10px;">Ação realizada</div>
+  <div style="font-size:10px;color:var(--safra-text-3);margin-bottom:8px;">Preencha a quantidade de cada ação. Ao digitar, abrem campos pra detalhar cada uma.</div>
+
+  <div style="border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:#FAFCFF;">
+    <div style="font-size:11px;font-weight:700;color:var(--safra-navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">🚪 Visitas</div>
+    <div class="frow">
+      <div><label style="margin-top:0;">Prospecção</label><input type="number" id="f-acao-prospeccao" placeholder="0" min="0" oninput="atualizaDetalheAcao('prospeccao')"></div>
+      <div><label style="margin-top:0;">Base</label><input type="number" id="f-acao-base" placeholder="0" min="0" oninput="atualizaDetalheAcao('base')"></div>
+    </div>
+    <div id="detalhe-acao-prospeccao"></div>
+    <div id="detalhe-acao-base"></div>
+  </div>
+
+  <div style="border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;background:#FAFCFF;">
+    <div style="font-size:11px;font-weight:700;color:var(--safra-navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">🧭 Bússola</div>
+    <div class="frow3">
+      <div><label style="margin-top:0;">FGI</label><input type="number" id="f-acao-fgi" placeholder="0" min="0" oninput="atualizaDetalheAcao('fgi')"></div>
+      <div><label style="margin-top:0;">Alto Bacen</label><input type="number" id="f-acao-altobacen" placeholder="0" min="0" oninput="atualizaDetalheAcao('altobacen')"></div>
+      <div><label style="margin-top:0;">Viabiliza+</label><input type="number" id="f-acao-viabilizamais" placeholder="0" min="0" oninput="atualizaDetalheAcao('viabilizamais')"></div>
+    </div>
+    <div id="detalhe-acao-fgi"></div>
+    <div id="detalhe-acao-altobacen"></div>
+    <div id="detalhe-acao-viabilizamais"></div>
+  </div>
+
+  <div class="stitle">Resultados</div>
+  <div class="frow3">
+    <div><label>Contas abertas</label><input type="number" id="f-contas" placeholder="0" min="0" oninput="atualizaContasDetalhe()"></div>
+    <div><label>Credenciamentos</label><input type="number" id="f-credenciamentos" placeholder="0" min="0"></div>
+    <div><label>Aguard. documentação</label><input type="number" id="f-aguardando" placeholder="0" min="0"></div>
+  </div>
+  <!-- Todas as contas abertas (da 1ª em diante) — campos dinâmicos -->
+  <div id="contas-detalhe-wrap" style="display:none;">
+    <div class="stitle" style="margin-top:10px;">Detalhe das contas abertas</div>
+    <div id="contas-detalhe-lista"></div>
+  </div>
+
+  <div class="stitle">Retorno / Contato gerado</div>
+  <div class="frow">
+    <div><label>Empresa / cliente</label><input type="text" id="f-ret-empresa" placeholder="Nome da empresa"></div>
+    <div><label>Data do retorno</label><input type="date" id="f-ret-data"></div>
+  </div>
+  <label>Objetivo de viabilização <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(pode marcar mais de um)</span></label>
+  <div class="viab-grid" id="viab-ret" style="margin-top:4px;margin-bottom:8px;">
+    <button class="viab-btn" onclick="selectViab('credito',this,'ret')">Crédito</button>
+    <button class="viab-btn" onclick="selectViab('safrapay',this,'ret')">SafraPay</button>
+    <button class="viab-btn" onclick="selectViab('cobranca',this,'ret')">Cobrança</button>
+    <button class="viab-btn" onclick="selectViab('ativos',this,'ret')">Passivo</button>
+    <button class="viab-btn" onclick="selectViab('margem',this,'ret')">Margem</button>
+  </div>
+  <div><label>Observação</label><textarea id="f-ret-obs" placeholder="Descreva o que foi tratado..."></textarea></div>
+
+  <div class="flex-end">
+    <button class="btn" onclick="limpar()">Limpar</button>
+    <button class="btn btn-primary" onclick="salvar()">Salvar registro</button>
+  </div>
+  <div id="msg">✓ Registro salvo! Abrindo WhatsApp...</div>
+</div>
+</div>
+
+<!-- VISÃO GG -->
+<div id="tab-gg" class="section">
+  <div class="filter-bar">
+    <select id="filtro-gg-ag" onchange="atualizaFiltroGer();renderGG();">
+      <option value="">Todas as agências</option>
+      <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+      <option>JK</option><option>Lapa</option><option>Osasco</option>
+      <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+      <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
+    </select>
+    <select id="filtro-gg-ger" onchange="renderGG()">
+      <option value="">Todos os gerentes</option>
+    </select>
+    <input type="date" id="filtro-gg-data" onchange="renderGG()" style="max-width:160px;margin:0;" title="Filtrar por dia específico">
+    <button class="btn" onclick="document.getElementById('filtro-gg-data').value='';renderGG();" style="white-space:nowrap;font-size:12px;padding:6px 12px;">Limpar data</button>
+  </div>
+  <div id="gg-content"><div class="empty">Nenhum registro ainda.</div></div>
+</div>
+
+
+<!-- REGIONAL -->
+<div id="tab-regional" class="section">
+
+  <!-- TELA DE SENHA -->
+  <div id="regional-lock" style="max-width:340px;margin:2rem auto;">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:32px;margin-bottom:0.75rem;">🔒</div>
+      <div class="card-title" style="justify-content:center;">Acesso restrito</div>
+      <p style="font-size:13px;color:var(--safra-text-3);margin-bottom:1rem;">Digite a senha para acessar a aba Regional.</p>
+      <input type="password" id="regional-senha" placeholder="Senha" style="margin-bottom:10px;text-align:center;font-size:15px;" onkeydown="if(event.key==='Enter')verificarSenhaRegional()">
+      <div id="regional-senha-erro" style="display:none;font-size:12px;color:#B02020;margin-bottom:8px;">Senha incorreta. Tente novamente.</div>
+      <button class="btn btn-primary" onclick="verificarSenhaRegional()" style="width:100%;padding:12px;">Entrar</button>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO (bloqueado até senha correta) -->
+  <div id="regional-desbloqueado" style="display:none;">
+    <div class="filter-bar">
+      <select id="filtro-reg-ag" onchange="renderRegional()" style="max-width:200px;margin:0;">
+        <option value="">Todas as agências</option>
+        <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+        <option>JK</option><option>Lapa</option><option>Osasco</option>
+        <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+        <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
+      </select>
+      <button class="btn" onclick="bloquearRegional()" style="font-size:12px;padding:6px 12px;">🔒 Bloquear</button>
+    </div>
+    <div id="regional-content"><div class="empty">Nenhum registro ainda.</div></div>
+  </div>
+
+</div>
+
+<!-- TRIMESTRE -->
+<div id="tab-trimestre" class="section">
+  <div id="trimestre-lock" class="card" style="border-color:#D4A030;max-width:480px;margin:1.5rem auto;">
+    <div class="card-title" style="color:#A0620D;">🔒 Aba restrita</div>
+    <p style="font-size:13px;color:var(--safra-text-2);margin-bottom:1rem;line-height:1.5;">
+      A visão trimestral exige senha de autorização.
+    </p>
+    <label style="font-size:12px;color:var(--safra-text-2);font-weight:500;">Senha</label>
+    <input type="password" id="trimestre-senha" placeholder="Digite a senha" style="margin:4px 0 8px;" onkeypress="if(event.key==='Enter')verificarSenhaTrimestre()">
+    <div id="trimestre-senha-erro" style="display:none;color:#B02020;font-size:11px;margin-bottom:8px;">❌ Senha incorreta.</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn btn-primary" onclick="verificarSenhaTrimestre()">Desbloquear</button>
+    </div>
+  </div>
+  <div id="trimestre-desbloqueado" style="display:none;">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+      <button class="btn" onclick="bloquearTrimestre()" style="font-size:11px;padding:5px 10px;">🔒 Bloquear</button>
+    </div>
+    <div id="trimestre-content"></div>
+  </div>
+</div>
+
+<!-- RETORNOS -->
+<div id="tab-retornos" class="section">
+  <div class="filter-bar">
+    <select id="filtro-ret-ag" onchange="atualizaFiltroRetGer();renderRetornos();">
+      <option value="">Todas as agências</option>
+      <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
+      <option>JK</option><option>Lapa</option><option>Osasco</option>
+      <option>Santana</option><option>Santo Amaro</option><option>Sorocaba</option>
+      <option>Sumaré</option><option>Tatuapé</option><option>Vila Maria</option>
+    </select>
+    <select id="filtro-ret-ger" onchange="renderRetornos()">
+      <option value="">Todos os gerentes</option>
+    </select>
+  </div>
+  <div id="retornos-content"><div class="empty">Nenhum retorno agendado.</div></div>
+</div>
+
+<!-- NOVO MÊS -->
+<div id="tab-novomes" class="section">
+  <div class="card" style="border-color:#F5C6C6;max-width:520px;margin:0 auto;">
+    <div class="card-title" style="color:#B02020;">🗓 Virada de mês</div>
+    <p style="font-size:13px;color:var(--safra-text-2);margin-bottom:1rem;line-height:1.6;">
+      Os dados permanecem <strong>salvos indefinidamente</strong> até que você execute a virada de mês manualmente.
+      Esta ação apaga <strong>todos os registros do mês atual</strong> para começar um novo ciclo. Os gerentes cadastrados são mantidos.
+    </p>
+
+    <div id="novomes-resumo" style="margin-bottom:1.25rem;"></div>
+
+    <div style="background:#FEF3DC;border:1px solid #D4A030;border-radius:8px;padding:10px 14px;font-size:12px;color:#633806;margin-bottom:1.25rem;">
+      ⚠️ Essa ação não pode ser desfeita. Certifique-se de ter exportado ou anotado os resultados antes de continuar.
+    </div>
+
+    <div style="background:#FDEAEA;border:1px solid #CC4444;border-radius:8px;padding:12px 14px;margin-bottom:1rem;">
+      <label style="font-weight:600;color:#B02020;font-size:12px;display:block;margin-bottom:6px;">🔒 Senha de autorização</label>
+      <input type="password" id="novomes-senha" placeholder="Digite a senha" style="margin:0;" onkeypress="if(event.key==='Enter')confirmarNovoMes()">
+      <div id="novomes-senha-erro" style="display:none;color:#B02020;font-size:11px;margin-top:6px;">❌ Senha incorreta.</div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn" onclick="showTab('registrar',document.querySelector('.tab'))">Cancelar</button>
+      <button class="btn" style="background:#B02020;color:#fff;border-color:#B02020;font-weight:600;" onclick="confirmarNovoMes()">Limpar e iniciar novo mês</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// Lista padrão de agências e gerentes (usada quando não há dados salvos)
+const agenciasPadrao = {
+  'Alphaville':    ['Julio','Murilo','Jarbas','Daniel','Rogerio'],
+  'Cidade Jardim': ['Cristiane','Delaine','Camila','Sabrina'],
+  'Itaim':         [],
+  'JK':            ['Ana','Bruna Kelly','Paulo'],
+  'Lapa':          ['Marcelo','Daniela','Igor','Pedro','Ruth','Bruna'],
+  'Osasco':        ['Adriano','Raul','Thiago','Diego'],
+  'Santana':       ['Paulo','Rafael','Matheus','Paola'],
+  'Santo Amaro':   [],
+  'Sorocaba':      ['Silvio','Guilherme','Aline','Lia','Josiane','Lucas','Jaine','Fernando'],
+  'Sumaré':        ['Stela','Vitor','Andre','Marcelo','Carlos'],
+  'Tatuapé':       ['Rafael','Caio','Talita','Wellington'],
+  'Vila Maria':    ['Renata','Rafaela','Adriano','Julia','Matheus'],
+};
+// Fallback local (para o caso da nuvem não responder ainda)
+let agencias = JSON.parse(JSON.stringify(agenciasPadrao));
+try{
+  const local=localStorage.getItem('safra_agencias');
+  if(local) agencias=JSON.parse(local);
+}catch(e){}
+
+// Lista de gerentes marcados como NOVOS (menos de 12 meses de casa)
+// Formato: Set de strings "Agência||Nome"
+let gerentesNovos=new Set();
+try{
+  const local=localStorage.getItem('safra_gerentes_novos');
+  if(local) gerentesNovos=new Set(JSON.parse(local));
+}catch(e){}
+
+function chaveGerente(ag,nome){ return ag+'||'+nome; }
+function isGerenteNovo(ag,nome){ return gerentesNovos.has(chaveGerente(ag,nome)); }
+function toggleGerenteNovo(ag,nome){
+  const k=chaveGerente(ag,nome);
+  if(gerentesNovos.has(k)) gerentesNovos.delete(k);
+  else gerentesNovos.add(k);
+}
+function badgeNovo(ag,nome){
+  return isGerenteNovo(ag,nome)
+    ? '<span class="badge-novo">🆕 NOVO</span>'
+    : '';
+}
+
+const viabColors={credito:'b-blue',safrapay:'b-purple',cobranca:'b-amber',ativos:'b-green',margem:'b-coral'};
+const viabLabels={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem'};
+
+// Normaliza viab: aceita string (formato antigo) ou array (novo) → sempre retorna array
+function normViab(v){
+  if(!v) return [];
+  if(Array.isArray(v)) return v.filter(Boolean);
+  return [v];
+}
+// Renderiza badges de múltiplas viabilizações
+function renderViabBadges(v){
+  return normViab(v).map(x=>`<span class="badge ${viabColors[x]||''}">${viabLabels[x]||x}</span>`).join(' ');
+}
+
+// Classifica gerente em quartil pela quantidade de contas abertas
+// Q1: 5+ contas | Q2: 3-4 contas | Q3: 2 contas | Q4: 0-1 conta
+function quartil(contas){
+  if(contas>=5) return 'q1';
+  if(contas>=3) return 'q2';
+  if(contas===2) return 'q3';
+  return 'q4';
+}
+function qFlag(contas){
+  const q=quartil(contas);
+  return `<span class="q-flag ${q}">${q.toUpperCase()}</span>`;
+}
+
+// ═══════════════════════════════════════════════
+// METAS DE AGÊNCIA — Contas abertas/mês (ABRIL)
+// Fonte: SPC I - Planejamento
+// ═══════════════════════════════════════════════
+const metasAgencia={
+  'Alphaville':    28,
+  'Cidade Jardim': 25,
+  'Itaim':         24,
+  'JK':            20,
+  'Lapa':          27,
+  'Osasco':        23,
+  'Santana':       28,
+  'Santo Amaro':   25,
+  'Sorocaba':      43,
+  'Sumaré':        28,
+  'Tatuapé':       23,
+  'Vila Maria':    25,
+};
+// Retorna meta mensal de contas abertas da agência
+function metaMensal(ag){
+  const m=metasAgencia[ag];
+  if(m&&m>0) return m;
+  const ngers=(agencias[ag]||[]).length;
+  return ngers*5; // meta padrão: 5 contas/gerente/mês
+}
+// Número de semanas do mês atual (inclui frações — ex: abril tem ~4.29 semanas)
+function semanasDoMes(dateStr){
+  const d=new Date(dateStr+'T00:00:00');
+  const ano=d.getFullYear(), mes=d.getMonth();
+  const dias=new Date(ano,mes+1,0).getDate(); // último dia do mês
+  return dias/7;
+}
+// Meta semanal = meta mensal ÷ semanas do mês (fração exata)
+function metaSemanal(ag){
+  const mm=metaMensal(ag);
+  if(mm<=0) return 0;
+  return mm/semanasDoMes(today);
+}
+
+// Quartil da agência baseado na MÉDIA de contas por gerente
+// Mesma régua do gerente: Q1 ≥5 | Q2 ≥3 | Q3 ≥2 | Q4 <2
+function quartilAgencia(contas,ngers){
+  if(ngers<=0) return 'q4';
+  const media=contas/ngers;
+  if(media>=5) return 'q1';
+  if(media>=3) return 'q2';
+  if(media>=2) return 'q3';
+  return 'q4';
+}
+function qFlagAgencia(contas,ngers){
+  const q=quartilAgencia(contas,ngers);
+  return `<span class="q-flag ${q}">${q.toUpperCase()}</span>`;
+}
+
+// Relógio / gauge semanal da agência
+// contasSemana = contas abertas NA semana atual
+// contasMes    = contas abertas NO MÊS atual (acumulado)
+function relogioAgencia(ag,contasSemana,contasMes){
+  const metaMes=metaMensal(ag);
+  const metaSem=metaSemanal(ag);
+  if(metaMes<=0){
+    return `<div style="font-size:10px;color:var(--safra-text-3);font-style:italic;">Sem meta configurada</div>`;
+  }
+  const pctSem=Math.min(Math.round(contasSemana/metaSem*100),100);
+  const pctMes=Math.min(Math.round(contasMes/metaMes*100),100);
+  const cor=pctSem>=100?'#1A7A52':pctSem>=60?'#C8922A':'#B02020';
+  // SVG gauge (semicírculo) — % da semana
+  const raio=32;
+  const circ=Math.PI*raio;
+  const dash=(pctSem/100)*circ;
+  return `<div style="display:flex;align-items:center;gap:10px;">
+    <svg width="80" height="48" viewBox="0 0 80 48" style="flex-shrink:0;">
+      <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="#E0E8F4" stroke-width="7" stroke-linecap="round"/>
+      <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="${cor}" stroke-width="7" stroke-linecap="round"
+            stroke-dasharray="${dash} ${circ}" style="transition:stroke-dasharray .4s ease;"/>
+      <text x="40" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="700" fill="${cor}">${pctSem}%</text>
+    </svg>
+    <div style="font-size:11px;line-height:1.4;flex:1;min-width:0;">
+      <div style="color:${cor};font-weight:700;">${contasSemana}<span style="color:var(--safra-text-3);font-weight:400;"> / ${metaSem.toFixed(1)}</span> <span style="color:var(--safra-text-3);font-size:10px;font-weight:400;">sem</span></div>
+      <div style="color:var(--safra-text-2);font-weight:600;font-size:10px;">${contasMes} / ${metaMes} <span style="color:var(--safra-text-3);font-weight:400;">mês · ${pctMes}%</span></div>
+    </div>
+  </div>`;
+}
+
+// Retorna segunda-feira da semana de uma data (YYYY-MM-DD → Date)
+function segundaFeiraDa(dateStr){
+  const d=new Date(dateStr+'T00:00:00');
+  const dow=d.getDay(); // 0=dom ... 6=sab
+  const diff=dow===0?-6:1-dow; // volta pra segunda
+  d.setDate(d.getDate()+diff);
+  return d;
+}
+// Contas abertas da agência na semana atual (seg–dom de hoje)
+function contasSemanaAtual(ag,regs){
+  const seg=segundaFeiraDa(today);
+  const dom=new Date(seg); dom.setDate(dom.getDate()+6);
+  const segStr=seg.toISOString().split('T')[0];
+  const domStr=dom.toISOString().split('T')[0];
+  return regs.filter(r=>r.agencia===ag&&r.data>=segStr&&r.data<=domStr)
+             .reduce((a,r)=>a+(r.contas||0),0);
+}
+// Contas abertas da agência no mês atual
+function contasMesAtual(ag,regs){
+  const mesAno=today.slice(0,7); // YYYY-MM
+  return regs.filter(r=>r.agencia===ag&&r.data.slice(0,7)===mesAno)
+             .reduce((a,r)=>a+(r.contas||0),0);
+}
+
+const today=new Date().toISOString().split('T')[0];
+
+// ── JSONBIN CONFIG ──
+const BIN_KEY   = '$2a$10$wKivUZlsF.w4A0YnfUDM/.zddIWS2qA9ID3zNr7uuBPRkK9z7N4we';
+const MASTER_KEY= '$2a$10$s4aZlwJDcX2xoWdOP5UceuHqAFni62xxjwVOGAFkybfxYR5lzPqja';
+const JSONBIN_HEADERS={'Content-Type':'application/json','X-Master-Key':MASTER_KEY,'X-Access-Key':BIN_KEY};
+let BIN_ID = localStorage.getItem('safra_bin_id')||null;
+let regs=[],lvOn=false,viabSel='';
+let historico=[]; // snapshots mensais: [{mes:'2026-04', label:'Abril/2026', agencias:{...}, regional:{...}}]
+let bloqueioLeitura=false; // Previne lerDados automático de sobrescrever durante operações em andamento
+document.getElementById('f-data').value=today;
+
+function setSyncStatus(msg,cor='rgba(255,255,255,0.6)'){
+  let el=document.getElementById('sync-status');
+  if(!el){
+    el=document.createElement('div');
+    el.id='sync-status';
+    el.style.cssText='font-size:10px;white-space:nowrap;color:rgba(255,255,255,0.6);margin-left:auto;';
+    document.querySelector('.safra-header').appendChild(el);
+  }
+  el.textContent=msg; el.style.color=cor;
+}
+
+async function carregarDados(){
+  setSyncStatus('⏳ Carregando...');
+  if(BIN_ID){
+    await lerDados();
+  } else {
+    await criarBin();
+  }
+}
+
+async function criarBin(){
+  try{
+    const res=await fetch('https://api.jsonbin.io/v3/b',{
+      method:'POST',
+      headers:{...JSONBIN_HEADERS,'X-Bin-Name':'painel-safra','X-Bin-Private':'false'},
+      body:JSON.stringify({regs:[],agencias})
+    });
+    const data=await res.json();
+    BIN_ID=data.metadata.id;
+    localStorage.setItem('safra_bin_id',BIN_ID);
+    regs=[];
+    setSyncStatus('✅ Pronto','#90EE90');
+    renderGG();renderRegional();renderRetornos();
+  }catch(e){
+    setSyncStatus('⚠️ Offline','#ffcc00');
+  }
+}
+
+async function lerDados(){
+  if(bloqueioLeitura) return; // Não sobrescreve enquanto uma operação está rodando
+  try{
+    const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{headers:JSONBIN_HEADERS});
+    if(!res.ok)throw new Error('bin not found');
+    const data=await res.json();
+    regs=data.record?.regs||[];
+    historico=data.record?.historico||[];
+    // Carrega agencias da nuvem (se existir); senão, mantém o que já está
+    if(data.record?.agencias&&typeof data.record.agencias==='object'){
+      agencias=data.record.agencias;
+      try{localStorage.setItem('safra_agencias',JSON.stringify(agencias));}catch(e){}
+    }
+    // Carrega lista de gerentes novos
+    if(Array.isArray(data.record?.gerentesNovos)){
+      gerentesNovos=new Set(data.record.gerentesNovos);
+      try{localStorage.setItem('safra_gerentes_novos',JSON.stringify([...gerentesNovos]));}catch(e){}
+    }
+    setSyncStatus('✅ '+regs.length+' reg.','#90EE90');
+    renderGG();renderRegional();renderRetornos();renderTrimestre();
+    // Se a aba de gerenciamento estiver ativa, re-renderiza
+    const tabGer=document.getElementById('tab-gerentes');
+    if(tabGer&&tabGer.classList.contains('active')) renderGerList();
+  }catch(e){
+    // Bin não existe mais — cria novo
+    localStorage.removeItem('safra_bin_id');
+    BIN_ID=null;
+    await criarBin();
+  }
+}
+
+async function salvarNuvem(){
+  // Sempre salva local primeiro (funciona mesmo offline)
+  try{localStorage.setItem('safra_agencias',JSON.stringify(agencias));}catch(e){}
+  try{localStorage.setItem('safra_gerentes_novos',JSON.stringify([...gerentesNovos]));}catch(e){}
+  if(!BIN_ID){setSyncStatus('⚠️ Sem conexão','#ffcc00');return false;}
+  setSyncStatus('⏳ Salvando...','#ffcc00');
+  try{
+    // Timeout de 10s para evitar travamento
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),10000);
+    const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
+      method:'PUT',headers:JSONBIN_HEADERS,signal:ctrl.signal,
+      body:JSON.stringify({regs,agencias,historico,gerentesNovos:[...gerentesNovos]})
+    });
+    clearTimeout(timer);
+    if(!res.ok){
+      setSyncStatus('⚠️ Erro HTTP '+res.status,'#ff6666');
+      console.error('salvarNuvem falhou:',res.status,await res.text());
+      return false;
+    }
+    setSyncStatus('✅ Salvo','#90EE90');
+    return true;
+  }catch(e){
+    setSyncStatus('⚠️ '+(e.name==='AbortError'?'Timeout':'Erro de rede'),'#ff6666');
+    console.error('salvarNuvem erro:',e);
+    return false;
+  }
+}
+
+carregarDados();
+setInterval(()=>{if(BIN_ID)lerDados();},30000);
+
+function atualizaGerentes(){
+  const ag=document.getElementById('f-agencia').value;
+  const sel=document.getElementById('f-gerente');
+  const hint=document.getElementById('hint-gerente');
+  const lista=agencias[ag]||[];
+  if(!ag){sel.innerHTML='<option value="">Selecione a agência primeiro</option>';hint.textContent='';return;}
+  if(!lista.length){sel.innerHTML='<option value="">Gerentes a definir</option>';hint.textContent='Gerentes desta agência ainda não cadastrados';return;}
+  sel.innerHTML='<option value="">Selecione o gerente...</option>'+lista.map(g=>`<option>${g}</option>`).join('');
+  hint.textContent='';
+}
+
+function atualizaFiltroGer(){
+  const ag=document.getElementById('filtro-gg-ag').value;
+  const sel=document.getElementById('filtro-gg-ger');
+  const lista=ag?(agencias[ag]||[]):[];
+  sel.innerHTML='<option value="">Todos os gerentes</option>'+lista.map(g=>`<option>${g}</option>`).join('');
+}
+
+// Agora são ARRAYS — permitem múltipla seleção
+let viabSelRet=[];
+const viabSelContas={}; // { idx: [v1, v2, ...] }
+
+// Toggle: adiciona se não tem, remove se já tem
+function _toggleArr(arr,v){
+  const i=arr.indexOf(v);
+  if(i>=0) arr.splice(i,1); else arr.push(v);
+}
+
+function selectViab(v,el,ctx){
+  if(ctx==='ret'){
+    _toggleArr(viabSelRet,v);
+    if(viabSelRet.includes(v)) el.className=`viab-btn sel-${v}`;
+    else el.className='viab-btn';
+  } else {
+    const idx=ctx;
+    if(!viabSelContas[idx]) viabSelContas[idx]=[];
+    _toggleArr(viabSelContas[idx],v);
+    if(viabSelContas[idx].includes(v)) el.className=`viab-btn sel-${v}`;
+    else el.className='viab-btn';
+  }
+}
+
+// Dicionário de tipos de ação (para labels e tags)
+const tiposAcao={
+  prospeccao:   {grupo:'visita',  label:'Visita Prospecção', icone:'🚪', css:'tipo-prospeccao'},
+  base:         {grupo:'visita',  label:'Visita Base',       icone:'🚪', css:'tipo-base'},
+  fgi:          {grupo:'bussola', label:'FGI',               icone:'🧭', css:'tipo-fgi'},
+  altobacen:    {grupo:'bussola', label:'Alto Bacen',        icone:'🧭', css:'tipo-altobacen'},
+  viabilizamais:{grupo:'bussola', label:'Viabiliza+',        icone:'🧭', css:'tipo-viabilizamais'},
+};
+
+// Seleção de viabilização nas ações da Bússola (chave composta tipo+índice)
+const viabSelAcao={}; // { 'fgi_0': ['credito','safrapay'], ... }
+function selectViabAcao(v,el,tipo,idx){
+  const k=`${tipo}_${idx}`;
+  if(!viabSelAcao[k]) viabSelAcao[k]=[];
+  const i=viabSelAcao[k].indexOf(v);
+  if(i>=0){viabSelAcao[k].splice(i,1); el.className='viab-btn';}
+  else {viabSelAcao[k].push(v); el.className=`viab-btn sel-${v}`;}
+}
+
+// Quando o gerente digita >0 em uma ação, abre N sub-formulários de detalhe
+function atualizaDetalheAcao(tipo){
+  const n=parseInt(document.getElementById(`f-acao-${tipo}`).value)||0;
+  const wrap=document.getElementById(`detalhe-acao-${tipo}`);
+  if(!wrap) return;
+  if(n<=0){wrap.innerHTML='';return;}
+  const info=tiposAcao[tipo];
+  const atual=wrap.querySelectorAll('.acao-item').length;
+  if(n>atual){
+    for(let i=atual;i<n;i++){
+      const div=document.createElement('div');
+      div.className='acao-item';
+      div.style.cssText='border:1px dashed var(--safra-border);border-radius:7px;padding:8px 10px;margin-top:6px;background:#fff;';
+      if(info.grupo==='visita'){
+        div.innerHTML=`
+          <div style="font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">${info.icone} ${info.label} ${i+1}</div>
+          <div class="frow">
+            <div><label style="margin-top:0;">Empresa visitada</label><input type="text" id="acao-${tipo}-emp-${i}" placeholder="Nome da empresa"></div>
+            <div><label style="margin-top:0;">Agendamento abertura</label><input type="date" id="acao-${tipo}-data-${i}"></div>
+          </div>
+          <label style="margin-top:0;">Observação</label>
+          <textarea id="acao-${tipo}-obs-${i}" placeholder="Opcional — detalhes da visita"></textarea>`;
+      } else {
+        div.innerHTML=`
+          <div style="font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">${info.icone} ${info.label} ${i+1}</div>
+          <div><label style="margin-top:0;">Empresa</label><input type="text" id="acao-${tipo}-emp-${i}" placeholder="Nome da empresa"></div>
+          <label style="margin-top:6px;">Objetivo de viabilização <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(pode marcar mais de um)</span></label>
+          <div class="viab-grid" id="viab-acao-${tipo}-${i}">
+            <button type="button" class="viab-btn" onclick="selectViabAcao('credito',this,'${tipo}',${i})">Crédito</button>
+            <button type="button" class="viab-btn" onclick="selectViabAcao('safrapay',this,'${tipo}',${i})">SafraPay</button>
+            <button type="button" class="viab-btn" onclick="selectViabAcao('cobranca',this,'${tipo}',${i})">Cobrança</button>
+            <button type="button" class="viab-btn" onclick="selectViabAcao('ativos',this,'${tipo}',${i})">Passivo</button>
+            <button type="button" class="viab-btn" onclick="selectViabAcao('margem',this,'${tipo}',${i})">Margem</button>
+          </div>
+          <label style="margin-top:6px;">Observação</label>
+          <textarea id="acao-${tipo}-obs-${i}" placeholder="Opcional — detalhes da ação"></textarea>`;
+      }
+      wrap.appendChild(div);
+    }
+  } else {
+    while(wrap.querySelectorAll('.acao-item').length>n) wrap.removeChild(wrap.lastChild);
+  }
+}
+
+function atualizaContasDetalhe(){
+  const n=parseInt(document.getElementById('f-contas').value)||0;
+  const wrap=document.getElementById('contas-detalhe-wrap');
+  const lista=document.getElementById('contas-detalhe-lista');
+  if(n<=0){wrap.style.display='none';lista.innerHTML='';return;}
+  wrap.style.display='block';
+  const atual=lista.querySelectorAll('.conta-item').length;
+  if(n>atual){
+    for(let i=atual;i<n;i++){
+      const div=document.createElement('div');
+      div.className='conta-item';
+      div.style.cssText='border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--safra-light);';
+      div.innerHTML=`
+        <div style="font-size:11px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Conta ${i+1}</div>
+        <div class="frow" style="margin-bottom:6px;">
+          <div><label style="margin-top:0;">Empresa</label><input type="text" id="conta-empresa-${i}" placeholder="Nome da empresa"></div>
+          <div><label style="margin-top:0;">Lista Verde?</label>
+            <select id="conta-lv-${i}"><option value="nao">Não</option><option value="sim">Sim — Lista Verde</option></select>
+          </div>
+        </div>
+        <label style="margin-top:0;">Objetivo de viabilização <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(pode marcar mais de um)</span></label>
+        <div class="viab-grid" id="viab-conta-${i}">
+          <button class="viab-btn" onclick="selectViab('credito',this,${i})">Crédito</button>
+          <button class="viab-btn" onclick="selectViab('safrapay',this,${i})">SafraPay</button>
+          <button class="viab-btn" onclick="selectViab('cobranca',this,${i})">Cobrança</button>
+          <button class="viab-btn" onclick="selectViab('ativos',this,${i})">Passivo</button>
+          <button class="viab-btn" onclick="selectViab('margem',this,${i})">Margem</button>
+        </div>`;
+      lista.appendChild(div);
+    }
+  } else {
+    while(lista.querySelectorAll('.conta-item').length>n) lista.removeChild(lista.lastChild);
+  }
+}
+
+let regionalDesbloqueado=false;
+
+function verificarSenhaRegional(){
+  const senha=document.getElementById('regional-senha').value;
+  if(senha==='Tais26'){
+    regionalDesbloqueado=true;
+    document.getElementById('regional-lock').style.display='none';
+    document.getElementById('regional-desbloqueado').style.display='block';
+    document.getElementById('regional-senha-erro').style.display='none';
+    renderRegional();
+  } else {
+    document.getElementById('regional-senha-erro').style.display='block';
+    document.getElementById('regional-senha').value='';
+    document.getElementById('regional-senha').focus();
+  }
+}
+
+function bloquearRegional(){
+  regionalDesbloqueado=false;
+  document.getElementById('regional-lock').style.display='block';
+  document.getElementById('regional-desbloqueado').style.display='none';
+  document.getElementById('regional-senha').value='';
+}
+
+function showTab(t,el){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='gg') renderGG();
+  if(t==='regional'){
+    if(regionalDesbloqueado) renderRegional();
+  }
+  if(t==='retornos'){ atualizaFiltroRetGer(); renderRetornos(); }
+  if(t==='trimestre') renderTrimestre();
+  if(t==='gerentes') renderGerList();
+  if(t==='novomes') renderNovoMesResumo();
+  // Não chama limpar() — o formulário é preservado ao trocar de aba
+}
+
+// Atalho usado pelos botões administrativos do header
+function showTabById(t){ showTab(t,null); }
+
+function renderNovoMesResumo(){
+  const el=document.getElementById('novomes-resumo');
+  if(!regs.length){el.innerHTML='<div class="empty" style="padding:0.75rem;">Nenhum registro no mês atual.</div>';return;}
+  const tot={contatos:0,efetivos:0,contas:0,credenciamentos:0};
+  regs.forEach(r=>{tot.contatos+=r.contatos;tot.efetivos+=r.efetivos;tot.contas+=r.contas;tot.credenciamentos+=r.credenciamentos;});
+  const gerentes=new Set(regs.map(r=>r.gerente)).size;
+  const agencias=new Set(regs.map(r=>r.agencia)).size;
+  const datas=[...new Set(regs.map(r=>r.data))].sort();
+  el.innerHTML=`
+    <div style="font-size:11px;font-weight:600;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Resumo do mês atual</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+      <div class="metric"><div class="mlabel">Registros</div><div class="mval" style="font-size:18px;">${regs.length}</div></div>
+      <div class="metric"><div class="mlabel">Gerentes</div><div class="mval" style="font-size:18px;">${gerentes}</div></div>
+      <div class="metric"><div class="mlabel">Agências</div><div class="mval" style="font-size:18px;">${agencias}</div></div>
+      <div class="metric m-blue"><div class="mlabel">Contatos</div><div class="mval blue" style="font-size:18px;">${tot.contatos}</div></div>
+      <div class="metric m-green"><div class="mlabel">Contas abertas</div><div class="mval green" style="font-size:18px;">${tot.contas}</div></div>
+      <div class="metric m-green"><div class="mlabel">Credenciamentos</div><div class="mval green" style="font-size:18px;">${tot.credenciamentos}</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--safra-text-3);">Período: ${fmt(datas[0])} até ${fmt(datas[datas.length-1])}</div>`;
+}
+
+// Gera snapshot consolidado por agência a partir dos regs atuais
+function gerarSnapshot(){
+  const mes=today.slice(0,7); // YYYY-MM
+  const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const [ano,m]=mes.split('-');
+  const label=`${meses[parseInt(m)-1]}/${ano}`;
+
+  const porAg={};
+  Object.keys(agencias).forEach(ag=>{
+    porAg[ag]={contas:0,credenciamentos:0,contatos:0,efetivos:0,lv:0,ngerentes:agencias[ag].length};
+  });
+  regs.forEach(r=>{
+    if(!porAg[r.agencia]) porAg[r.agencia]={contas:0,credenciamentos:0,contatos:0,efetivos:0,lv:0,ngerentes:0};
+    porAg[r.agencia].contas+=r.contas||0;
+    porAg[r.agencia].credenciamentos+=r.credenciamentos||0;
+    porAg[r.agencia].contatos+=r.contatos||0;
+    porAg[r.agencia].efetivos+=r.efetivos||0;
+    if(r.listaVerde)porAg[r.agencia].lv++;
+  });
+
+  return {mes,label,agencias:porAg,totalRegs:regs.length,dataSnapshot:today};
+}
+
+function confirmarNovoMes(){
+  const senha=document.getElementById('novomes-senha').value;
+  const erroEl=document.getElementById('novomes-senha-erro');
+  if(senha!=='Tais26'){
+    erroEl.style.display='block';
+    document.getElementById('novomes-senha').value='';
+    document.getElementById('novomes-senha').focus();
+    return;
+  }
+  erroEl.style.display='none';
+  if(!confirm('Tem certeza? Todos os registros serão apagados e o painel começará zerado para o novo mês.\n\nOs dados atuais serão salvos no histórico do Trimestre.'))return;
+
+  // Salvar snapshot do mês atual no histórico
+  if(regs.length>0){
+    const snap=gerarSnapshot();
+    // Remove snapshot anterior do mesmo mês (se existir) e adiciona o novo
+    historico=historico.filter(h=>h.mes!==snap.mes);
+    historico.push(snap);
+    // Mantém só os últimos 12 meses no histórico (pra não crescer infinito)
+    historico.sort((a,b)=>a.mes.localeCompare(b.mes));
+    if(historico.length>12) historico=historico.slice(-12);
+  }
+
+  regs=[];
+  salvarNuvem();
+  document.getElementById('novomes-senha').value='';
+  renderGG();renderRegional();renderRetornos();renderTrimestre();
+  const tabBtn=document.querySelector('.tab');
+  showTab('registrar',tabBtn);
+  alert('✅ Painel zerado! Histórico salvo no Trimestre. Bom início de mês!');
+}
+
+function fmt(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;}
+function initials(s){return s.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+
+function gerarReportWpp(r){
+  const vl={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem'};
+  const vlist=v=>normViab(v).map(x=>vl[x]||x).join(' + ');
+  const dd=r.data?r.data.split('-').reverse().join('/'):'';
+  let txt=`📋 *REPORT DO DIA — ${r.agencia.toUpperCase()}*\n`;
+  txt+=`👤 *${r.gerente}* | ${dd}\n`;
+  txt+=`─────────────────────\n`;
+  txt+=`📞 *Contatos*\n• Total: *${r.contatos}* | Efetivos: *${r.efetivos}*\n`;
+  if(r.emails)       txt+=`• E-mails: *${r.emails}*\n`;
+  // Ações realizadas (novo formato) ou Visitas abertura (formato antigo)
+  if(r.acoes){
+    const a=r.acoes;
+    const temAcao=a.prospeccao||a.base||a.fgi||a.altoBacen||a.viabilizaMais;
+    if(temAcao){
+      txt+=`\n🎯 *Ação realizada*\n`;
+      if(a.prospeccao)   txt+=`• 🚪 Visita Prospecção: *${a.prospeccao}*\n`;
+      if(a.base)         txt+=`• 🚪 Visita Base: *${a.base}*\n`;
+      if(a.fgi)          txt+=`• 🧭 FGI: *${a.fgi}*\n`;
+      if(a.altoBacen)    txt+=`• 🧭 Alto Bacen: *${a.altoBacen}*\n`;
+      if(a.viabilizaMais)txt+=`• 🧭 Viabiliza+: *${a.viabilizaMais}*\n`;
+    }
+  } else if(r.visitas){
+    txt+=`• Visitas abertura: *${r.visitas}*\n`;
+  }
+  if(r.agendamentos) txt+=`• Agendamento: *${r.agendamentos}*\n`;
+  txt+=`\n📊 *Resultados*\n`;
+  txt+=`• Contas abertas: *${r.contas}* (✅ LV: ${r.contasLV} | Sem LV: ${r.contasSem})\n`;
+  if(r.contasDetalhe&&r.contasDetalhe.length){
+    r.contasDetalhe.forEach((c,i)=>{
+      const vtxt=vlist(c.viab);
+      txt+=`  ${i+1}. *${c.empresa||'—'}*${c.lv?' ✅':''}${vtxt?' — '+vtxt:''}\n`;
+    });
+  }
+  txt+=`• Credenciamentos: *${r.credenciamentos}*\n`;
+  if(r.aguardando) txt+=`• Aguard. documentação: *${r.aguardando}*\n`;
+  if(r.retEmpresa){
+    txt+=`\n🔁 *Retorno gerado*\n• Empresa: *${r.retEmpresa}*\n`;
+    if(r.retData)     txt+=`• Data: *${r.retData.split('-').reverse().join('/')}*\n`;
+    const vret=vlist(r.viabilizado);
+    if(vret) txt+=`• Objetivo: *${vret}*\n`;
+    if(r.retObs)      txt+=`• Obs: ${r.retObs}\n`;
+  }
+  txt+=`─────────────────────\n_Enviado via Painel de Gerentes_`;
+  return txt;
+}
+
+function salvar(){
+  const agencia=document.getElementById('f-agencia').value;
+  const gerente=document.getElementById('f-gerente').value;
+  const data=document.getElementById('f-data').value;
+  if(!agencia||!data){alert('Selecione a agência e a data.');return;}
+  if(!gerente||gerente==='Gerentes a definir'){alert('Selecione o gerente.');return;}
+  const nContas=parseInt(document.getElementById('f-contas').value)||0;
+  // Todas as contas — bloco dinâmico (da 1ª em diante)
+  const contasDetalhe=[];
+  for(let i=0;i<nContas;i++){
+    contasDetalhe.push({
+      empresa:document.getElementById(`conta-empresa-${i}`)?.value||'',
+      lv:document.getElementById(`conta-lv-${i}`)?.value==='sim',
+      viab:[...(viabSelContas[i]||[])],
+    });
+  }
+  // Validação: todas as contas precisam de nome da empresa
+  const faltando=contasDetalhe.findIndex(c=>!c.empresa.trim());
+  if(faltando>=0){
+    alert(`Preencha o nome da empresa da Conta ${faltando+1}.`);
+    const el=document.getElementById(`conta-empresa-${faltando}`);
+    if(el) el.focus();
+    return;
+  }
+  const nContasLV=contasDetalhe.filter(c=>c.lv).length;
+  // Novos campos de Ação realizada
+  const acoes={
+    prospeccao:parseInt(document.getElementById('f-acao-prospeccao').value)||0,
+    base:parseInt(document.getElementById('f-acao-base').value)||0,
+    fgi:parseInt(document.getElementById('f-acao-fgi').value)||0,
+    altoBacen:parseInt(document.getElementById('f-acao-altobacen').value)||0,
+    viabilizaMais:parseInt(document.getElementById('f-acao-viabilizamais').value)||0,
+  };
+  // Soma total — mantém o campo "visitas" pra compatibilidade com o dashboard antigo
+  const totalAcoes=acoes.prospeccao+acoes.base+acoes.fgi+acoes.altoBacen+acoes.viabilizaMais;
+
+  // Coleta detalhes de cada ação preenchida (empresa, agendamento/viab, obs)
+  const acoesDetalhe=[];
+  const tiposMap={prospeccao:'prospeccao',base:'base',fgi:'fgi',altoBacen:'altobacen',viabilizaMais:'viabilizamais'};
+  Object.entries(tiposMap).forEach(([chave,tipo])=>{
+    const n=acoes[chave]||0;
+    for(let i=0;i<n;i++){
+      const emp=document.getElementById(`acao-${tipo}-emp-${i}`)?.value?.trim()||'';
+      const obs=document.getElementById(`acao-${tipo}-obs-${i}`)?.value?.trim()||'';
+      const info=tiposAcao[tipo];
+      if(info.grupo==='visita'){
+        const agend=document.getElementById(`acao-${tipo}-data-${i}`)?.value||'';
+        acoesDetalhe.push({tipo,empresa:emp,agendamento:agend,obs,virouConta:false});
+      } else {
+        const viab=[...(viabSelAcao[`${tipo}_${i}`]||[])];
+        acoesDetalhe.push({tipo,empresa:emp,viab,obs,virouConta:false});
+      }
+    }
+  });
+
+  const reg={agencia,gerente,data,
+    contatos:parseInt(document.getElementById('f-contatos').value)||0,
+    efetivos:parseInt(document.getElementById('f-efetivos').value)||0,
+    emails:parseInt(document.getElementById('f-emails').value)||0,
+    visitas:totalAcoes, // soma de todas as ações (compat com dashboards antigos)
+    acoes, // novo: detalhamento por tipo (contagens)
+    acoesDetalhe, // novo: detalhe de cada ação (empresa, viab/agend, obs, virouConta)
+    agendamentos:document.getElementById('f-agendamentos').value,
+    contas:nContas, contasLV:nContasLV, contasSem:nContas-nContasLV, contasDetalhe,
+    credenciamentos:parseInt(document.getElementById('f-credenciamentos').value)||0,
+    aguardando:parseInt(document.getElementById('f-aguardando').value)||0,
+    retEmpresa:document.getElementById('f-ret-empresa').value,
+    retData:document.getElementById('f-ret-data').value,
+    retObs:document.getElementById('f-ret-obs').value,
+    listaVerde:nContasLV>0, viabilizado:[...viabSelRet],
+  };
+  regs.push(reg);
+  const msgEl=document.getElementById('msg');
+  msgEl.style.display='block';
+  setTimeout(()=>msgEl.style.display='none',2500);
+  setSyncStatus('⏳ Salvando...','var(--safra-text-3)');
+  salvarNuvem();
+  renderGG();renderRegional();renderRetornos();
+  window.open('https://wa.me/?text='+encodeURIComponent(gerarReportWpp(reg)),'_blank');
+  limpar();
+}
+
+function limpar(){
+  ['f-contatos','f-efetivos','f-emails','f-acao-prospeccao','f-acao-base','f-acao-fgi','f-acao-altobacen','f-acao-viabilizamais','f-agendamentos','f-contas','f-credenciamentos','f-aguardando','f-ret-empresa','f-ret-data','f-ret-obs'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('f-data').value=today;
+  document.getElementById('f-agencia').value='';
+  document.getElementById('f-gerente').innerHTML='<option value="">Selecione a agência primeiro</option>';
+  document.getElementById('hint-gerente').textContent='';
+  viabSelRet.length=0;
+  Object.keys(viabSelContas).forEach(k=>delete viabSelContas[k]);
+  Object.keys(viabSelAcao).forEach(k=>delete viabSelAcao[k]);
+  document.querySelectorAll('.viab-btn').forEach(b=>b.className='viab-btn');
+  document.getElementById('contas-detalhe-wrap').style.display='none';
+  document.getElementById('contas-detalhe-lista').innerHTML='';
+  // Limpa sub-formulários das ações
+  ['prospeccao','base','fgi','altobacen','viabilizamais'].forEach(t=>{
+    const w=document.getElementById(`detalhe-acao-${t}`);
+    if(w) w.innerHTML='';
+  });
+}
+
+function calcGerente(rlist){
+  const dias=[...new Set(rlist.map(r=>r.data))].sort();
+  // Consolida todas as contas abertas, com referência ao dia
+  const contasAbertas=[];
+  rlist.forEach(r=>{
+    if(r.contasDetalhe&&r.contasDetalhe.length){
+      r.contasDetalhe.forEach(c=>contasAbertas.push({...c,data:r.data}));
+    }
+  });
+  return{
+    dias,
+    contatos:        rlist.reduce((a,r)=>a+r.contatos,0),
+    efetivos:        rlist.reduce((a,r)=>a+r.efetivos,0),
+    contas:          rlist.reduce((a,r)=>a+r.contas,0),
+    contasLV:        rlist.reduce((a,r)=>a+(r.contasLV||0),0),
+    contasSem:       rlist.reduce((a,r)=>a+(r.contasSem||0),0),
+    credenciamentos: rlist.reduce((a,r)=>a+r.credenciamentos,0),
+    aguardando:      rlist.reduce((a,r)=>a+r.aguardando,0),
+    lvCount:         rlist.filter(r=>r.listaVerde).length,
+    retornos:        rlist.filter(r=>r.retEmpresa),
+    contasAbertas,
+    ultData:         dias[dias.length-1],
+  };
+}
+
+function renderGG(){
+  const el=document.getElementById('gg-content');
+  const filtroAg  = document.getElementById('filtro-gg-ag').value;
+  const filtroGer = document.getElementById('filtro-gg-ger').value;
+  const filtroDia = document.getElementById('filtro-gg-data').value;
+  let data=regs;
+  if(filtroAg)  data=data.filter(r=>r.agencia===filtroAg);
+  if(filtroGer) data=data.filter(r=>r.gerente===filtroGer);
+  if(filtroDia) data=data.filter(r=>r.data===filtroDia);
+  if(!data.length){el.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
+
+  const byAg={};
+  data.forEach(r=>{
+    if(!byAg[r.agencia])byAg[r.agencia]={};
+    if(!byAg[r.agencia][r.gerente])byAg[r.agencia][r.gerente]=[];
+    byAg[r.agencia][r.gerente].push(r);
+  });
+
+  const periodoLabel = filtroDia ? `${fmt(filtroDia)}` : 'Acumulado';
+
+  let html='';
+  for(const[ag,gerentes]of Object.entries(byAg)){
+    const nomes=Object.keys(gerentes);
+    const stats={}; nomes.forEach(g=>stats[g]=calcGerente(gerentes[g]));
+
+    html+=`<div class="ag-label">${ag}</div>`;
+
+    /* ── TABELA DASHBOARD ── */
+    html+=`<div class="card" style="overflow-x:auto;">
+      <div class="card-title">Dashboard · ${ag} · ${periodoLabel}</div>
+      <table class="rtable">
+        <thead><tr>
+          <th>Gerente</th>
+          <th>Contatos</th>
+          <th>Efetivos</th>
+          <th>Contas LV</th>
+          <th>Contas s/ LV</th>
+          <th>Total contas</th>
+          <th>Credenc.</th>
+          <th>Ag. docs</th>
+        </tr></thead>
+        <tbody>
+          ${nomes.map(g=>{const s=stats[g];return`<tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <div class="avatar" style="width:28px;height:28px;font-size:10px;">${initials(g)}</div>
+                <span style="font-weight:600;color:var(--safra-navy);">${g}</span>
+                ${badgeNovo(ag,g)}
+                ${qFlag(s.contas)}
+                ${s.lvCount>0?`<span class="lv-flag">${s.lvCount}</span>`:''}
+              </div>
+            </td>
+            <td style="font-weight:600;">${s.contatos}</td>
+            <td style="color:var(--safra-mid);font-weight:500;">${s.efetivos}</td>
+            <td>${s.contasLV>0?`<span class="lv-flag">${s.contasLV}</span>`:'-'}</td>
+            <td>${s.contasSem||'-'}</td>
+            <td style="color:var(--green);font-weight:700;">${s.contas||'-'}</td>
+            <td>${s.credenciamentos||'-'}</td>
+            <td>${s.aguardando>0?`<span style="color:var(--amber);font-weight:600;">${s.aguardando}</span>`:'-'}</td>
+          </tr>`;}).join('')}
+        </tbody>
+        <tfoot><tr style="background:var(--safra-light);">
+          <td style="font-weight:700;color:var(--safra-navy);">TOTAL</td>
+          <td style="font-weight:700;">${nomes.reduce((a,g)=>a+stats[g].contatos,0)}</td>
+          <td style="color:var(--safra-mid);font-weight:700;">${nomes.reduce((a,g)=>a+stats[g].efetivos,0)}</td>
+          <td><span class="lv-flag">${nomes.reduce((a,g)=>a+stats[g].contasLV,0)}</span></td>
+          <td style="font-weight:600;">${nomes.reduce((a,g)=>a+stats[g].contasSem,0)||'-'}</td>
+          <td style="color:var(--green);font-weight:700;">${nomes.reduce((a,g)=>a+stats[g].contas,0)||'-'}</td>
+          <td style="font-weight:600;">${nomes.reduce((a,g)=>a+stats[g].credenciamentos,0)||'-'}</td>
+          <td style="color:var(--amber);font-weight:600;">${nomes.reduce((a,g)=>a+stats[g].aguardando,0)||'-'}</td>
+        </tr></tfoot>
+      </table>
+    </div>`;
+
+    /* ── CARDS POR GERENTE: consolidado + retornos ── */
+    /* ── CARDS POR GERENTE: contas abertas + retornos ── */
+    nomes.filter(g=>stats[g].contas>0||stats[g].retornos.length>0).forEach(ger=>{
+      const s=stats[ger];
+      const temContas=s.contasAbertas&&s.contasAbertas.length>0;
+      const temRet=s.retornos.length>0;
+      html+=`<div class="card">
+        <div class="g-header">
+          <div class="avatar">${initials(ger)}</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div class="g-name">${ger}</div>
+              ${badgeNovo(ag,ger)}
+              ${qFlag(s.contas)}
+              ${s.lvCount>0?`<span class="lv-flag">LV ${s.lvCount}</span>`:''}
+            </div>
+            <div class="agencia-tag">${ag} · ${periodoLabel} · <b>${s.contas}</b> conta${s.contas!==1?'s':''} · ${s.credenciamentos} credenc. · ${s.retornos.length} retorno${s.retornos.length!==1?'s':''}</div>
+          </div>
+        </div>
+
+        ${temContas?`
+        <div class="stitle" style="margin-top:0;">🟢 Contas abertas (${s.contasAbertas.length})</div>
+        ${s.contasAbertas.slice().sort((a,b)=>a.data.localeCompare(b.data)).map(c=>`
+          <div class="retorno-item${c.lv?' lv-border':''}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <span style="font-weight:600;color:var(--safra-navy);">${c.empresa||'—'}</span>
+                  ${c.lv?'<span class="lv-flag" style="font-size:10px;">Lista Verde</span>':''}
+                  ${renderViabBadges(c.viab)}
+                </div>
+              </div>
+              <span style="font-size:10px;color:var(--safra-text-3);font-family:'DM Mono',monospace;white-space:nowrap;">${fmt(c.data)}</span>
+            </div>
+          </div>`).join('')}
+        `:''}
+
+        ${temRet?`
+        <div class="stitle"${temContas?'':' style="margin-top:0;"'}>🔁 Retornos gerados (${s.retornos.length})</div>
+        ${s.retornos.map(r=>`
+          <div class="retorno-item${r.listaVerde?' lv-border':''}">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              <span style="font-weight:600;color:var(--safra-navy);">${r.retEmpresa}</span>
+              ${r.listaVerde?'<span class="lv-flag" style="font-size:10px;">Lista Verde</span>':''}
+              ${renderViabBadges(r.viabilizado)}
+            </div>
+            <div class="ret-date">Retorno: ${fmt(r.retData)}${r.retObs?' — '+r.retObs:''}</div>
+          </div>`).join('')}
+        `:''}
+      </div>`;
+    });
+  }
+  el.innerHTML=html;
+}
+
+function renderGerList(){
+  const ag=document.getElementById('ger-ed-ag').value;
+  const el=document.getElementById('ger-ed-lista');
+  if(!ag){el.innerHTML='<div class="empty" style="padding:1rem;">Selecione uma agência.</div>';return;}
+  const lista=agencias[ag]||[];
+  if(!lista.length){el.innerHTML='<div class="empty" style="padding:1rem;">Nenhum gerente cadastrado.</div>';return;}
+
+  // Monta o HTML com data-attributes (sem onclick inline)
+  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+    ${lista.map((g,i)=>{
+      const ehNovo=isGerenteNovo(ag,g);
+      return `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--safra-white);border:1px solid ${ehNovo?'#E8A55D':'var(--safra-border)'};border-radius:7px;padding:8px 12px;${ehNovo?'background:#FFF8EE;':''}">
+        <span style="font-size:14px;font-weight:500;color:var(--safra-navy);flex:1;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">${g} ${badgeNovo(ag,g)}</span>
+        <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;">
+          <button type="button" data-acao="novo" data-idx="${i}" style="background:${ehNovo?'#FFE8CC':'#fff'};border:1px solid ${ehNovo?'#E8A55D':'var(--safra-border)'};cursor:pointer;color:${ehNovo?'#A0620D':'var(--safra-text-3)'};font-size:12px;font-weight:600;padding:8px 10px;border-radius:6px;font-family:'DM Sans',sans-serif;min-height:36px;" title="${ehNovo?'Remover marca de novo':'Marcar como gerente novo (menos de 12 meses)'}">${ehNovo?'✓ Novo':'🆕'}</button>
+          <button type="button" data-acao="editar" data-idx="${i}" style="background:var(--safra-light);border:1px solid var(--safra-border);cursor:pointer;color:var(--safra-text);font-size:12px;font-weight:600;padding:8px 12px;border-radius:6px;font-family:'DM Sans',sans-serif;min-height:36px;">✏️</button>
+          <button type="button" data-acao="remover" data-idx="${i}" style="background:#B02020;border:1px solid #B02020;cursor:pointer;color:#fff;font-size:12px;font-weight:600;padding:8px 12px;border-radius:6px;font-family:'DM Sans',sans-serif;min-height:36px;">🗑</button>
+        </div>
+      </div>`;}).join('')}
+  </div>`;
+
+  // Liga os event listeners (funciona mesmo com caracteres especiais no nome)
+  el.querySelectorAll('button[data-acao]').forEach(btn=>{
+    btn.addEventListener('click',(ev)=>{
+      ev.preventDefault();
+      ev.stopPropagation();
+      const acao=btn.getAttribute('data-acao');
+      const idx=parseInt(btn.getAttribute('data-idx'));
+      console.log('[Gerentes] Ação:',acao,'Agência:',ag,'Índice:',idx,'Nome:',agencias[ag][idx]);
+      if(acao==='editar') editarGerente(ag,idx);
+      else if(acao==='remover') removerGerente(ag,idx);
+      else if(acao==='novo') marcarGerenteNovo(ag,idx);
+    });
+  });
+}
+
+async function marcarGerenteNovo(ag,idx){
+  const nome=agencias[ag]&&agencias[ag][idx];
+  if(!nome) return;
+  bloqueioLeitura=true;
+  toggleGerenteNovo(ag,nome);
+  renderGerList();
+  // Atualiza todos os dashboards para refletir o badge
+  renderGG();
+  if(regionalDesbloqueado) renderRegional();
+  renderRetornos();
+  const ok=await salvarNuvem();
+  bloqueioLeitura=false;
+  if(!ok){
+    const hint=document.getElementById('ger-ed-lista');
+    if(hint){
+      const msg=document.createElement('div');
+      msg.style.cssText='background:#FDEAEA;color:#B02020;padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px;font-weight:600;text-align:center;';
+      msg.textContent='⚠️ Alteração feita localmente mas falhou na nuvem.';
+      hint.appendChild(msg);
+      setTimeout(()=>msg.remove(),4000);
+    }
+  }
+}
+
+async function adicionarGerente(){
+  const ag=document.getElementById('ger-ed-ag').value;
+  const nome=document.getElementById('ger-ed-nome').value.trim();
+  if(!ag){alert('Selecione a agência.');return;}
+  if(!nome){alert('Digite o nome do gerente.');return;}
+  if(!agencias[ag])agencias[ag]=[];
+  if(agencias[ag].includes(nome)){alert('Gerente já cadastrado.');return;}
+  bloqueioLeitura=true;
+  agencias[ag].push(nome);
+  document.getElementById('ger-ed-nome').value='';
+  renderGerList();
+  atualizaGerentes();
+  const ok=await salvarNuvem();
+  bloqueioLeitura=false;
+  if(!ok) alert('⚠️ Atenção: a alteração foi feita localmente mas não foi possível salvar na nuvem. Verifique sua conexão.');
+}
+
+async function removerGerente(ag,idx){
+  console.log('[Gerentes] removerGerente chamado:',ag,idx);
+  const nome=agencias[ag]&&agencias[ag][idx];
+  if(!nome){console.warn('[Gerentes] Nome não encontrado!');return;}
+
+  // Confirmação INLINE (não depende de confirm do browser, que pode falhar em iframes)
+  const el=document.getElementById('ger-ed-lista');
+  const confirmBox=document.createElement('div');
+  confirmBox.style.cssText='background:#FDEAEA;border:2px solid #B02020;padding:14px;border-radius:8px;margin-top:10px;';
+  confirmBox.innerHTML=`
+    <div style="font-weight:600;color:#B02020;margin-bottom:10px;font-size:13px;">Remover "${nome}" de ${ag}?</div>
+    <div style="display:flex;gap:8px;">
+      <button type="button" id="btn-conf-sim" style="background:#B02020;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Sim, remover</button>
+      <button type="button" id="btn-conf-nao" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Cancelar</button>
+    </div>`;
+  el.appendChild(confirmBox);
+
+  const confirmado=await new Promise(resolve=>{
+    document.getElementById('btn-conf-sim').addEventListener('click',()=>{confirmBox.remove();resolve(true);});
+    document.getElementById('btn-conf-nao').addEventListener('click',()=>{confirmBox.remove();resolve(false);});
+  });
+
+  console.log('[Gerentes] Confirmado?',confirmado);
+  if(!confirmado) return;
+
+  bloqueioLeitura=true;
+  agencias[ag].splice(idx,1);
+  // Limpa marca de novo se existir
+  gerentesNovos.delete(chaveGerente(ag,nome));
+  renderGerList();
+  atualizaGerentes();
+  const ok=await salvarNuvem();
+  bloqueioLeitura=false;
+  console.log('[Gerentes] Salvou na nuvem?',ok);
+  if(ok){
+    const hint=document.getElementById('ger-ed-lista');
+    if(hint){
+      const msg=document.createElement('div');
+      msg.style.cssText='background:#E6F5EE;color:#1A7A52;padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px;font-weight:600;text-align:center;';
+      msg.textContent=`✅ "${nome}" removido com sucesso.`;
+      hint.appendChild(msg);
+      setTimeout(()=>msg.remove(),3000);
+    }
+  } else {
+    const hint=document.getElementById('ger-ed-lista');
+    if(hint){
+      const msg=document.createElement('div');
+      msg.style.cssText='background:#FDEAEA;color:#B02020;padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px;font-weight:600;text-align:center;';
+      msg.textContent=`⚠️ Removido localmente mas falhou na nuvem.`;
+      hint.appendChild(msg);
+      setTimeout(()=>msg.remove(),4000);
+    }
+  }
+}
+
+async function editarGerente(ag,idx){
+  console.log('[Gerentes] editarGerente chamado:',ag,idx);
+  const nomeAtual=agencias[ag]&&agencias[ag][idx];
+  if(!nomeAtual){console.warn('[Gerentes] Nome não encontrado!');return;}
+
+  // Input INLINE (não depende de prompt do browser)
+  const el=document.getElementById('ger-ed-lista');
+  const editBox=document.createElement('div');
+  editBox.style.cssText='background:#FEF3DC;border:2px solid #D4A030;padding:14px;border-radius:8px;margin-top:10px;';
+  editBox.innerHTML=`
+    <div style="font-weight:600;color:#A0620D;margin-bottom:8px;font-size:13px;">Renomear "${nomeAtual}" para:</div>
+    <input type="text" id="inp-novo-nome" value="${nomeAtual}" style="margin:0 0 10px;" />
+    <div style="display:flex;gap:8px;">
+      <button type="button" id="btn-edit-ok" style="background:var(--safra-accent);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Salvar</button>
+      <button type="button" id="btn-edit-cancel" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;">Cancelar</button>
+    </div>`;
+  el.appendChild(editBox);
+  const inp=document.getElementById('inp-novo-nome');
+  inp.focus();inp.select();
+
+  const novo=await new Promise(resolve=>{
+    document.getElementById('btn-edit-ok').addEventListener('click',()=>{const v=inp.value.trim();editBox.remove();resolve(v);});
+    document.getElementById('btn-edit-cancel').addEventListener('click',()=>{editBox.remove();resolve(null);});
+    inp.addEventListener('keypress',(e)=>{if(e.key==='Enter'){const v=inp.value.trim();editBox.remove();resolve(v);}});
+  });
+
+  if(!novo||novo===nomeAtual) return;
+
+  bloqueioLeitura=true;
+  // Atualiza registros existentes
+  regs.forEach(r=>{if(r.agencia===ag&&r.gerente===nomeAtual)r.gerente=novo;});
+  agencias[ag][idx]=novo;
+  // Transfere marca de "novo" para o nome atualizado
+  if(gerentesNovos.has(chaveGerente(ag,nomeAtual))){
+    gerentesNovos.delete(chaveGerente(ag,nomeAtual));
+    gerentesNovos.add(chaveGerente(ag,novo));
+  }
+  renderGerList();
+  atualizaGerentes();
+  renderGG();
+  renderRegional();
+  renderRetornos();
+  const ok=await salvarNuvem();
+  bloqueioLeitura=false;
+  console.log('[Gerentes] Salvou na nuvem?',ok);
+  if(!ok){
+    const hint=document.getElementById('ger-ed-lista');
+    if(hint){
+      const msg=document.createElement('div');
+      msg.style.cssText='background:#FDEAEA;color:#B02020;padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px;font-weight:600;text-align:center;';
+      msg.textContent=`⚠️ Renomeado localmente mas falhou na nuvem.`;
+      hint.appendChild(msg);
+      setTimeout(()=>msg.remove(),4000);
+    }
+  }
+}
+
+function renderRegional(){
+  const el=document.getElementById('regional-content');
+  const filtroAg=document.getElementById('filtro-reg-ag').value;
+  let dadosReg=regs;
+  if(filtroAg) dadosReg=dadosReg.filter(r=>r.agencia===filtroAg);
+  if(!dadosReg.length){el.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
+
+  // Totais gerais
+  const tot={contatos:0,efetivos:0,contas:0,credenciamentos:0,aguardando:0};
+  dadosReg.forEach(r=>{for(const k of Object.keys(tot))tot[k]+=r[k]||0;});
+  const lvTotal=dadosReg.filter(r=>r.listaVerde).length;
+
+  // Consolida por gerente
+  const byGer={};
+  dadosReg.forEach(r=>{
+    const key=r.agencia+'||'+r.gerente;
+    if(!byGer[key])byGer[key]={agencia:r.agencia,gerente:r.gerente,contatos:0,efetivos:0,contas:0,credenciamentos:0,dias:new Set()};
+    byGer[key].contatos+=r.contatos;
+    byGer[key].efetivos+=r.efetivos;
+    byGer[key].contas+=r.contas;
+    byGer[key].credenciamentos+=r.credenciamentos;
+    byGer[key].dias.add(r.data);
+  });
+  const todos=Object.values(byGer).map(g=>({...g,dias:g.dias.size})).filter(g=>g.contatos>0);
+
+  todos.forEach(g=>{g.efetividade=g.contatos>0?Math.round(g.efetivos/g.contatos*100):0;});
+
+  // Metas:
+  // contatos: 15/dia → meta = 15 * dias
+  // efetivos: 10/dia → meta = 10 * dias
+  // contas:   1/semana → meta = ceil(dias/5)
+  // credenciamentos: 1 a cada 15 dias → meta = max(1, floor(dias/15))
+
+  function pct(val,meta){return Math.min(Math.round(val/meta*100),100);}
+  function cor(p){return p>=100?'#1A7A52':p>=60?'#C8922A':'#B02020';}
+  function barra(p){
+    const c=cor(p);
+    return`<div style="display:flex;align-items:center;gap:5px;">
+      <div style="flex:1;height:5px;background:#E0E8F4;border-radius:3px;min-width:40px;">
+        <div style="width:${p}%;height:100%;background:${c};border-radius:3px;"></div>
+      </div>
+      <span style="font-size:10px;font-weight:700;color:${c};min-width:28px;text-align:right;">${p}%</span>
+    </div>`;
+  }
+  function celMeta(val,meta){
+    const p=pct(val,meta);
+    return`<td style="padding:6px 8px;">
+      <div style="font-size:12px;font-weight:600;color:${cor(p)};">${val}<span style="font-size:10px;font-weight:400;color:var(--safra-text-3);">/${meta}</span></div>
+      ${barra(p)}
+    </td>`;
+  }
+
+  // Agrupa todos por agência para exibir seções
+  const todosporAg={};
+  todos.forEach(g=>{
+    if(!todosporAg[g.agencia])todosporAg[g.agencia]=[];
+    todosporAg[g.agencia].push(g);
+  });
+
+  // Rankings piores
+  const TOP=5;
+  const pioresEfetiv=[...todos].sort((a,b)=>a.efetividade-b.efetividade).slice(0,TOP);
+  const pioresContas=[...todos].sort((a,b)=>a.contas-b.contas).slice(0,TOP);
+  const pioresCred  =[...todos].sort((a,b)=>a.credenciamentos-b.credenciamentos).slice(0,TOP);
+
+  // Rankings MELHORES — FOCO CONTAS ABERTAS
+  const melhoresContas     =[...todos].filter(g=>g.contas>0).sort((a,b)=>b.contas-a.contas).slice(0,TOP);
+  const melhoresEfetiv     =[...todos].filter(g=>g.efetividade>0).sort((a,b)=>b.efetividade-a.efetividade).slice(0,TOP);
+  const melhoresCred       =[...todos].filter(g=>g.credenciamentos>0).sort((a,b)=>b.credenciamentos-a.credenciamentos).slice(0,TOP);
+
+  // Ranking por agência
+  const byAg={};
+  dadosReg.forEach(r=>{
+    if(!byAg[r.agencia])byAg[r.agencia]={contatos:0,efetivos:0,contas:0,credenciamentos:0,aguardando:0,lv:0};
+    byAg[r.agencia].contatos+=r.contatos;
+    byAg[r.agencia].efetivos+=r.efetivos;
+    byAg[r.agencia].contas+=r.contas;
+    byAg[r.agencia].credenciamentos+=r.credenciamentos;
+    byAg[r.agencia].aguardando+=r.aguardando;
+    if(r.listaVerde)byAg[r.agencia].lv++;
+  });
+  const sortedAg=Object.entries(byAg).sort((a,b)=>b[1].contas-a[1].contas);
+
+  function piorRow(g,val,suf=''){
+    return`<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div class="avatar" style="width:26px;height:26px;font-size:10px;background:#B02020;">${initials(g.gerente)}</div>
+          <div>
+            <div style="font-weight:600;font-size:12px;color:var(--safra-navy);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">${g.gerente} ${badgeNovo(g.agencia,g.gerente)} ${qFlag(g.contas)}</div>
+            <div style="font-size:10px;color:var(--safra-text-3);">${g.agencia}</div>
+          </div>
+        </div>
+      </td>
+      <td style="font-weight:700;color:#B02020;font-size:14px;">${val}${suf}</td>
+      <td style="color:var(--safra-text-3);font-size:11px;">${g.contatos} contatos</td>
+    </tr>`;
+  }
+
+  function medalha(i){return i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}º`;}
+  function melhorRow(g,val,suf='',i=0){
+    const med=medalha(i);
+    const isTop3=i<3;
+    return`<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:7px;">
+          <div style="font-size:${isTop3?'18px':'12px'};width:26px;text-align:center;font-weight:700;color:var(--safra-text-3);">${med}</div>
+          <div class="avatar" style="width:26px;height:26px;font-size:10px;background:#1A7A52;">${initials(g.gerente)}</div>
+          <div>
+            <div style="font-weight:600;font-size:12px;color:var(--safra-navy);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">${g.gerente} ${badgeNovo(g.agencia,g.gerente)} ${qFlag(g.contas)}</div>
+            <div style="font-size:10px;color:var(--safra-text-3);">${g.agencia}</div>
+          </div>
+        </div>
+      </td>
+      <td style="font-weight:700;color:#1A7A52;font-size:14px;">${val}${suf}</td>
+      <td style="color:var(--safra-text-3);font-size:11px;">${g.contatos} contatos</td>
+    </tr>`;
+  }
+
+  // Ranking TOP 5 agências por contas abertas (para destaque)
+  const topAgContas=[...sortedAg].filter(([,v])=>v.contas>0).slice(0,TOP);
+
+  let html=`
+  <!-- TOTAIS GERAIS -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px;margin-bottom:1rem;">
+    <div class="metric"><div class="mlabel">Total contatos</div><div class="mval">${tot.contatos}</div></div>
+    <div class="metric m-blue"><div class="mlabel">Efetivos</div><div class="mval blue">${tot.efetivos}</div></div>
+    <div class="metric m-green"><div class="mlabel">Contas abertas</div><div class="mval green">${tot.contas}</div></div>
+    <div class="metric m-green"><div class="mlabel">Credenciamentos</div><div class="mval green">${tot.credenciamentos}</div></div>
+    <div class="metric m-amber"><div class="mlabel">Ag. docs</div><div class="mval amber">${tot.aguardando}</div></div>
+    <div class="metric m-lv"><div class="mlabel">Contatos LV</div><div class="mval green">${lvTotal}</div></div>
+  </div>
+
+  <!-- 🕐 RELÓGIOS DE META SEMANAL POR AGÊNCIA -->
+  <div class="card" style="margin-bottom:1rem;">
+    <div class="card-title">🕐 Meta da semana · Contas abertas</div>
+    <div style="font-size:10px;color:var(--safra-text-3);margin-bottom:10px;">
+      Relógio = <b>% da semana atual</b> (seg a dom). Linha de baixo = acumulado do mês. Meta semanal = meta mensal ÷ ${semanasDoMes(today).toFixed(2)} semanas do mês.
+      <span style="color:#1A7A52;font-weight:600;margin-left:6px;">■ ≥100%</span>
+      <span style="color:#C8922A;font-weight:600;margin-left:6px;">■ 60–99%</span>
+      <span style="color:#B02020;font-weight:600;margin-left:6px;">■ &lt;60%</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+      ${Object.keys(agencias).map(ag=>{
+        const cs=contasSemanaAtual(ag,regs);
+        const cm=contasMesAtual(ag,regs);
+        const ng=(agencias[ag]||[]).length;
+        return `<div style="border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;background:#FAFCFF;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-weight:700;font-size:12px;color:var(--safra-navy);">${ag}</div>
+            <div style="font-size:10px;color:var(--safra-text-3);">${ng} ger</div>
+          </div>
+          ${relogioAgencia(ag,cs,cm)}
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <!-- TABELA DE METAS — todos os gerentes -->
+  <div class="card" style="overflow-x:auto;margin-bottom:1rem;">
+    <div class="card-title" style="margin-bottom:4px;">🕐 Metas por gerente</div>
+    <div style="font-size:10px;color:var(--safra-text-3);margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap;">
+      <span style="color:#1A7A52;font-weight:600;">■ ≥100%</span>
+      <span style="color:#C8922A;font-weight:600;">■ 60–99%</span>
+      <span style="color:#B02020;font-weight:600;">■ &lt;60%</span>
+      <span style="color:var(--safra-text-2);">· 180 contatos/mês (15/dia × 3x sem × 4 sem) · 120 efetivos/mês · 5 contas/semana · 2 credenc./mês</span>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead>
+        <tr style="background:var(--safra-light);">
+          <th style="text-align:left;padding:7px 10px;border-bottom:1px solid var(--safra-border);font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;">Agência</th>
+          <th style="text-align:left;padding:7px 10px;border-bottom:1px solid var(--safra-border);font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;">Gerente</th>
+          <th style="text-align:left;padding:7px 10px;border-bottom:1px solid var(--safra-border);font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;">Dias</th>
+          <th style="text-align:left;padding:7px 10px;border-bottom:1px solid var(--safra-border);font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;min-width:120px;">Contatos</th>
+          <th style="text-align:left;padding:7px 10px;border-bottom:1px solid var(--safra-border);font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;min-width:120px;">Efetivos</th>
+          <th style="text-align:left;padding:7px 10px;border-bottom:1px solid var(--safra-border);font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;min-width:120px;">Contas</th>
+          <th style="text-align:left;padding:7px 10px;border-bottom:1px solid var(--safra-border);font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;min-width:120px;">Credenc.</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${Object.entries(todosporAg).map(([ag,gers],agIdx)=>{
+          const agRows=gers.map((g,i)=>{
+            const d=g.dias||1;
+            const mC=180, mE=120, mCo=Math.max(1,Math.ceil(d/5))*5, mCr=2;
+            const isLast=i===gers.length-1;
+            const rowBg=agIdx%2===0?'#fff':'#FAFCFF';
+            return`<tr style="background:${rowBg};border-bottom:${isLast?'2px solid var(--safra-border-dark)':'1px solid var(--safra-border)'};">
+              ${i===0?`<td rowspan="${gers.length}" style="padding:6px 10px;font-weight:700;font-size:11px;color:var(--safra-navy);vertical-align:middle;border-right:2px solid var(--safra-border-dark);white-space:nowrap;background:${rowBg};">${ag}</td>`:''}
+              <td style="padding:6px 10px;font-weight:500;color:var(--safra-text);white-space:nowrap;"><span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">${g.gerente} ${badgeNovo(g.agencia,g.gerente)} ${qFlag(g.contas)}</span></td>
+              <td style="padding:6px 10px;color:var(--safra-text-3);font-size:11px;text-align:center;">${d}</td>
+              ${celMeta(g.contatos,mC)}
+              ${celMeta(g.efetivos,mE)}
+              ${celMeta(g.contas,mCo)}
+              ${celMeta(g.credenciamentos,mCr)}
+            </tr>`;
+          }).join('');
+          return agRows;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 🏆 DESTAQUE: CONTAS ABERTAS — FOCO PRINCIPAL -->
+  ${todos.length>=1?`
+  <div style="background:linear-gradient(135deg,#E6F5EE 0%,#F4F7FB 100%);border:1px solid #A8D4BF;border-radius:10px;padding:1rem 1.1rem;margin-bottom:1rem;">
+    <div class="card-title" style="color:#1A7A52;margin-bottom:0.4rem;font-size:14px;">🏆 FOCO — Contas abertas</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.8rem;font-size:10px;color:var(--safra-text-2);align-items:center;">
+      <span style="font-weight:600;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;">Quartis:</span>
+      <span class="q-flag q1">Q1</span><span>5+ contas</span>
+      <span class="q-flag q2">Q2</span><span>3 a 4 contas</span>
+      <span class="q-flag q3">Q3</span><span>2 contas</span>
+      <span class="q-flag q4">Q4</span><span>0 a 1 conta</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;">
+      <div class="card" style="border-color:#A8D4BF;margin-bottom:0;">
+        <div class="card-title" style="color:#1A7A52;">🥇 Top gerentes · Contas abertas</div>
+        ${melhoresContas.length>0?`<table class="rtable">
+          <thead><tr><th>Gerente</th><th>Contas</th><th>Base</th></tr></thead>
+          <tbody>${melhoresContas.map((g,i)=>melhorRow(g,g.contas,'',i)).join('')}</tbody>
+        </table>`:'<div class="empty" style="padding:0.6rem 0;">Nenhuma conta aberta no período.</div>'}
+      </div>
+      <div class="card" style="border-color:#A8D4BF;margin-bottom:0;">
+        <div class="card-title" style="color:#1A7A52;">🏢 Top agências · Contas abertas</div>
+        ${topAgContas.length>0?`<table class="rtable">
+          <thead><tr><th>#</th><th>Agência</th><th>Contas</th></tr></thead>
+          <tbody>${topAgContas.map(([ag,v],i)=>{const ng=(agencias[ag]||[]).length;return`<tr>
+            <td style="width:40px;"><span style="font-size:${i<3?'18px':'12px'};font-weight:700;">${medalha(i)}</span></td>
+            <td><strong>${ag}</strong> ${qFlagAgencia(v.contas,ng)} <span style="font-size:10px;color:var(--safra-text-3);">${ng} ger</span></td>
+            <td style="font-weight:700;color:#1A7A52;font-size:14px;">${v.contas}</td>
+          </tr>`}).join('')}</tbody>
+        </table>`:'<div class="empty" style="padding:0.6rem 0;">Nenhuma conta aberta no período.</div>'}
+      </div>
+    </div>
+  </div>`:''}
+
+  <!-- 🥇 DESTAQUES POR ÁREA -->
+  ${todos.length>=2?`
+  <div class="card-title" style="margin-bottom:0.75rem;">🥇 Destaques — Melhores desempenhos</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem;">
+    <div class="card" style="border-color:#A8D4BF;">
+      <div class="card-title" style="color:#1A7A52;">Maior efetividade</div>
+      <table class="rtable">
+        <thead><tr><th>Gerente</th><th>Efetividade</th><th>Base</th></tr></thead>
+        <tbody>${melhoresEfetiv.map((g,i)=>melhorRow(g,g.efetividade,'%',i)).join('')}</tbody>
+      </table>
+    </div>
+    <div class="card" style="border-color:#A8D4BF;">
+      <div class="card-title" style="color:#1A7A52;">Mais credenciamentos</div>
+      <table class="rtable">
+        <thead><tr><th>Gerente</th><th>Credenc.</th><th>Base</th></tr></thead>
+        <tbody>${melhoresCred.map((g,i)=>melhorRow(g,g.credenciamentos,'',i)).join('')}</tbody>
+      </table>
+    </div>
+  </div>`:''}
+
+  <!-- DASH PIORES GERENTES -->
+  ${todos.length>=2?`
+  <div class="card-title" style="margin-bottom:0.75rem;">⚠️ Atenção — Piores desempenhos</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:1rem;">
+    <div class="card" style="border-color:#F5C6C6;">
+      <div class="card-title" style="color:#B02020;">Menor efetividade</div>
+      <table class="rtable">
+        <thead><tr><th>Gerente</th><th>Efetividade</th><th>Base</th></tr></thead>
+        <tbody>${pioresEfetiv.map(g=>piorRow(g,g.efetividade,'%')).join('')}</tbody>
+      </table>
+    </div>
+    <div class="card" style="border-color:#F5C6C6;">
+      <div class="card-title" style="color:#B02020;">Menos contas abertas</div>
+      <table class="rtable">
+        <thead><tr><th>Gerente</th><th>Contas</th><th>Base</th></tr></thead>
+        <tbody>${pioresContas.map(g=>piorRow(g,g.contas,'')).join('')}</tbody>
+      </table>
+    </div>
+    <div class="card" style="border-color:#F5C6C6;">
+      <div class="card-title" style="color:#B02020;">Menos credenciamentos</div>
+      <table class="rtable">
+        <thead><tr><th>Gerente</th><th>Credenc.</th><th>Base</th></tr></thead>
+        <tbody>${pioresCred.map(g=>piorRow(g,g.credenciamentos,'')).join('')}</tbody>
+      </table>
+    </div>
+  </div>`:`<div class="empty" style="margin-bottom:1rem;">Registre pelo menos 2 gerentes para ver o comparativo de desempenho.</div>`}
+
+  <!-- RANKING POR AGÊNCIA -->
+  <div class="card">
+    <div class="card-title">Ranking por agência <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(ordenado por contas abertas · Q calculado por média de contas/gerente)</span></div>
+    <table class="rtable">
+      <tr><th>#</th><th>Agência</th><th>Q</th><th>Contatos</th><th>Efetivos</th><th style="background:#E6F5EE;color:#1A7A52;">Contas ⭐</th><th>Credenc.</th><th>Ag.docs</th><th>LV</th></tr>`;
+
+  sortedAg.forEach(([ag,v],i)=>{
+    const ng=(agencias[ag]||[]).length;
+    html+=`<tr>
+      <td class="rank-num ${i<3?'top':''}">${i+1}</td>
+      <td><strong>${ag}</strong> <span style="font-size:10px;color:var(--safra-text-3);">· ${ng} ger</span></td>
+      <td>${qFlagAgencia(v.contas,ng)}</td>
+      <td>${v.contatos}</td>
+      <td style="color:var(--safra-mid);font-weight:500;">${v.efetivos}</td>
+      <td style="background:#F0FAF5;color:var(--green);font-weight:700;font-size:13px;">${v.contas}</td>
+      <td>${v.credenciamentos}</td>
+      <td>${v.aguardando}</td>
+      <td>${v.lv>0?`<span class="lv-flag">${v.lv}</span>`:'-'}</td>
+    </tr>`;
+  });
+
+  html+=`</table></div>`;
+  el.innerHTML=html;
+}
+
+// Coleta TODOS os itens de retorno (tradicionais + de cada ação) e devolve uma lista plana
+// Cada item: {regIdx, tipo:'retorno'|'prospeccao'|'base'|'fgi'|'altobacen'|'viabilizamais',
+//             indice(acoesDetalhe), empresa, data, viab, obs, virouConta, agencia, gerente, listaVerde, dataReg}
+function coletarItensRetorno(){
+  const itens=[];
+  regs.forEach((r,regIdx)=>{
+    // Retorno tradicional (campo retEmpresa)
+    if(r.retEmpresa){
+      itens.push({
+        regIdx, subIdx:-1, tipo:'retorno',
+        agencia:r.agencia, gerente:r.gerente, dataReg:r.data,
+        empresa:r.retEmpresa, data:r.retData||'', viab:r.viabilizado||[],
+        obs:r.retObs||'', virouConta:!!r.retVirouConta,
+        listaVerde:!!r.listaVerde,
+      });
+    }
+    // Detalhe de cada ação (acoesDetalhe)
+    if(Array.isArray(r.acoesDetalhe)){
+      r.acoesDetalhe.forEach((a,subIdx)=>{
+        // Só adiciona se tiver empresa preenchida (senão não é útil pra aba retornos)
+        if(!a.empresa||!a.empresa.trim()) return;
+        itens.push({
+          regIdx, subIdx, tipo:a.tipo,
+          agencia:r.agencia, gerente:r.gerente, dataReg:r.data,
+          empresa:a.empresa, data:a.agendamento||'', viab:a.viab||[],
+          obs:a.obs||'', virouConta:!!a.virouConta,
+          listaVerde:false,
+        });
+      });
+    }
+  });
+  return itens;
+}
+
+function renderRetornos(){
+  const el=document.getElementById('retornos-content');
+  const filtroAgEl=document.getElementById('filtro-ret-ag');
+  const filtroGerEl=document.getElementById('filtro-ret-ger');
+  if(!el||!filtroAgEl||!filtroGerEl) return;
+  const filtroAg  = filtroAgEl.value;
+  const filtroGer = filtroGerEl.value;
+
+  // Só mostra os retornos DEPOIS que uma agência for selecionada
+  if(!filtroAg){
+    el.innerHTML=`<div style="background:#FEF3DC;border:1px solid #D4A030;border-radius:10px;padding:2rem;text-align:center;margin-top:1rem;">
+      <div style="font-size:28px;margin-bottom:8px;">👆</div>
+      <div style="font-size:14px;font-weight:600;color:#A0620D;margin-bottom:4px;">Selecione uma agência</div>
+      <div style="font-size:12px;color:#A0620D;">Escolha a agência no filtro acima para ver os retornos daquela agência.</div>
+    </div>`;
+    return;
+  }
+
+  let itens=coletarItensRetorno();
+  itens=itens.filter(r=>r.agencia===filtroAg);
+  if(filtroGer) itens=itens.filter(r=>r.gerente===filtroGer);
+
+  if(!itens.length){el.innerHTML='<div class="empty">Nenhum retorno encontrado para esta agência.</div>';return;}
+
+  // Agrupa por agência → gerente
+  const byAg={};
+  itens.forEach(r=>{
+    if(!byAg[r.agencia])byAg[r.agencia]={};
+    if(!byAg[r.agencia][r.gerente])byAg[r.agencia][r.gerente]=[];
+    byAg[r.agencia][r.gerente].push(r);
+  });
+
+  let html='';
+  for(const[ag,gerentes]of Object.entries(byAg)){
+    html+=`<div class="ag-label">${ag}</div>`;
+    for(const[ger,lista]of Object.entries(gerentes)){
+      const sorted=lista.slice().sort((a,b)=>(a.data||a.dataReg).localeCompare(b.data||b.dataReg));
+      html+=`<div class="card">
+        <div class="g-header">
+          <div class="avatar">${initials(ger)}</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div class="g-name">${ger}</div>
+              ${badgeNovo(ag,ger)}
+            </div>
+            <div class="agencia-tag">${ag} · ${sorted.length} registro${sorted.length>1?'s':''}</div>
+          </div>
+        </div>
+        ${sorted.map(r=>{
+          const venc=r.data&&r.data<today&&!r.virouConta;
+          const info=tiposAcao[r.tipo]||{label:'Retorno',css:'tipo-retorno',icone:'🔁'};
+          const dataExib=r.data?fmt(r.data):fmt(r.dataReg);
+          const labelData=r.tipo==='retorno'?'Retorno':(info.grupo==='visita'?'Agend.':'Data');
+          return`<div class="retorno-item${r.listaVerde?' lv-border':''}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <span class="tag-origem ${info.css}">${info.icone} ${info.label}</span>
+                  <span style="font-weight:600;color:var(--safra-navy);">${r.empresa}</span>
+                  ${r.listaVerde?'<span class="lv-flag" style="font-size:10px;">Lista Verde</span>':''}
+                  ${renderViabBadges(r.viab)}
+                  ${r.virouConta?'<span class="badge-conta-sim">✓ Virou conta</span>':''}
+                </div>
+                ${r.obs?`<div class="ret-date" style="margin-top:3px;">${r.obs}</div>`:''}
+              </div>
+              <span class="tag-ret ${venc?'venc':''}" style="white-space:nowrap;">${labelData}: ${dataExib}</span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+              <button type="button" onclick="toggleVirouConta(${r.regIdx},${r.subIdx})" style="background:${r.virouConta?'#E6F5EE':'#fff'};color:${r.virouConta?'#1A7A52':'var(--safra-text-2)'};border:1px solid ${r.virouConta?'#A8D4BF':'var(--safra-border)'};padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">${r.virouConta?'✓ Virou conta':'Marcar como conta'}</button>
+              <button type="button" onclick="editarRetorno(${r.regIdx},${r.subIdx})" style="background:var(--safra-light);color:var(--safra-text);border:1px solid var(--safra-border);padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">✏️ Editar</button>
+              <button type="button" onclick="excluirRetorno(${r.regIdx},${r.subIdx})" style="background:#FDEAEA;color:#B02020;border:1px solid #CC4444;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🗑 Excluir</button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }
+  }
+  el.innerHTML=html;
+}
+
+// Alterna o flag "virou conta" em um retorno/ação
+async function toggleVirouConta(regIdx,subIdx){
+  const r=regs[regIdx];
+  if(!r) return;
+  bloqueioLeitura=true;
+  if(subIdx<0){
+    // Retorno tradicional
+    r.retVirouConta=!r.retVirouConta;
+  } else {
+    // Ação detalhada
+    if(Array.isArray(r.acoesDetalhe)&&r.acoesDetalhe[subIdx]){
+      r.acoesDetalhe[subIdx].virouConta=!r.acoesDetalhe[subIdx].virouConta;
+    }
+  }
+  renderRetornos();
+  await salvarNuvem();
+  bloqueioLeitura=false;
+}
+
+// Exclui um item de retorno (tradicional ou ação) com confirmação inline
+async function excluirRetorno(regIdx,subIdx){
+  const r=regs[regIdx];
+  if(!r) return;
+  const nomeItem=subIdx<0?(r.retEmpresa||'retorno'):(r.acoesDetalhe?.[subIdx]?.empresa||'item');
+
+  // Confirmação inline
+  const confirmado=await confirmarInline(`Excluir "${nomeItem}"?`,'Sim, excluir','Cancelar','#B02020');
+  if(!confirmado) return;
+
+  bloqueioLeitura=true;
+  if(subIdx<0){
+    // Remove retorno tradicional — limpa os campos do registro
+    r.retEmpresa='';
+    r.retData='';
+    r.retObs='';
+    r.viabilizado=[];
+    r.retVirouConta=false;
+  } else {
+    // Remove o item do array de ações detalhadas e decrementa a contagem
+    if(Array.isArray(r.acoesDetalhe)&&r.acoesDetalhe[subIdx]){
+      const tipoExcluido=r.acoesDetalhe[subIdx].tipo;
+      r.acoesDetalhe.splice(subIdx,1);
+      // Atualiza também a contagem em r.acoes
+      if(r.acoes){
+        const mapa={prospeccao:'prospeccao',base:'base',fgi:'fgi',altobacen:'altoBacen',viabilizamais:'viabilizaMais'};
+        const chave=mapa[tipoExcluido];
+        if(chave&&r.acoes[chave]>0) r.acoes[chave]--;
+      }
+      // Recalcula total de visitas
+      if(r.acoes){
+        r.visitas=r.acoes.prospeccao+r.acoes.base+r.acoes.fgi+r.acoes.altoBacen+r.acoes.viabilizaMais;
+      }
+    }
+  }
+  renderRetornos();
+  renderGG();
+  if(regionalDesbloqueado) renderRegional();
+  await salvarNuvem();
+  bloqueioLeitura=false;
+}
+
+// Edita um item de retorno (tradicional ou ação) com modal inline
+async function editarRetorno(regIdx,subIdx){
+  const r=regs[regIdx];
+  if(!r) return;
+
+  const ehRetorno=subIdx<0;
+  const item=ehRetorno
+    ? {empresa:r.retEmpresa||'',data:r.retData||'',obs:r.retObs||'',viab:r.viabilizado||[],tipo:'retorno'}
+    : r.acoesDetalhe?.[subIdx];
+  if(!item) return;
+  const info=tiposAcao[item.tipo]||{label:'Retorno',grupo:'retorno',icone:'🔁'};
+  const ehVisita=info.grupo==='visita';
+
+  // Modal overlay
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+  const modalId='modal-edit-'+Date.now();
+
+  const viabAtual=new Set(ehRetorno?(r.viabilizado||[]):(item.viab||[]));
+  const viabButtonsHtml=['credito','safrapay','cobranca','ativos','margem'].map(v=>{
+    const labels={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem'};
+    const sel=viabAtual.has(v);
+    return `<button type="button" class="viab-btn${sel?' sel-'+v:''}" data-v="${v}" style="font-family:'DM Sans',sans-serif;">${labels[v]}</button>`;
+  }).join('');
+
+  const dataValor=ehRetorno?(r.retData||''):(item.agendamento||'');
+  const labelData=ehRetorno?'Data do retorno':(ehVisita?'Agendamento abertura':'Data');
+
+  overlay.innerHTML=`
+    <div id="${modalId}" style="background:#fff;border-radius:10px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <span class="tag-origem ${info.css||'tipo-retorno'}">${info.icone} ${info.label}</span>
+        <h3 style="margin:0;font-size:16px;color:var(--safra-navy);">Editar item</h3>
+      </div>
+
+      <label>Empresa</label>
+      <input type="text" id="ed-empresa" value="${(item.empresa||'').replace(/"/g,'&quot;')}" style="margin:0 0 10px;" />
+
+      ${ehVisita||ehRetorno?`<label>${labelData}</label>
+      <input type="date" id="ed-data" value="${dataValor}" style="margin:0 0 10px;" />`:''}
+
+      ${(!ehVisita)?`<label>Objetivo de viabilização <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(pode marcar mais de um)</span></label>
+      <div class="viab-grid" id="ed-viab" style="margin-bottom:10px;">${viabButtonsHtml}</div>`:''}
+
+      <label>Observação</label>
+      <textarea id="ed-obs" placeholder="Opcional" style="margin:0 0 14px;min-height:70px;">${item.obs||r.retObs||''}</textarea>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" id="ed-cancel" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Cancelar</button>
+        <button type="button" id="ed-save" style="background:var(--safra-accent);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Salvar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  // Liga os botões de viabilização (toggle)
+  const viabSelEdit=new Set(viabAtual);
+  overlay.querySelectorAll('#ed-viab .viab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const v=btn.getAttribute('data-v');
+      if(viabSelEdit.has(v)){viabSelEdit.delete(v); btn.className='viab-btn';}
+      else {viabSelEdit.add(v); btn.className='viab-btn sel-'+v;}
+    });
+  });
+
+  const resultado=await new Promise(resolve=>{
+    overlay.querySelector('#ed-cancel').addEventListener('click',()=>{overlay.remove();resolve(null);});
+    overlay.querySelector('#ed-save').addEventListener('click',()=>{
+      const dados={
+        empresa:overlay.querySelector('#ed-empresa').value.trim(),
+        data:overlay.querySelector('#ed-data')?.value||'',
+        obs:overlay.querySelector('#ed-obs').value.trim(),
+        viab:[...viabSelEdit],
+      };
+      overlay.remove();
+      resolve(dados);
+    });
+  });
+
+  if(!resultado) return;
+
+  bloqueioLeitura=true;
+  if(ehRetorno){
+    r.retEmpresa=resultado.empresa;
+    r.retData=resultado.data;
+    r.retObs=resultado.obs;
+    r.viabilizado=resultado.viab;
+  } else {
+    item.empresa=resultado.empresa;
+    if(ehVisita) item.agendamento=resultado.data;
+    else item.viab=resultado.viab;
+    item.obs=resultado.obs;
+  }
+  renderRetornos();
+  renderGG();
+  if(regionalDesbloqueado) renderRegional();
+  await salvarNuvem();
+  bloqueioLeitura=false;
+}
+
+// Helper genérico de confirmação inline (modal)
+function confirmarInline(pergunta,textoOk='Confirmar',textoCancel='Cancelar',corOk='#1A7A52'){
+  return new Promise(resolve=>{
+    const overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+    overlay.innerHTML=`
+      <div style="background:#fff;border-radius:10px;max-width:400px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="font-size:14px;color:var(--safra-navy);margin-bottom:14px;font-weight:600;">${pergunta}</div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button type="button" id="ci-cancel" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">${textoCancel}</button>
+          <button type="button" id="ci-ok" style="background:${corOk};color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">${textoOk}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.querySelector('#ci-cancel').addEventListener('click',()=>{overlay.remove();resolve(false);});
+    overlay.querySelector('#ci-ok').addEventListener('click',()=>{overlay.remove();resolve(true);});
+  });
+}
+
+function atualizaFiltroRetGer(){
+  const ag=document.getElementById('filtro-ret-ag').value;
+  const sel=document.getElementById('filtro-ret-ger');
+  const valorAtual=sel.value; // guarda o que estava selecionado
+  // Só lista gerentes APÓS selecionar a agência
+  const lista=ag?(agencias[ag]||[]):[];
+  const placeholder=ag?'Todos os gerentes':'Selecione a agência primeiro';
+  sel.innerHTML=`<option value="">${placeholder}</option>`+lista.map(g=>`<option>${g}</option>`).join('');
+  // Mantém a seleção anterior SOMENTE se o gerente ainda existe na nova lista
+  if(valorAtual&&lista.includes(valorAtual)){
+    sel.value=valorAtual;
+  } else {
+    sel.value=''; // reseta
+  }
+  // Se agência estiver vazia, desabilita o select pra deixar claro
+  sel.disabled=!ag;
+}
+
+let trimestreDesbloqueado=false;
+
+function verificarSenhaTrimestre(){
+  const senha=document.getElementById('trimestre-senha').value;
+  if(senha==='Tais26'){
+    trimestreDesbloqueado=true;
+    document.getElementById('trimestre-lock').style.display='none';
+    document.getElementById('trimestre-desbloqueado').style.display='block';
+    document.getElementById('trimestre-senha-erro').style.display='none';
+    renderTrimestre();
+  } else {
+    document.getElementById('trimestre-senha-erro').style.display='block';
+    document.getElementById('trimestre-senha').value='';
+    document.getElementById('trimestre-senha').focus();
+  }
+}
+
+function bloquearTrimestre(){
+  trimestreDesbloqueado=false;
+  document.getElementById('trimestre-lock').style.display='block';
+  document.getElementById('trimestre-desbloqueado').style.display='none';
+  document.getElementById('trimestre-senha').value='';
+}
+
+// ═══════════════════════════════════════════════
+// ABA TRIMESTRE — comparativo mensal por agência
+// ═══════════════════════════════════════════════
+let trimestreMesesSel=new Set(); // meses selecionados no seletor
+
+function getMesAtualComoSnapshot(){
+  // Gera snapshot do mês atual on-the-fly para aparecer junto com os do histórico
+  if(regs.length===0) return null;
+  const snap=gerarSnapshot();
+  snap.label+=' (atual)';
+  return snap;
+}
+
+function renderTrimestre(){
+  const el=document.getElementById('trimestre-content');
+  if(!el||!trimestreDesbloqueado) return;
+
+  // Lista de todos os meses disponíveis = histórico + mês atual (se houver dados)
+  const todosMeses=[...historico];
+  const atual=getMesAtualComoSnapshot();
+  if(atual){
+    // Se já tem snapshot do mês atual no histórico, substitui pelo "ao vivo"
+    const idx=todosMeses.findIndex(h=>h.mes===atual.mes);
+    if(idx>=0) todosMeses[idx]=atual;
+    else todosMeses.push(atual);
+  }
+  todosMeses.sort((a,b)=>a.mes.localeCompare(b.mes));
+
+  if(todosMeses.length===0){
+    el.innerHTML='<div class="empty">Nenhum mês disponível ainda. Registre atividades ou execute a virada de mês para começar o histórico.</div>';
+    return;
+  }
+
+  // Por padrão, seleciona os 3 últimos meses
+  if(trimestreMesesSel.size===0){
+    todosMeses.slice(-3).forEach(m=>trimestreMesesSel.add(m.mes));
+  }
+  // Remove meses que não existem mais do set
+  [...trimestreMesesSel].forEach(m=>{
+    if(!todosMeses.find(x=>x.mes===m)) trimestreMesesSel.delete(m);
+  });
+
+  const mesesOrdenados=todosMeses.map(m=>m.mes);
+  const selecionados=todosMeses.filter(m=>trimestreMesesSel.has(m.mes));
+
+  let html=`
+  <div class="card">
+    <div class="card-title">📊 Comparativo trimestral · Contas abertas e Credenciamentos</div>
+    <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:10px;">
+      Selecione os meses para comparar. O mês atual é atualizado em tempo real.
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">
+      ${todosMeses.map(m=>{
+        const ativo=trimestreMesesSel.has(m.mes);
+        return `<button onclick="toggleMesTrim('${m.mes}')" style="padding:6px 12px;border-radius:6px;border:1px solid ${ativo?'var(--safra-accent)':'var(--safra-border)'};background:${ativo?'var(--safra-accent)':'#fff'};color:${ativo?'#fff':'var(--safra-text)'};font-size:11px;font-weight:${ativo?'600':'500'};font-family:'DM Sans',sans-serif;cursor:pointer;">${m.label}</button>`;
+      }).join('')}
+    </div>
+  </div>`;
+
+  if(selecionados.length===0){
+    html+='<div class="empty">Selecione pelo menos um mês para comparar.</div>';
+    el.innerHTML=html;
+    return;
+  }
+
+  // Tabela comparativa: linhas = agências, colunas = meses (contas | credenc)
+  const agList=Object.keys(agencias).sort();
+
+  html+=`
+  <div class="card" style="overflow-x:auto;">
+    <div class="card-title">🟢 Contas abertas por agência</div>
+    <table class="rtable" style="font-size:12px;">
+      <thead>
+        <tr style="background:var(--safra-light);">
+          <th style="text-align:left;">Agência</th>
+          ${selecionados.map(m=>`<th style="text-align:center;">${m.label}</th>`).join('')}
+          ${selecionados.length>=2?`<th style="text-align:center;color:var(--safra-text-3);">Δ</th>`:''}
+        </tr>
+      </thead>
+      <tbody>
+        ${agList.map(ag=>{
+          const valores=selecionados.map(m=>m.agencias[ag]?.contas||0);
+          const ultimo=valores[valores.length-1];
+          const penultimo=valores.length>=2?valores[valores.length-2]:0;
+          const delta=ultimo-penultimo;
+          const deltaStr=delta>0?`<span style="color:#1A7A52;">▲ +${delta}</span>`:delta<0?`<span style="color:#B02020;">▼ ${delta}</span>`:'<span style="color:var(--safra-text-3);">—</span>';
+          return `<tr>
+            <td style="font-weight:600;color:var(--safra-navy);">${ag}</td>
+            ${valores.map((v,i)=>{
+              const ehUltimo=i===valores.length-1;
+              return `<td style="text-align:center;${ehUltimo?'background:#F0FAF5;font-weight:700;color:var(--green);':''}">${v||'-'}</td>`;
+            }).join('')}
+            ${selecionados.length>=2?`<td style="text-align:center;font-weight:600;">${deltaStr}</td>`:''}
+          </tr>`;
+        }).join('')}
+      </tbody>
+      <tfoot><tr style="background:var(--safra-light);font-weight:700;">
+        <td>TOTAL</td>
+        ${selecionados.map(m=>{
+          const tot=agList.reduce((a,ag)=>a+(m.agencias[ag]?.contas||0),0);
+          return `<td style="text-align:center;color:var(--green);">${tot}</td>`;
+        }).join('')}
+        ${selecionados.length>=2?`<td></td>`:''}
+      </tr></tfoot>
+    </table>
+  </div>
+
+  <div class="card" style="overflow-x:auto;">
+    <div class="card-title">🔵 Credenciamentos por agência</div>
+    <table class="rtable" style="font-size:12px;">
+      <thead>
+        <tr style="background:var(--safra-light);">
+          <th style="text-align:left;">Agência</th>
+          ${selecionados.map(m=>`<th style="text-align:center;">${m.label}</th>`).join('')}
+          ${selecionados.length>=2?`<th style="text-align:center;color:var(--safra-text-3);">Δ</th>`:''}
+        </tr>
+      </thead>
+      <tbody>
+        ${agList.map(ag=>{
+          const valores=selecionados.map(m=>m.agencias[ag]?.credenciamentos||0);
+          const ultimo=valores[valores.length-1];
+          const penultimo=valores.length>=2?valores[valores.length-2]:0;
+          const delta=ultimo-penultimo;
+          const deltaStr=delta>0?`<span style="color:#1A7A52;">▲ +${delta}</span>`:delta<0?`<span style="color:#B02020;">▼ ${delta}</span>`:'<span style="color:var(--safra-text-3);">—</span>';
+          return `<tr>
+            <td style="font-weight:600;color:var(--safra-navy);">${ag}</td>
+            ${valores.map((v,i)=>{
+              const ehUltimo=i===valores.length-1;
+              return `<td style="text-align:center;${ehUltimo?'background:#DDEAF8;font-weight:700;color:var(--safra-blue);':''}">${v||'-'}</td>`;
+            }).join('')}
+            ${selecionados.length>=2?`<td style="text-align:center;font-weight:600;">${deltaStr}</td>`:''}
+          </tr>`;
+        }).join('')}
+      </tbody>
+      <tfoot><tr style="background:var(--safra-light);font-weight:700;">
+        <td>TOTAL</td>
+        ${selecionados.map(m=>{
+          const tot=agList.reduce((a,ag)=>a+(m.agencias[ag]?.credenciamentos||0),0);
+          return `<td style="text-align:center;color:var(--safra-blue);">${tot}</td>`;
+        }).join('')}
+        ${selecionados.length>=2?`<td></td>`:''}
+      </tr></tfoot>
+    </table>
+  </div>`;
+
+  el.innerHTML=html;
+}
+
+function toggleMesTrim(mes){
+  if(trimestreMesesSel.has(mes)) trimestreMesesSel.delete(mes);
+  else trimestreMesesSel.add(mes);
+  renderTrimestre();
+}
+
+// Renderiza todas as abas com dados demo ao carregar
+renderGG();
+renderRegional();
+renderRetornos();
+renderTrimestre();
+</script>
