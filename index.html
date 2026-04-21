@@ -1,4 +1,4 @@
-
+ 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -433,10 +433,67 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 /* Badge "Virou conta" */
 .badge-conta-sim{background:#E6F5EE;color:#1A7A52;border:1px solid #A8D4BF;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:2px;}
 .badge-conta-nao{background:#F1F3F7;color:#6B7280;border:1px solid #C9D0DD;font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:2px;}
+
+/* LOGIN SCREEN */
+#login-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--safra-navy);
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem;
+}
+#login-box{
+  background:#fff;border-radius:14px;padding:2rem 1.75rem;
+  width:100%;max-width:340px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+  text-align:center;
+}
+#login-logo{
+  width:52px;height:52px;border-radius:12px;
+  background:linear-gradient(135deg,#2563C0,#1A4A8A);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:18px;font-weight:500;
+  color:#E8B84B;margin:0 auto 1rem;
+}
+#login-title{font-size:16px;font-weight:700;color:#0D2B55;margin-bottom:4px;}
+#login-sub{font-size:12px;color:#6B83A4;margin-bottom:1.5rem;}
+#login-input-wrap{position:relative;margin-bottom:8px;}
+#login-input{text-align:center;font-size:16px;letter-spacing:0.1em;margin-bottom:0;padding-right:40px;}
+#login-toggle-senha{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  color:var(--safra-text-3);font-size:16px;padding:4px;line-height:1;
+}
+#login-toggle-senha:hover{color:var(--safra-navy);}
+#login-lembrar{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-bottom:14px;margin-top:4px;
+  font-size:12px;color:#3A5278;cursor:pointer;user-select:none;
+}
+#login-lembrar input[type=checkbox]{
+  width:15px;height:15px;cursor:pointer;accent-color:#0D2B55;margin:0;
+}
+#login-erro{font-size:12px;color:#B02020;margin-bottom:8px;display:none;}
+#login-btn{width:100%;padding:12px;font-size:14px;}
 </style>
 
 <h2 class="sr-only">Painel de acompanhamento de gerentes por agência — Banco Safra</h2>
 
+<div id="login-screen">
+  <div id="login-box">
+    <div id="login-logo">SF</div>
+    <div id="login-title">Painel de Gerentes</div>
+    <div id="login-sub">Banco Safra · Acesso restrito</div>
+    <div id="login-input-wrap">
+      <input type="password" id="login-input" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')fazerLogin()">
+      <button id="login-toggle-senha" type="button" onclick="toggleVerSenha()" title="Mostrar/ocultar senha">👁</button>
+    </div>
+    <label id="login-lembrar">
+      <input type="checkbox" id="login-remember"> Lembrar senha neste dispositivo
+    </label>
+    <div id="login-erro">Senha incorreta. Tente novamente.</div>
+    <button class="btn btn-primary" id="login-btn" onclick="fazerLogin()">Entrar</button>
+  </div>
+</div>
 <div style="padding:0.5rem 0 0.75rem;">
 
 <div class="safra-header">
@@ -703,6 +760,59 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 </div>
 
 <script>
+// ── LOGIN COM CACHE ──
+const SUPABASE_URL_LOGIN = 'https://umiwqmslqalanjwupdlh.supabase.co';
+const SUPABASE_KEY_LOGIN = 'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO';
+const LOGIN_CACHE_KEY = 'safra_login_ok';
+
+function toggleVerSenha(){
+  const inp = document.getElementById('login-input');
+  const btn = document.getElementById('login-toggle-senha');
+  if(inp.type === 'password'){ inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁'; }
+}
+
+function verificarCacheLogin(){
+  try{
+    if(localStorage.getItem(LOGIN_CACHE_KEY) === 'true'){
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('login-remember').checked = true;
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+async function fazerLogin(){
+  const val = document.getElementById('login-input').value;
+  if(!val) return;
+  const btn = document.getElementById('login-btn');
+  btn.textContent = '...'; btn.disabled = true;
+  try{
+    const res = await fetch(`${SUPABASE_URL_LOGIN}/rest/v1/config?chave=eq.senha_painel&select=valor`,{
+      headers:{'apikey':SUPABASE_KEY_LOGIN,'Authorization':`Bearer ${SUPABASE_KEY_LOGIN}`}
+    });
+    const data = await res.json();
+    const senhaCorreta = (data?.[0]?.valor||'').replace(/^"|"$/g,'');
+    if(val === senhaCorreta){
+      const lembrar = document.getElementById('login-remember').checked;
+      try{ if(lembrar) localStorage.setItem(LOGIN_CACHE_KEY,'true'); else localStorage.removeItem(LOGIN_CACHE_KEY); }catch(e){}
+      document.getElementById('login-screen').style.display = 'none';
+    } else {
+      document.getElementById('login-erro').style.display = 'block';
+      document.getElementById('login-input').value = '';
+      document.getElementById('login-input').focus();
+    }
+  }catch(e){
+    document.getElementById('login-erro').textContent = 'Erro de conexão. Tente novamente.';
+    document.getElementById('login-erro').style.display = 'block';
+  } finally {
+    btn.textContent = 'Entrar'; btn.disabled = false;
+  }
+}
+
+verificarCacheLogin();
+
 // Lista padrão de agências e gerentes (usada quando não há dados salvos)
 const agenciasPadrao = {
   'Alphaville':    ['Julio','Murilo','Jarbas','Daniel','Rogerio'],
@@ -832,27 +942,30 @@ function qFlagAgencia(contas,ngers){
 // contasMes    = contas abertas NO MÊS atual (acumulado)
 function relogioAgencia(ag,contasSemana,contasMes){
   const metaMes=metaMensal(ag);
-  const metaSem=metaSemanal(ag);
   if(metaMes<=0){
     return `<div style="font-size:10px;color:var(--safra-text-3);font-style:italic;">Sem meta configurada</div>`;
   }
-  const pctSem=Math.min(Math.round(contasSemana/metaSem*100),100);
+  // Ritmo do mês: realizado vs esperado até hoje (meta × % do mês decorrido)
+  const d=new Date(today+'T00:00:00');
+  const diasNoMes=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  const diaAtual=d.getDate();
+  const metaEsperada=Math.round(metaMes*diaAtual/diasNoMes*10)/10;
+  const pctRitmo=metaEsperada>0?Math.min(Math.round(contasMes/metaEsperada*100),150):0;
   const pctMes=Math.min(Math.round(contasMes/metaMes*100),100);
-  const cor=pctSem>=100?'#1A7A52':pctSem>=60?'#C8922A':'#B02020';
-  // SVG gauge (semicírculo) — % da semana
+  const cor=pctRitmo>=100?'#1A7A52':pctRitmo>=60?'#C8922A':'#B02020';
   const raio=32;
   const circ=Math.PI*raio;
-  const dash=(pctSem/100)*circ;
+  const dash=(Math.min(pctRitmo,100)/100)*circ;
   return `<div style="display:flex;align-items:center;gap:10px;">
     <svg width="80" height="48" viewBox="0 0 80 48" style="flex-shrink:0;">
       <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="#E0E8F4" stroke-width="7" stroke-linecap="round"/>
       <path d="M 8 40 A 32 32 0 0 1 72 40" fill="none" stroke="${cor}" stroke-width="7" stroke-linecap="round"
             stroke-dasharray="${dash} ${circ}" style="transition:stroke-dasharray .4s ease;"/>
-      <text x="40" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="700" fill="${cor}">${pctSem}%</text>
+      <text x="40" y="38" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="700" fill="${cor}">${pctRitmo}%</text>
     </svg>
     <div style="font-size:11px;line-height:1.4;flex:1;min-width:0;">
-      <div style="color:${cor};font-weight:700;">${contasSemana}<span style="color:var(--safra-text-3);font-weight:400;"> / ${metaSem.toFixed(1)}</span> <span style="color:var(--safra-text-3);font-size:10px;font-weight:400;">sem</span></div>
-      <div style="color:var(--safra-text-2);font-weight:600;font-size:10px;">${contasMes} / ${metaMes} <span style="color:var(--safra-text-3);font-weight:400;">mês · ${pctMes}%</span></div>
+      <div style="color:${cor};font-weight:700;">${contasMes} <span style="color:var(--safra-text-3);font-weight:400;">de ${metaEsperada} esperadas</span></div>
+      <div style="color:var(--safra-text-3);font-size:10px;">meta: ${metaMes} · ${pctMes}% do mês · dia ${diaAtual}/${diasNoMes}</div>
     </div>
   </div>`;
 }
@@ -883,14 +996,23 @@ function contasMesAtual(ag,regs){
 
 const today=new Date().toISOString().split('T')[0];
 
-// ── JSONBIN CONFIG ──
-const BIN_KEY   = '$2a$10$wKivUZlsF.w4A0YnfUDM/.zddIWS2qA9ID3zNr7uuBPRkK9z7N4we';
-const MASTER_KEY= '$2a$10$s4aZlwJDcX2xoWdOP5UceuHqAFni62xxjwVOGAFkybfxYR5lzPqja';
-const JSONBIN_HEADERS={'Content-Type':'application/json','X-Master-Key':MASTER_KEY,'X-Access-Key':BIN_KEY};
-let BIN_ID = localStorage.getItem('safra_bin_id')||null;
+// ═══════════════════════════════════════════════
+// BACKEND: SUPABASE (estrutura relacional)
+// ═══════════════════════════════════════════════
+const SUPABASE_URL    = 'https://umiwqmslqalanjwupdlh.supabase.co';
+const SUPABASE_KEY    = 'sb_publishable_JCqMW5zDWeHZdEZ9CtjEhw_bt5fjhyO';
+const TABELA_REGISTROS = 'registros';   // linhas de atividade diária
+const TABELA_META      = 'painel_meta'; // linha única com agencias/historico/gerentes_novos
+const SUPABASE_HEADERS = {
+  'Content-Type':'application/json',
+  'apikey': SUPABASE_KEY,
+  'Authorization': 'Bearer '+SUPABASE_KEY,
+  'Prefer':'return=representation',
+};
+
 let regs=[],lvOn=false,viabSel='';
-let historico=[]; // snapshots mensais: [{mes:'2026-04', label:'Abril/2026', agencias:{...}, regional:{...}}]
-let bloqueioLeitura=false; // Previne lerDados automático de sobrescrever durante operações em andamento
+let historico=[]; // snapshots mensais
+let bloqueioLeitura=false;
 document.getElementById('f-data').value=today;
 
 function setSyncStatus(msg,cor='rgba(255,255,255,0.6)'){
@@ -904,95 +1026,213 @@ function setSyncStatus(msg,cor='rgba(255,255,255,0.6)'){
   el.textContent=msg; el.style.color=cor;
 }
 
+// ─── CONVERSORES: linha Supabase ↔ objeto JS ────
+function linhaParaReg(row){
+  return {
+    id: row.id, // UUID — usado pra editar/excluir
+    agencia: row.agencia,
+    gerente: row.gerente,
+    data: row.data,
+    contatos: row.contatos||0,
+    efetivos: row.efetivos||0,
+    emails: row.emails||0,
+    visitas: row.visitas||0,
+    agendamentos: row.agendamentos||'',
+    contas: row.contas||0,
+    contasLV: row.contas_lv||0,
+    contasSem: row.contas_sem||0,
+    contasDetalhe: Array.isArray(row.contas_detalhe)?row.contas_detalhe:[],
+    credenciamentos: row.credenciamentos||0,
+    aguardando: row.aguardando||0,
+    retEmpresa: row.ret_empresa||'',
+    retData: row.ret_data||'',
+    retObs: row.ret_obs||'',
+    retVirouConta: !!row.ret_virou_conta,
+    listaVerde: !!row.lista_verde,
+    // viabilizado: lê do campo JSONB novo; se não tiver, tenta o TEXT antigo
+    viabilizado: Array.isArray(row.viabilizado_lista)
+      ? row.viabilizado_lista
+      : (row.viabilizado ? [row.viabilizado] : []),
+    acoes: row.acoes||null,
+    acoesDetalhe: Array.isArray(row.acoes_detalhe)?row.acoes_detalhe:[],
+  };
+}
+
+function regParaLinha(reg){
+  // Normaliza campos pro formato do banco (snake_case + tipos corretos)
+  const viabArr = Array.isArray(reg.viabilizado) ? reg.viabilizado : (reg.viabilizado?[reg.viabilizado]:[]);
+  return {
+    agencia: reg.agencia,
+    gerente: reg.gerente,
+    data: reg.data,
+    contatos: reg.contatos||0,
+    efetivos: reg.efetivos||0,
+    emails: reg.emails||0,
+    visitas: reg.visitas||0,
+    agendamentos: reg.agendamentos||'',
+    contas: reg.contas||0,
+    contas_lv: reg.contasLV||0,
+    contas_sem: reg.contasSem||0,
+    contas_detalhe: reg.contasDetalhe||[],
+    credenciamentos: reg.credenciamentos||0,
+    aguardando: reg.aguardando||0,
+    ret_empresa: reg.retEmpresa||'',
+    ret_data: reg.retData||null,
+    ret_obs: reg.retObs||'',
+    ret_virou_conta: !!reg.retVirouConta,
+    lista_verde: !!reg.listaVerde,
+    viabilizado: viabArr[0]||null,        // compat com campo TEXT antigo
+    viabilizado_lista: viabArr,           // array completo no campo JSONB novo
+    acoes: reg.acoes||null,
+    acoes_detalhe: reg.acoesDetalhe||[],
+  };
+}
+
+// ─── CARREGAMENTO INICIAL ────
 async function carregarDados(){
   setSyncStatus('⏳ Carregando...');
-  if(BIN_ID){
-    await lerDados();
-  } else {
-    await criarBin();
-  }
+  await Promise.all([lerRegistros(), lerMeta()]);
 }
 
-async function criarBin(){
+// Lê todos os registros da tabela
+async function lerRegistros(){
+  if(bloqueioLeitura) return;
   try{
-    const res=await fetch('https://api.jsonbin.io/v3/b',{
-      method:'POST',
-      headers:{...JSONBIN_HEADERS,'X-Bin-Name':'painel-safra','X-Bin-Private':'false'},
-      body:JSON.stringify({regs:[],agencias})
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),10000);
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}?select=*&order=data.desc`,{
+      headers:SUPABASE_HEADERS,signal:ctrl.signal
     });
-    const data=await res.json();
-    BIN_ID=data.metadata.id;
-    localStorage.setItem('safra_bin_id',BIN_ID);
-    regs=[];
-    setSyncStatus('✅ Pronto','#90EE90');
-    renderGG();renderRegional();renderRetornos();
-  }catch(e){
-    setSyncStatus('⚠️ Offline','#ffcc00');
-  }
-}
-
-async function lerDados(){
-  if(bloqueioLeitura) return; // Não sobrescreve enquanto uma operação está rodando
-  try{
-    const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{headers:JSONBIN_HEADERS});
-    if(!res.ok)throw new Error('bin not found');
-    const data=await res.json();
-    regs=data.record?.regs||[];
-    historico=data.record?.historico||[];
-    // Carrega agencias da nuvem (se existir); senão, mantém o que já está
-    if(data.record?.agencias&&typeof data.record.agencias==='object'){
-      agencias=data.record.agencias;
-      try{localStorage.setItem('safra_agencias',JSON.stringify(agencias));}catch(e){}
-    }
-    // Carrega lista de gerentes novos
-    if(Array.isArray(data.record?.gerentesNovos)){
-      gerentesNovos=new Set(data.record.gerentesNovos);
-      try{localStorage.setItem('safra_gerentes_novos',JSON.stringify([...gerentesNovos]));}catch(e){}
-    }
+    clearTimeout(timer);
+    if(!res.ok) throw new Error('HTTP '+res.status+': '+(await res.text()));
+    const rows=await res.json();
+    regs=rows.map(linhaParaReg);
     setSyncStatus('✅ '+regs.length+' reg.','#90EE90');
     renderGG();renderRegional();renderRetornos();renderTrimestre();
-    // Se a aba de gerenciamento estiver ativa, re-renderiza
+  }catch(e){
+    console.error('lerRegistros erro:',e);
+    setSyncStatus('⚠️ Erro leitura','#ff6666');
+  }
+}
+
+// Lê a linha única de metadados (agências, histórico, gerentes novos)
+async function lerMeta(){
+  if(bloqueioLeitura) return;
+  try{
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),10000);
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_META}?id=eq.1&select=*`,{
+      headers:SUPABASE_HEADERS,signal:ctrl.signal
+    });
+    clearTimeout(timer);
+    if(!res.ok) throw new Error('HTTP '+res.status+': '+(await res.text()));
+    const rows=await res.json();
+    const data=rows[0]||{};
+    historico=Array.isArray(data.historico)?data.historico:[];
+    if(data.agencias&&typeof data.agencias==='object'&&Object.keys(data.agencias).length>0){
+      agencias=data.agencias;
+      try{localStorage.setItem('safra_agencias',JSON.stringify(agencias));}catch(e){}
+    }
+    if(Array.isArray(data.gerentes_novos)){
+      gerentesNovos=new Set(data.gerentes_novos);
+      try{localStorage.setItem('safra_gerentes_novos',JSON.stringify([...gerentesNovos]));}catch(e){}
+    }
     const tabGer=document.getElementById('tab-gerentes');
     if(tabGer&&tabGer.classList.contains('active')) renderGerList();
   }catch(e){
-    // Bin não existe mais — cria novo
-    localStorage.removeItem('safra_bin_id');
-    BIN_ID=null;
-    await criarBin();
+    console.error('lerMeta erro:',e);
   }
 }
 
-async function salvarNuvem(){
-  // Sempre salva local primeiro (funciona mesmo offline)
+// Recarrega tudo (leitura completa)
+async function lerDados(){ await Promise.all([lerRegistros(), lerMeta()]); }
+
+// ─── SALVAR META (agências, histórico, gerentes novos) ────
+async function salvarMeta(){
   try{localStorage.setItem('safra_agencias',JSON.stringify(agencias));}catch(e){}
   try{localStorage.setItem('safra_gerentes_novos',JSON.stringify([...gerentesNovos]));}catch(e){}
-  if(!BIN_ID){setSyncStatus('⚠️ Sem conexão','#ffcc00');return false;}
+  try{
+    const payload={
+      agencias, historico,
+      gerentes_novos:[...gerentesNovos],
+      atualizado_em:new Date().toISOString(),
+    };
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_META}?id=eq.1`,{
+      method:'PATCH', headers:SUPABASE_HEADERS,
+      body:JSON.stringify(payload)
+    });
+    if(!res.ok){console.error('salvarMeta falhou:',res.status,await res.text());return false;}
+    return true;
+  }catch(e){console.error('salvarMeta erro:',e);return false;}
+}
+
+// ─── INSERIR UM NOVO REGISTRO ────
+async function inserirRegistro(reg){
   setSyncStatus('⏳ Salvando...','#ffcc00');
   try{
-    // Timeout de 10s para evitar travamento
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),10000);
-    const res=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
-      method:'PUT',headers:JSONBIN_HEADERS,signal:ctrl.signal,
-      body:JSON.stringify({regs,agencias,historico,gerentesNovos:[...gerentesNovos]})
+    const linha=regParaLinha(reg);
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}`,{
+      method:'POST', headers:SUPABASE_HEADERS,
+      body:JSON.stringify(linha)
     });
-    clearTimeout(timer);
     if(!res.ok){
-      setSyncStatus('⚠️ Erro HTTP '+res.status,'#ff6666');
-      console.error('salvarNuvem falhou:',res.status,await res.text());
+      const txt=await res.text();
+      setSyncStatus('⚠️ Erro '+res.status,'#ff6666');
+      console.error('inserirRegistro falhou:',res.status,txt);
+      return null;
+    }
+    const novas=await res.json();
+    setSyncStatus('✅ Salvo','#90EE90');
+    return novas[0]?linhaParaReg(novas[0]):null;
+  }catch(e){
+    setSyncStatus('⚠️ Erro rede','#ff6666');
+    console.error('inserirRegistro erro:',e);
+    return null;
+  }
+}
+
+// ─── ATUALIZAR UM REGISTRO EXISTENTE (por id) ────
+async function atualizarRegistro(id, reg){
+  setSyncStatus('⏳ Atualizando...','#ffcc00');
+  try{
+    const linha=regParaLinha(reg);
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}?id=eq.${id}`,{
+      method:'PATCH', headers:SUPABASE_HEADERS,
+      body:JSON.stringify(linha)
+    });
+    if(!res.ok){
+      setSyncStatus('⚠️ Erro '+res.status,'#ff6666');
+      console.error('atualizarRegistro falhou:',res.status,await res.text());
       return false;
     }
-    setSyncStatus('✅ Salvo','#90EE90');
+    setSyncStatus('✅ Atualizado','#90EE90');
     return true;
   }catch(e){
-    setSyncStatus('⚠️ '+(e.name==='AbortError'?'Timeout':'Erro de rede'),'#ff6666');
-    console.error('salvarNuvem erro:',e);
+    setSyncStatus('⚠️ Erro rede','#ff6666');
+    console.error('atualizarRegistro erro:',e);
     return false;
   }
 }
 
+// ─── EXCLUIR UM REGISTRO ────
+async function excluirRegistroDB(id){
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}?id=eq.${id}`,{
+      method:'DELETE', headers:SUPABASE_HEADERS
+    });
+    if(!res.ok){console.error('excluirRegistroDB falhou:',res.status,await res.text());return false;}
+    return true;
+  }catch(e){console.error('excluirRegistroDB erro:',e);return false;}
+}
+
+// ─── COMPATIBILIDADE com código antigo ────
+// Várias partes do código ainda chamam `salvarNuvem()` esperando que persista tudo.
+// Agora essa função salva só a META. Quem mexe em registros deve chamar
+// `inserirRegistro`, `atualizarRegistro` ou `excluirRegistroDB` explicitamente.
+async function salvarNuvem(){ return await salvarMeta(); }
+
 carregarDados();
-setInterval(()=>{if(BIN_ID)lerDados();},30000);
+setInterval(()=>lerDados(),30000);
 
 function atualizaGerentes(){
   const ag=document.getElementById('f-agencia').value;
@@ -1138,7 +1378,7 @@ let regionalDesbloqueado=false;
 
 function verificarSenhaRegional(){
   const senha=document.getElementById('regional-senha').value;
-  if(senha==='Tais26'){
+  if(senha==='Tais2026'){
     regionalDesbloqueado=true;
     document.getElementById('regional-lock').style.display='none';
     document.getElementById('regional-desbloqueado').style.display='block';
@@ -1221,10 +1461,10 @@ function gerarSnapshot(){
   return {mes,label,agencias:porAg,totalRegs:regs.length,dataSnapshot:today};
 }
 
-function confirmarNovoMes(){
+async function confirmarNovoMes(){
   const senha=document.getElementById('novomes-senha').value;
   const erroEl=document.getElementById('novomes-senha-erro');
-  if(senha!=='Tais26'){
+  if(senha!=='Tais2026'){
     erroEl.style.display='block';
     document.getElementById('novomes-senha').value='';
     document.getElementById('novomes-senha').focus();
@@ -1236,20 +1476,45 @@ function confirmarNovoMes(){
   // Salvar snapshot do mês atual no histórico
   if(regs.length>0){
     const snap=gerarSnapshot();
-    // Remove snapshot anterior do mesmo mês (se existir) e adiciona o novo
     historico=historico.filter(h=>h.mes!==snap.mes);
     historico.push(snap);
-    // Mantém só os últimos 12 meses no histórico (pra não crescer infinito)
     historico.sort((a,b)=>a.mes.localeCompare(b.mes));
     if(historico.length>12) historico=historico.slice(-12);
   }
 
+  bloqueioLeitura=true;
+  setSyncStatus('⏳ Zerando mês...','#ffcc00');
+
+  // Apaga TODOS os registros do Supabase
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}?id=neq.00000000-0000-0000-0000-000000000000`,{
+      method:'DELETE',headers:SUPABASE_HEADERS
+    });
+    if(!res.ok){
+      const txt=await res.text();
+      console.error('Zerar registros falhou:',res.status,txt);
+      alert('⚠️ Erro ao apagar os registros no banco: '+res.status);
+      bloqueioLeitura=false;
+      return;
+    }
+  }catch(e){
+    console.error('Zerar registros erro:',e);
+    alert('⚠️ Erro de rede ao apagar os registros. Tente novamente.');
+    bloqueioLeitura=false;
+    return;
+  }
+
+  // Salva o histórico atualizado na meta
+  await salvarMeta();
+
   regs=[];
-  salvarNuvem();
+  bloqueioLeitura=false;
+
   document.getElementById('novomes-senha').value='';
   renderGG();renderRegional();renderRetornos();renderTrimestre();
   const tabBtn=document.querySelector('.tab');
   showTab('registrar',tabBtn);
+  setSyncStatus('✅ Mês zerado','#90EE90');
   alert('✅ Painel zerado! Histórico salvo no Trimestre. Bom início de mês!');
 }
 
@@ -1302,7 +1567,7 @@ function gerarReportWpp(r){
   return txt;
 }
 
-function salvar(){
+async function salvar(){
   const agencia=document.getElementById('f-agencia').value;
   const gerente=document.getElementById('f-gerente').value;
   const data=document.getElementById('f-data').value;
@@ -1335,10 +1600,9 @@ function salvar(){
     altoBacen:parseInt(document.getElementById('f-acao-altobacen').value)||0,
     viabilizaMais:parseInt(document.getElementById('f-acao-viabilizamais').value)||0,
   };
-  // Soma total — mantém o campo "visitas" pra compatibilidade com o dashboard antigo
   const totalAcoes=acoes.prospeccao+acoes.base+acoes.fgi+acoes.altoBacen+acoes.viabilizaMais;
 
-  // Coleta detalhes de cada ação preenchida (empresa, agendamento/viab, obs)
+  // Coleta detalhes de cada ação preenchida
   const acoesDetalhe=[];
   const tiposMap={prospeccao:'prospeccao',base:'base',fgi:'fgi',altoBacen:'altobacen',viabilizaMais:'viabilizamais'};
   Object.entries(tiposMap).forEach(([chave,tipo])=>{
@@ -1361,9 +1625,9 @@ function salvar(){
     contatos:parseInt(document.getElementById('f-contatos').value)||0,
     efetivos:parseInt(document.getElementById('f-efetivos').value)||0,
     emails:parseInt(document.getElementById('f-emails').value)||0,
-    visitas:totalAcoes, // soma de todas as ações (compat com dashboards antigos)
-    acoes, // novo: detalhamento por tipo (contagens)
-    acoesDetalhe, // novo: detalhe de cada ação (empresa, viab/agend, obs, virouConta)
+    visitas:totalAcoes,
+    acoes,
+    acoesDetalhe,
     agendamentos:document.getElementById('f-agendamentos').value,
     contas:nContas, contasLV:nContasLV, contasSem:nContas-nContasLV, contasDetalhe,
     credenciamentos:parseInt(document.getElementById('f-credenciamentos').value)||0,
@@ -1373,14 +1637,21 @@ function salvar(){
     retObs:document.getElementById('f-ret-obs').value,
     listaVerde:nContasLV>0, viabilizado:[...viabSelRet],
   };
-  regs.push(reg);
+
+  // Insere no Supabase — retorna o reg com id gerado
+  bloqueioLeitura=true;
+  const salvo=await inserirRegistro(reg);
+  bloqueioLeitura=false;
+  if(!salvo){
+    alert('⚠️ Não foi possível salvar o registro no banco. Verifique sua conexão e tente novamente.');
+    return;
+  }
+  regs.unshift(salvo); // adiciona no começo (mais recente)
   const msgEl=document.getElementById('msg');
   msgEl.style.display='block';
   setTimeout(()=>msgEl.style.display='none',2500);
-  setSyncStatus('⏳ Salvando...','var(--safra-text-3)');
-  salvarNuvem();
   renderGG();renderRegional();renderRetornos();
-  window.open('https://wa.me/?text='+encodeURIComponent(gerarReportWpp(reg)),'_blank');
+  window.open('https://wa.me/?text='+encodeURIComponent(gerarReportWpp(salvo)),'_blank');
   limpar();
 }
 
@@ -2171,52 +2442,45 @@ function renderRetornos(){
 // Alterna o flag "virou conta" em um retorno/ação
 async function toggleVirouConta(regIdx,subIdx){
   const r=regs[regIdx];
-  if(!r) return;
+  if(!r||!r.id) return;
   bloqueioLeitura=true;
   if(subIdx<0){
-    // Retorno tradicional
     r.retVirouConta=!r.retVirouConta;
   } else {
-    // Ação detalhada
     if(Array.isArray(r.acoesDetalhe)&&r.acoesDetalhe[subIdx]){
       r.acoesDetalhe[subIdx].virouConta=!r.acoesDetalhe[subIdx].virouConta;
     }
   }
   renderRetornos();
-  await salvarNuvem();
+  await atualizarRegistro(r.id,r);
   bloqueioLeitura=false;
 }
 
 // Exclui um item de retorno (tradicional ou ação) com confirmação inline
 async function excluirRetorno(regIdx,subIdx){
   const r=regs[regIdx];
-  if(!r) return;
+  if(!r||!r.id) return;
   const nomeItem=subIdx<0?(r.retEmpresa||'retorno'):(r.acoesDetalhe?.[subIdx]?.empresa||'item');
 
-  // Confirmação inline
   const confirmado=await confirmarInline(`Excluir "${nomeItem}"?`,'Sim, excluir','Cancelar','#B02020');
   if(!confirmado) return;
 
   bloqueioLeitura=true;
   if(subIdx<0){
-    // Remove retorno tradicional — limpa os campos do registro
     r.retEmpresa='';
     r.retData='';
     r.retObs='';
     r.viabilizado=[];
     r.retVirouConta=false;
   } else {
-    // Remove o item do array de ações detalhadas e decrementa a contagem
     if(Array.isArray(r.acoesDetalhe)&&r.acoesDetalhe[subIdx]){
       const tipoExcluido=r.acoesDetalhe[subIdx].tipo;
       r.acoesDetalhe.splice(subIdx,1);
-      // Atualiza também a contagem em r.acoes
       if(r.acoes){
         const mapa={prospeccao:'prospeccao',base:'base',fgi:'fgi',altobacen:'altoBacen',viabilizamais:'viabilizaMais'};
         const chave=mapa[tipoExcluido];
         if(chave&&r.acoes[chave]>0) r.acoes[chave]--;
       }
-      // Recalcula total de visitas
       if(r.acoes){
         r.visitas=r.acoes.prospeccao+r.acoes.base+r.acoes.fgi+r.acoes.altoBacen+r.acoes.viabilizaMais;
       }
@@ -2225,7 +2489,7 @@ async function excluirRetorno(regIdx,subIdx){
   renderRetornos();
   renderGG();
   if(regionalDesbloqueado) renderRegional();
-  await salvarNuvem();
+  await atualizarRegistro(r.id,r);
   bloqueioLeitura=false;
 }
 
@@ -2309,6 +2573,11 @@ async function editarRetorno(regIdx,subIdx){
 
   if(!resultado) return;
 
+  if(!r.id){
+    alert('Esse registro ainda não foi salvo no banco. Recarregue a página.');
+    return;
+  }
+
   bloqueioLeitura=true;
   if(ehRetorno){
     r.retEmpresa=resultado.empresa;
@@ -2324,7 +2593,7 @@ async function editarRetorno(regIdx,subIdx){
   renderRetornos();
   renderGG();
   if(regionalDesbloqueado) renderRegional();
-  await salvarNuvem();
+  await atualizarRegistro(r.id,r);
   bloqueioLeitura=false;
 }
 
@@ -2369,7 +2638,7 @@ let trimestreDesbloqueado=false;
 
 function verificarSenhaTrimestre(){
   const senha=document.getElementById('trimestre-senha').value;
-  if(senha==='Tais26'){
+  if(senha==='Tais2026'){
     trimestreDesbloqueado=true;
     document.getElementById('trimestre-lock').style.display='none';
     document.getElementById('trimestre-desbloqueado').style.display='block';
@@ -2549,3 +2818,5 @@ renderRegional();
 renderRetornos();
 renderTrimestre();
 </script>
+index_6.html
+Exibindo index_6.html.
