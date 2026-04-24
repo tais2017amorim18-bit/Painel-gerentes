@@ -1787,6 +1787,8 @@ function toggleSenha(inputId, btn){
   }
 }
 function initials(s){return s.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+// Formata valor em R$ (separador de milhar PT-BR, sem decimais)
+function fmtBRL(v){return (v||0).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});}
 
 function gerarReportWpp(r){
   const vl={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem'};
@@ -2102,8 +2104,6 @@ function renderGG(){
   const pctEfet=totGG.contatos>0?Math.round(totGG.efetivos/totGG.contatos*100):0;
   const pctLV=totGG.contas>0?Math.round(totGG.contasLV/totGG.contas*100):0;
   const totAgencias=Object.keys(byAg).length;
-  // Formata valor em R$
-  const fmtBRL=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
 
   let html=`
   <!-- DASHBOARD CONSOLIDADO — soma de todos os gerentes -->
