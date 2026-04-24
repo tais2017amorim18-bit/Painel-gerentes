@@ -264,6 +264,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .viab-btn.sel-cobranca{background:var(--amber-bg);color:var(--amber);border-color:#D4A030;font-weight:600;}
 .viab-btn.sel-ativos{background:var(--green-bg);color:var(--green);border-color:#3D9E6B;font-weight:600;}
 .viab-btn.sel-margem{background:var(--red-bg);color:var(--red);border-color:#CC4444;font-weight:600;}
+.viab-btn.sel-cartoes{background:#EDE9FB;color:#4535A3;border-color:#9B8FE0;font-weight:600;}
 
 /* GG VIEW */
 .g-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
@@ -574,50 +575,71 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
   <!-- 🏆 Produção do dia -->
   <div class="stitle" style="margin-top:14px;">🏆 Produção do dia</div>
-  <div style="font-size:10px;color:var(--safra-text-3);margin-bottom:8px;">Quantidade, valor (R$) e empresa (opcional, informativo) gerados no dia.</div>
-  <div style="border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;background:#FAFCFF;">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;">
-      <div>
-        <label style="margin:0 0 4px;font-size:11px;font-weight:700;color:var(--safra-navy);">🎯 Consórcio</label>
-        <div style="display:flex;gap:6px;">
-          <input type="number" id="f-prod-consorcio-qtd" placeholder="Qtd" min="0" style="margin:0;width:60px;padding:6px 8px;font-size:12px;">
-          <input type="text" inputmode="decimal" id="f-prod-consorcio-valor" placeholder="R$ Valor" style="margin:0;flex:1;padding:6px 8px;font-size:12px;">
-        </div>
-        <input type="text" id="f-prod-consorcio-empresa" placeholder="Empresa (opcional)" style="margin:4px 0 0;padding:6px 8px;font-size:12px;">
-      </div>
-      <div>
-        <label style="margin:0 0 4px;font-size:11px;font-weight:700;color:var(--safra-navy);">📈 Investimentos</label>
-        <div style="display:flex;gap:6px;">
-          <input type="number" id="f-prod-investimentos-qtd" placeholder="Qtd" min="0" style="margin:0;width:60px;padding:6px 8px;font-size:12px;">
-          <input type="text" inputmode="decimal" id="f-prod-investimentos-valor" placeholder="R$ Valor" style="margin:0;flex:1;padding:6px 8px;font-size:12px;">
-        </div>
-        <input type="text" id="f-prod-investimentos-empresa" placeholder="Empresa (opcional)" style="margin:4px 0 0;padding:6px 8px;font-size:12px;">
-      </div>
-      <div>
-        <label style="margin:0 0 4px;font-size:11px;font-weight:700;color:var(--safra-navy);">🛡️ Seguros</label>
-        <div style="display:flex;gap:6px;">
-          <input type="number" id="f-prod-seguros-qtd" placeholder="Qtd" min="0" style="margin:0;width:60px;padding:6px 8px;font-size:12px;">
-          <input type="text" inputmode="decimal" id="f-prod-seguros-valor" placeholder="R$ Valor" style="margin:0;flex:1;padding:6px 8px;font-size:12px;">
-        </div>
-        <input type="text" id="f-prod-seguros-empresa" placeholder="Empresa (opcional)" style="margin:4px 0 0;padding:6px 8px;font-size:12px;">
-      </div>
-      <div>
-        <label style="margin:0 0 4px;font-size:11px;font-weight:700;color:var(--safra-navy);">💰 Crédito</label>
-        <div style="display:flex;gap:6px;">
-          <input type="number" id="f-prod-credito-qtd" placeholder="Qtd" min="0" style="margin:0;width:60px;padding:6px 8px;font-size:12px;">
-          <input type="text" inputmode="decimal" id="f-prod-credito-valor" placeholder="R$ Valor" style="margin:0;flex:1;padding:6px 8px;font-size:12px;">
-        </div>
-        <input type="text" id="f-prod-credito-empresa" placeholder="Empresa (opcional)" style="margin:4px 0 0;padding:6px 8px;font-size:12px;">
-      </div>
-      <div>
-        <label style="margin:0 0 4px;font-size:11px;font-weight:700;color:var(--safra-navy);">✅ Viabilizado</label>
-        <div style="display:flex;gap:6px;">
-          <input type="number" id="f-prod-viabilizado-qtd" placeholder="Qtd" min="0" style="margin:0;width:60px;padding:6px 8px;font-size:12px;">
-          <input type="text" inputmode="decimal" id="f-prod-viabilizado-valor" placeholder="R$ Valor" style="margin:0;flex:1;padding:6px 8px;font-size:12px;">
-        </div>
-        <input type="text" id="f-prod-viabilizado-empresa" placeholder="Empresa (opcional)" style="margin:4px 0 0;padding:6px 8px;font-size:12px;">
-      </div>
+  <div style="font-size:10px;color:var(--safra-text-3);margin-bottom:10px;">Preencha os produtos gerados no dia. Marque "Estoque" se quiser enviar pra aba Viabilizado.</div>
+
+  <div style="border:1px solid var(--safra-border);border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">
+    <div style="font-size:12px;font-weight:700;color:var(--safra-navy);margin-bottom:10px;">🎯 Consórcio</div>
+    <div class="frow3" style="margin-bottom:8px;">
+      <div><label style="margin:0 0 3px;font-size:11px;">Qtd</label><input type="number" id="f-prod-consorcio-qtd" placeholder="0" min="0" style="margin:0;"></div>
+      <div><label style="margin:0 0 3px;font-size:11px;">Valor (R$)</label><input type="text" inputmode="decimal" id="f-prod-consorcio-valor" placeholder="Ex: 50.000" style="margin:0;"></div>
+      <div><label style="margin:0 0 3px;font-size:11px;">Empresa (opcional)</label><input type="text" id="f-prod-consorcio-empresa" placeholder="Nome" style="margin:0;"></div>
     </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;">
+      <input type="checkbox" id="f-prod-consorcio-estoque" style="width:16px;height:16px;cursor:pointer;accent-color:#1A7A52;">
+      🏦 Estoque — envia direto para aba Viabilizado
+    </label>
+  </div>
+
+  <div style="border:1px solid var(--safra-border);border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">
+    <div style="font-size:12px;font-weight:700;color:var(--safra-navy);margin-bottom:10px;">📈 Investimentos</div>
+    <div class="frow3" style="margin-bottom:8px;">
+      <div><label style="margin:0 0 3px;font-size:11px;">Qtd</label><input type="number" id="f-prod-investimentos-qtd" placeholder="0" min="0" style="margin:0;"></div>
+      <div><label style="margin:0 0 3px;font-size:11px;">Valor (R$)</label><input type="text" inputmode="decimal" id="f-prod-investimentos-valor" placeholder="Ex: 50.000" style="margin:0;"></div>
+      <div><label style="margin:0 0 3px;font-size:11px;">Empresa (opcional)</label><input type="text" id="f-prod-investimentos-empresa" placeholder="Nome" style="margin:0;"></div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;">
+      <input type="checkbox" id="f-prod-investimentos-estoque" style="width:16px;height:16px;cursor:pointer;accent-color:#1A7A52;">
+      🏦 Estoque — envia direto para aba Viabilizado
+    </label>
+  </div>
+
+  <div style="border:1px solid var(--safra-border);border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">
+    <div style="font-size:12px;font-weight:700;color:var(--safra-navy);margin-bottom:10px;">🛡️ Seguros</div>
+    <div class="frow3" style="margin-bottom:8px;">
+      <div><label style="margin:0 0 3px;font-size:11px;">Qtd</label><input type="number" id="f-prod-seguros-qtd" placeholder="0" min="0" style="margin:0;"></div>
+      <div><label style="margin:0 0 3px;font-size:11px;">Valor (R$)</label><input type="text" inputmode="decimal" id="f-prod-seguros-valor" placeholder="Ex: 50.000" style="margin:0;"></div>
+      <div><label style="margin:0 0 3px;font-size:11px;">Empresa (opcional)</label><input type="text" id="f-prod-seguros-empresa" placeholder="Nome" style="margin:0;"></div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;">
+      <input type="checkbox" id="f-prod-seguros-estoque" style="width:16px;height:16px;cursor:pointer;accent-color:#1A7A52;">
+      🏦 Estoque — envia direto para aba Viabilizado
+    </label>
+  </div>
+
+  <div style="border:1px solid var(--safra-border);border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">
+    <div style="font-size:12px;font-weight:700;color:var(--safra-navy);margin-bottom:10px;">💰 Crédito</div>
+    <div class="frow3" style="margin-bottom:8px;">
+      <div><label style="margin:0 0 3px;font-size:11px;">Qtd</label><input type="number" id="f-prod-credito-qtd" placeholder="0" min="0" style="margin:0;"></div>
+      <div><label style="margin:0 0 3px;font-size:11px;">Valor (R$)</label><input type="text" inputmode="decimal" id="f-prod-credito-valor" placeholder="Ex: 50.000" style="margin:0;"></div>
+      <div><label style="margin:0 0 3px;font-size:11px;">Empresa (opcional)</label><input type="text" id="f-prod-credito-empresa" placeholder="Nome" style="margin:0;"></div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;">
+      <input type="checkbox" id="f-prod-credito-estoque" style="width:16px;height:16px;cursor:pointer;accent-color:#1A7A52;">
+      🏦 Estoque — envia direto para aba Viabilizado
+    </label>
+  </div>
+
+  <div style="border:1px solid var(--safra-border);border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">
+    <div style="font-size:12px;font-weight:700;color:var(--safra-navy);margin-bottom:10px;">✅ Viabilizado</div>
+    <div class="frow3" style="margin-bottom:8px;">
+      <div><label style="margin:0 0 3px;font-size:11px;">Qtd</label><input type="number" id="f-prod-viabilizado-qtd" placeholder="0" min="0" style="margin:0;"></div>
+      <div><label style="margin:0 0 3px;font-size:11px;">Valor (R$)</label><input type="text" inputmode="decimal" id="f-prod-viabilizado-valor" placeholder="Ex: 50.000" style="margin:0;"></div>
+      <div><label style="margin:0 0 3px;font-size:11px;">Empresa (opcional)</label><input type="text" id="f-prod-viabilizado-empresa" placeholder="Nome" style="margin:0;"></div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;">
+      <input type="checkbox" id="f-prod-viabilizado-estoque" style="width:16px;height:16px;cursor:pointer;accent-color:#1A7A52;">
+      🏦 Estoque — envia direto para aba Viabilizado
+    </label>
   </div>
 
   <div class="stitle" style="margin-top:14px;">Ação realizada</div>
@@ -967,8 +989,8 @@ function badgeNovo(ag,nome){
     : '';
 }
 
-const viabColors={credito:'b-blue',safrapay:'b-purple',cobranca:'b-amber',ativos:'b-green',margem:'b-coral'};
-const viabLabels={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem'};
+const viabColors={credito:'b-blue',safrapay:'b-purple',cobranca:'b-amber',ativos:'b-green',margem:'b-coral',cartoes:'b-purple'};
+const viabLabels={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem',cartoes:'Cartões'};
 
 // Normaliza viab: aceita string (formato antigo) ou array (novo) → sempre retorna array
 function normViab(v){
@@ -1538,6 +1560,7 @@ function atualizaDetalheAcao(tipo){
           <textarea id="acao-${tipo}-obs-${i}" placeholder="Opcional — detalhes da visita"></textarea>
           ${pipeHtml}`;
       } else {
+        // Bússola: empresa + objetivos de viabilização + CARTÕES + Pipe + Já viabilizado
         div.innerHTML=`
           <div style="font-size:10px;font-weight:700;color:var(--safra-text-3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">${info.icone} ${info.label} ${i+1}</div>
           <div><label style="margin-top:0;">Empresa</label><input type="text" id="acao-${tipo}-emp-${i}" placeholder="Nome da empresa"></div>
@@ -1548,9 +1571,16 @@ function atualizaDetalheAcao(tipo){
             <button type="button" class="viab-btn" onclick="selectViabAcao('cobranca',this,'${tipo}',${i})">Cobrança</button>
             <button type="button" class="viab-btn" onclick="selectViabAcao('ativos',this,'${tipo}',${i})">Passivo</button>
             <button type="button" class="viab-btn" onclick="selectViabAcao('margem',this,'${tipo}',${i})">Margem</button>
+            <button type="button" class="viab-btn" onclick="selectViabAcao('cartoes',this,'${tipo}',${i})">💳 Cartões</button>
           </div>
           <label style="margin-top:6px;">Observação</label>
           <textarea id="acao-${tipo}-obs-${i}" placeholder="Opcional — detalhes da ação"></textarea>
+          <div style="display:flex;gap:10px;align-items:center;margin-top:8px;padding:6px 10px;border:1px dashed #A8D4BF;border-radius:7px;background:#F0FAF5;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#1A7A52;margin:0;cursor:pointer;user-select:none;">
+              <input type="checkbox" id="acao-${tipo}-viabok-${i}" style="width:15px;height:15px;cursor:pointer;accent-color:#1A7A52;">
+              ✅ Já viabilizado (enviar para aba Viabilizado)
+            </label>
+          </div>
           ${pipeHtml}`;
       }
       wrap.appendChild(div);
@@ -1868,7 +1898,8 @@ async function salvar(){
         acoesDetalhe.push({tipo,empresa:emp,agendamento:agend,obs,virouConta:false,pipe,valorCred});
       } else {
         const viab=[...(viabSelAcao[`${tipo}_${i}`]||[])];
-        acoesDetalhe.push({tipo,empresa:emp,viab,obs,virouConta:false,pipe,valorCred});
+        const jaViabilizado=!!document.getElementById(`acao-${tipo}-viabok-${i}`)?.checked;
+        acoesDetalhe.push({tipo,empresa:emp,viab,obs,virouConta:false,pipe,valorCred,jaViabilizado});
       }
     }
   });
@@ -1887,13 +1918,14 @@ async function salvar(){
     }
   });
 
-  // Coleta produção do dia (5 produtos: qtd + valor + empresa)
+  // Coleta produção do dia (5 produtos: qtd + valor + empresa + estoque)
   const producao={};
   ['consorcio','investimentos','seguros','credito','viabilizado'].forEach(p=>{
     const q=parseInt(document.getElementById(`f-prod-${p}-qtd`)?.value)||0;
     const v=parseValor(document.getElementById(`f-prod-${p}-valor`)?.value);
     const emp=(document.getElementById(`f-prod-${p}-empresa`)?.value||'').trim();
-    if(q>0||v>0||emp) producao[p]={qtd:q,valor:v,empresa:emp};
+    const est=!!document.getElementById(`f-prod-${p}-estoque`)?.checked;
+    if(q>0||v>0||emp||est) producao[p]={qtd:q,valor:v,empresa:emp,estoque:est};
   });
 
   const reg={agencia,gerente,data,
@@ -1947,6 +1979,11 @@ async function salvar(){
 
 function limpar(){
   ['f-contatos','f-efetivos','f-emails','f-acao-prospeccao','f-acao-base','f-acao-fgi','f-acao-altobacen','f-acao-viabilizamais','f-agendamentos-nome','f-contas','f-credenciamentos','f-aguardando','f-ret-empresa','f-ret-data','f-ret-obs','f-prod-consorcio-qtd','f-prod-consorcio-valor','f-prod-consorcio-empresa','f-prod-investimentos-qtd','f-prod-investimentos-valor','f-prod-investimentos-empresa','f-prod-seguros-qtd','f-prod-seguros-valor','f-prod-seguros-empresa','f-prod-credito-qtd','f-prod-credito-valor','f-prod-credito-empresa','f-prod-viabilizado-qtd','f-prod-viabilizado-valor','f-prod-viabilizado-empresa'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  // Desmarca checkboxes de estoque
+  ['consorcio','investimentos','seguros','credito','viabilizado'].forEach(p=>{
+    const cb=document.getElementById(`f-prod-${p}-estoque`);
+    if(cb) cb.checked=false;
+  });
   document.getElementById('f-data').value=today;
   document.getElementById('f-agencia').value='';
   document.getElementById('f-gerente').innerHTML='<option value="">Selecione a agência primeiro</option>';
@@ -2141,7 +2178,37 @@ function renderGG(){
     const agPipeTotal=nomes.reduce((a,g)=>a+(stats[g].pipeTotal||0),0);
     const agPipeCount=nomes.reduce((a,g)=>a+(stats[g].pipeCount||0),0);
 
+    // Calcular % de viabilização da agência (contas com pelo menos 1 flag marcada ÷ total contas)
+    let agContasTot=0, agContasViab=0;
+    data.filter(r=>r.agencia===ag).forEach(r=>{
+      if(Array.isArray(r.contasDetalhe)&&r.contasDetalhe.length){
+        r.contasDetalhe.forEach((c,idx)=>{
+          if(!c.empresa||!c.empresa.trim()) return;
+          agContasTot++;
+          const st=(r.contasViab&&r.contasViab[`${idx}`])||{};
+          if(st.safrapay||st.credito||st.investimento||st.margem) agContasViab++;
+        });
+      }
+    });
+    const agPctViab=agContasTot>0?Math.round(agContasViab/agContasTot*100):0;
+
     html+=`<div class="ag-label">${ag}</div>`;
+
+    /* ── CARD DE VIABILIZAÇÃO DA AGÊNCIA ── */
+    if(agContasTot>0){
+      const cor=agPctViab>=80?'#1A7A52':agPctViab>=50?'#C8922A':'#B02020';
+      const corBg=agPctViab>=80?'#E6F5EE':agPctViab>=50?'#FEF3DC':'#FDEAEA';
+      html+=`<div style="background:${corBg};border:1px solid ${cor};border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:10px;font-weight:700;color:${cor};text-transform:uppercase;letter-spacing:0.05em;">✅ Viabilização · ${ag}</div>
+          <div style="font-size:11px;color:var(--safra-text-2);margin-top:1px;">${agContasViab} de ${agContasTot} contas com pelo menos 1 flag de viabilização</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:22px;font-weight:700;color:${cor};line-height:1;">${agPctViab}%</div>
+          <div style="font-size:11px;color:${cor};">${agContasViab}/${agContasTot}</div>
+        </div>
+      </div>`;
+    }
 
     /* ── CARD DE PIPE DA AGÊNCIA (se houver) ── */
     if(agPipeCount>0){
@@ -2768,16 +2835,34 @@ function renderRegional(){
       <span style="color:#C8922A;font-weight:600;margin-left:6px;">■ 60–99%</span>
       <span style="color:#B02020;font-weight:600;margin-left:6px;">■ &lt;60%</span>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;">
       ${(filtroAg?[filtroAg]:Object.keys(agencias)).map(ag=>{
         const cm=contasMesAtual(ag,regs);
         const ng=(agencias[ag]||[]).length;
+        // Calcula % viabilização: contas com pelo menos 1 flag ÷ total contas da agência
+        let agContas=0, agViab=0;
+        dadosReg.filter(r=>r.agencia===ag).forEach(r=>{
+          if(Array.isArray(r.contasDetalhe)){
+            r.contasDetalhe.forEach((c,idx)=>{
+              if(!c.empresa||!c.empresa.trim()) return;
+              agContas++;
+              const st=(r.contasViab&&r.contasViab[`${idx}`])||{};
+              if(st.safrapay||st.credito||st.investimento||st.margem) agViab++;
+            });
+          }
+        });
+        const pctViab=agContas>0?Math.round(agViab/agContas*100):0;
+        const corViab=pctViab>=80?'#1A7A52':pctViab>=50?'#C8922A':'#B02020';
         return `<div style="border:1px solid var(--safra-border);border-radius:8px;padding:10px 12px;background:#FAFCFF;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
             <div style="font-weight:700;font-size:12px;color:var(--safra-navy);">${ag}</div>
             <div style="font-size:10px;color:var(--safra-text-3);">${ng} ger</div>
           </div>
           ${relogioAgencia(ag,cm)}
+          ${agContas>0?`<div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:6px;border-top:1px dashed var(--safra-border);">
+            <div style="font-size:10px;color:var(--safra-text-3);">✅ Viabilização</div>
+            <div style="font-size:11px;font-weight:700;color:${corViab};">${pctViab}% <span style="color:var(--safra-text-3);font-weight:400;">(${agViab}/${agContas})</span></div>
+          </div>`:''}
         </div>`;
       }).join('')}
     </div>
@@ -3080,6 +3165,127 @@ function renderRegional(){
     </tr></tfoot></table></div>`;
   }
 
+  // ═══════════════════════════════════════════════
+  // ─── VIABILIZAÇÕES · Dashboard + tabela por agência ───
+  // ═══════════════════════════════════════════════
+  // Coleta todas as contas + status de viabilização de cada gerente
+  const viabPorAg={};
+  let viabTotais={total:0,viabilizadas:0,safrapay:0,credito:0,investimento:0,margem:0};
+  dadosReg.forEach(r=>{
+    if(!Array.isArray(r.contasDetalhe)) return;
+    const chaveAg=r.agencia;
+    if(!viabPorAg[chaveAg]) viabPorAg[chaveAg]={total:0,viabilizadas:0,safrapay:0,credito:0,investimento:0,margem:0};
+    r.contasDetalhe.forEach((c,idx)=>{
+      if(!c.empresa||!c.empresa.trim()) return;
+      const status=(r.contasViab&&r.contasViab[`${idx}`])||{};
+      const temSP=!!status.safrapay, temCR=!!status.credito, temIN=!!status.investimento, temMA=!!status.margem;
+      // Viabilizada = qualquer uma das 4 marcada
+      const viabilizada = temSP||temCR||temIN||temMA;
+      viabPorAg[chaveAg].total++;
+      viabTotais.total++;
+      if(viabilizada){
+        viabPorAg[chaveAg].viabilizadas++;
+        viabTotais.viabilizadas++;
+      }
+      if(temSP){viabPorAg[chaveAg].safrapay++; viabTotais.safrapay++;}
+      if(temCR){viabPorAg[chaveAg].credito++; viabTotais.credito++;}
+      if(temIN){viabPorAg[chaveAg].investimento++; viabTotais.investimento++;}
+      if(temMA){viabPorAg[chaveAg].margem++; viabTotais.margem++;}
+    });
+  });
+
+  // Só mostra se houver pelo menos 1 conta registrada
+  if(viabTotais.total>0){
+    const pctViabTotal=viabTotais.total>0?Math.round(viabTotais.viabilizadas/viabTotais.total*100):0;
+
+    // Dashboard consolidado azul
+    html+=`<div style="background:linear-gradient(135deg,#1A3D6E 0%,#2A5085 100%);border-radius:12px;padding:16px 18px;margin:1rem 0;color:#fff;box-shadow:0 4px 12px rgba(26,61,110,0.15);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
+        <div>
+          <div style="font-size:11px;opacity:0.85;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">✅ Viabilizações · Consolidado</div>
+          <div style="font-size:13px;opacity:0.9;margin-top:2px;">Uma conta é contada como viabilizada se tem qualquer uma das 4 flags marcadas${filtroAg?' · '+filtroAg:''}</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;">
+        <div style="background:rgba(168,212,191,0.25);border:1px solid rgba(168,212,191,0.5);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:10px;opacity:0.9;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#D4F5DF;">✅ Viabilizadas</div>
+          <div style="font-size:26px;font-weight:700;line-height:1.1;margin-top:3px;color:#D4F5DF;">${viabTotais.viabilizadas}</div>
+          <div style="font-size:11px;opacity:0.85;margin-top:2px;color:#D4F5DF;">${pctViabTotal}% de ${viabTotais.total} contas</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:10px;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">💳 SafraPay</div>
+          <div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px;">${viabTotais.safrapay}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:10px;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">💰 Crédito</div>
+          <div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px;">${viabTotais.credito}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:10px;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">📈 Investim.</div>
+          <div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px;">${viabTotais.investimento}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:10px;opacity:0.8;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">🧾 Margem</div>
+          <div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px;">${viabTotais.margem}</div>
+          <div style="font-size:9px;opacity:0.75;margin-top:1px;">Consórcio + Seguros</div>
+        </div>
+      </div>
+    </div>`;
+
+    // Tabela por agência
+    const agsComContas=Object.entries(viabPorAg).filter(([,v])=>v.total>0);
+    if(agsComContas.length>0){
+      html+=`<div class="card-title" style="margin:0.5rem 0 0.35rem;">✅ Viabilizações por agência</div>
+      <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:0.75rem;">Quantidade de contas por tipo de viabilização e % do total da agência.</div>
+      <div class="card" style="overflow-x:auto;">
+        <table class="rtable">
+          <thead><tr>
+            <th>Agência</th>
+            <th style="text-align:center;">Contas</th>
+            <th style="text-align:center;background:#F0FAF5;">💳 SafraPay</th>
+            <th style="text-align:center;background:#F0FAF5;">💰 Crédito</th>
+            <th style="text-align:center;background:#F0FAF5;">📈 Investim.</th>
+            <th style="text-align:center;background:#F0FAF5;">🧾 Margem</th>
+            <th style="text-align:center;background:#E6F5EE;">✅ Viabilizadas</th>
+            <th style="text-align:center;background:#E6F5EE;">% Viab.</th>
+          </tr></thead>
+          <tbody>`;
+      // Ordena por % de viabilizadas descendente (ou pelo total)
+      const ordViab=[...agsComContas].sort((a,b)=>{
+        const pa=a[1].total>0?a[1].viabilizadas/a[1].total:0;
+        const pb=b[1].total>0?b[1].viabilizadas/b[1].total:0;
+        return pb-pa;
+      });
+      ordViab.forEach(([ag,v])=>{
+        const pct=v.total>0?Math.round(v.viabilizadas/v.total*100):0;
+        const cor=pct>=80?'#1A7A52':pct>=50?'#C8922A':'#B02020';
+        html+=`<tr>
+          <td><strong>${ag}</strong></td>
+          <td style="text-align:center;font-weight:600;">${v.total}</td>
+          <td style="text-align:center;background:#FBFEFC;font-weight:${v.safrapay>0?'700':'400'};color:${v.safrapay>0?'var(--safra-navy)':'var(--safra-text-3)'};">${v.safrapay||'-'}</td>
+          <td style="text-align:center;background:#FBFEFC;font-weight:${v.credito>0?'700':'400'};color:${v.credito>0?'var(--safra-navy)':'var(--safra-text-3)'};">${v.credito||'-'}</td>
+          <td style="text-align:center;background:#FBFEFC;font-weight:${v.investimento>0?'700':'400'};color:${v.investimento>0?'var(--safra-navy)':'var(--safra-text-3)'};">${v.investimento||'-'}</td>
+          <td style="text-align:center;background:#FBFEFC;font-weight:${v.margem>0?'700':'400'};color:${v.margem>0?'var(--safra-navy)':'var(--safra-text-3)'};">${v.margem||'-'}</td>
+          <td style="text-align:center;background:#E6F5EE;color:var(--green);font-weight:700;font-size:13px;">${v.viabilizadas}</td>
+          <td style="text-align:center;background:#E6F5EE;color:${cor};font-weight:700;font-size:13px;">${pct}%</td>
+        </tr>`;
+      });
+      // Rodapé TOTAL
+      const totPct=viabTotais.total>0?Math.round(viabTotais.viabilizadas/viabTotais.total*100):0;
+      const corTot=totPct>=80?'#1A7A52':totPct>=50?'#C8922A':'#B02020';
+      html+=`</tbody><tfoot><tr style="background:var(--safra-light);">
+        <td style="font-weight:700;color:var(--safra-navy);">TOTAL</td>
+        <td style="text-align:center;font-weight:700;">${viabTotais.total}</td>
+        <td style="text-align:center;font-weight:700;">${viabTotais.safrapay||'-'}</td>
+        <td style="text-align:center;font-weight:700;">${viabTotais.credito||'-'}</td>
+        <td style="text-align:center;font-weight:700;">${viabTotais.investimento||'-'}</td>
+        <td style="text-align:center;font-weight:700;">${viabTotais.margem||'-'}</td>
+        <td style="text-align:center;background:#E6F5EE;color:var(--green);font-weight:700;font-size:14px;">${viabTotais.viabilizadas}</td>
+        <td style="text-align:center;background:#E6F5EE;color:${corTot};font-weight:700;font-size:14px;">${totPct}%</td>
+      </tr></tfoot></table></div>`;
+    }
+  }
+
   el.innerHTML=html;
 }
 
@@ -3157,6 +3363,48 @@ function renderRetornos(){
 
   if(!itens.length){el.innerHTML='<div class="empty">Nenhum retorno encontrado para esta agência.</div>';return;}
 
+  // ═══ Dashboard de PIPE DE CRÉDITO da agência ═══
+  // Soma o pipe de todos os itens flagados da agência filtrada
+  let pipeTotal=0, pipeCount=0;
+  const pipePorGer={};
+  itens.forEach(r=>{
+    if(r.pipe){
+      pipeCount++;
+      pipeTotal+=r.valorCred||0;
+      if(!pipePorGer[r.gerente]) pipePorGer[r.gerente]={count:0,valor:0};
+      pipePorGer[r.gerente].count++;
+      pipePorGer[r.gerente].valor+=r.valorCred||0;
+    }
+  });
+  const fmtBRLret=v=>v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+
+  let dashHtml='';
+  if(pipeCount>0){
+    dashHtml=`<div style="background:linear-gradient(135deg,#FEF3DC 0%,#FDE9B5 100%);border:1px solid #D4A030;border-radius:10px;padding:14px 16px;margin-bottom:1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#A0620D;text-transform:uppercase;letter-spacing:0.06em;">💰 Pipe de Crédito · ${filtroAg}</div>
+          <div style="font-size:11px;color:#633806;margin-top:2px;">Somatório dos itens Base/Bússola flagados como pipe</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:22px;font-weight:700;color:#A0620D;line-height:1;">R$ ${fmtBRLret(pipeTotal)}</div>
+          <div style="font-size:11px;color:#633806;">${pipeCount} cliente${pipeCount!==1?'s':''}</div>
+        </div>
+      </div>
+      ${Object.keys(pipePorGer).length>1?`<div style="border-top:1px dashed #D4A030;padding-top:10px;">
+        <div style="font-size:10px;font-weight:700;color:#A0620D;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Por gerente</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;">
+          ${Object.entries(pipePorGer).sort((a,b)=>b[1].valor-a[1].valor).map(([ger,d])=>`
+            <div style="background:#fff;border:1px solid #D4A030;border-radius:6px;padding:6px 10px;">
+              <div style="font-size:11px;font-weight:600;color:var(--safra-navy);">${ger}</div>
+              <div style="font-size:13px;font-weight:700;color:#A0620D;">R$ ${fmtBRLret(d.valor)}</div>
+              <div style="font-size:10px;color:var(--safra-text-3);">${d.count} cliente${d.count!==1?'s':''}</div>
+            </div>`).join('')}
+        </div>
+      </div>`:''}
+    </div>`;
+  }
+
   // Agrupa por agência → gerente
   const byAg={};
   itens.forEach(r=>{
@@ -3165,7 +3413,7 @@ function renderRetornos(){
     byAg[r.agencia][r.gerente].push(r);
   });
 
-  let html='';
+  let html=dashHtml;
   for(const[ag,gerentes]of Object.entries(byAg)){
     html+=`<div class="ag-label">${ag}</div>`;
     for(const[ger,lista]of Object.entries(gerentes)){
@@ -3732,28 +3980,108 @@ function atualizaFiltroViabGer(){
 function coletarContasParaViabilizar(){
   const itens=[];
   regs.forEach(r=>{
-    if(!Array.isArray(r.contasDetalhe)) return;
-    r.contasDetalhe.forEach((c,idx)=>{
-      if(!c.empresa||!c.empresa.trim()) return;
-      // Status de viabilização: lê do r.contasViab (objeto com chave = idx da conta)
-      const chave=`${idx}`;
-      const status = (r.contasViab && r.contasViab[chave]) || {};
-      itens.push({
-        regId:r.id,
-        regIdx:regs.indexOf(r),
-        contaIdx:idx,
-        agencia:r.agencia, gerente:r.gerente, data:r.data,
-        empresa:c.empresa,
-        lv:!!c.lv,
-        viabObj:c.viab||[],
-        safrapay:!!status.safrapay,
-        credito:!!status.credito,
-        investimento:!!status.investimento,
-        margem:!!status.margem,
-        // Viabilizada = qualquer uma das 4 marcada
-        viabilizada: !!(status.safrapay||status.credito||status.investimento||status.margem),
+    const temDetalhe=Array.isArray(r.contasDetalhe)&&r.contasDetalhe.length>0;
+    if(temDetalhe){
+      r.contasDetalhe.forEach((c,idx)=>{
+        if(!c.empresa||!c.empresa.trim()) return;
+        const chave=`${idx}`;
+        const status = (r.contasViab && r.contasViab[chave]) || {};
+        itens.push({
+          regId:r.id,
+          regIdx:regs.indexOf(r),
+          contaIdx:idx,
+          agencia:r.agencia, gerente:r.gerente, data:r.data,
+          empresa:c.empresa,
+          lv:!!c.lv,
+          viabObj:c.viab||[],
+          safrapay:!!status.safrapay,
+          credito:!!status.credito,
+          investimento:!!status.investimento,
+          margem:!!status.margem,
+          viabilizada: !!(status.safrapay||status.credito||status.investimento||status.margem),
+          origem:'detalhe',
+        });
       });
-    });
+    } else if((r.contas||0)>0){
+      // Compatibilidade: registros antigos só com número de contas
+      // Cria N slots genéricos "Conta 1", "Conta 2"... pra aparecerem na aba Viabilizado
+      for(let idx=0;idx<r.contas;idx++){
+        const chave=`legacy_${idx}`;
+        const status=(r.contasViab&&r.contasViab[chave])||{};
+        itens.push({
+          regId:r.id,
+          regIdx:regs.indexOf(r),
+          contaIdx:chave, // usa chave diferenciada
+          agencia:r.agencia, gerente:r.gerente, data:r.data,
+          empresa:`Conta ${idx+1} (sem nome)`,
+          lv:idx<(r.contasLV||0), // atribui LV às primeiras N contas
+          viabObj:[],
+          safrapay:!!status.safrapay,
+          credito:!!status.credito,
+          investimento:!!status.investimento,
+          margem:!!status.margem,
+          viabilizada: !!(status.safrapay||status.credito||status.investimento||status.margem),
+          origem:'legacy',
+        });
+      }
+    }
+    // Contas vindas da Produção do dia com flag "estoque/viabilizado" marcado
+    // vão direto pra aba Viabilizado como itens especiais
+    if(r.producao){
+      Object.entries(r.producao).forEach(([produto,d])=>{
+        if(d.estoque){
+          const prodLabels={consorcio:'🎯 Consórcio',investimentos:'📈 Investimentos',seguros:'🛡️ Seguros',credito:'💰 Crédito',viabilizado:'✅ Viabilizado'};
+          const nomeEmp=d.empresa||prodLabels[produto]||produto;
+          const chave=`prod_${produto}`;
+          const status=(r.contasViab&&r.contasViab[chave])||{};
+          // Pra produtos da Produção, pré-marca a viabilização correspondente
+          // (se for 'credito' já marca crédito, etc.)
+          const preMap={credito:'credito',investimentos:'investimento'};
+          const preFlag=preMap[produto];
+          const sp=!!status.safrapay, cr=preFlag==='credito'?true:!!status.credito,
+                inv=preFlag==='investimento'?true:!!status.investimento,
+                ma=(produto==='consorcio'||produto==='seguros')?true:!!status.margem;
+          itens.push({
+            regId:r.id,
+            regIdx:regs.indexOf(r),
+            contaIdx:chave,
+            agencia:r.agencia, gerente:r.gerente, data:r.data,
+            empresa:nomeEmp,
+            lv:false,
+            viabObj:[],
+            safrapay:sp, credito:cr, investimento:inv, margem:ma,
+            viabilizada: sp||cr||inv||ma,
+            origem:'producao', produto,
+            valor:d.valor||0,
+          });
+        }
+      });
+    }
+    // Contas vindas das ações Bússola com flag "já viabilizado"
+    if(Array.isArray(r.acoesDetalhe)){
+      r.acoesDetalhe.forEach((a,subIdx)=>{
+        if(a.tipo==='_producao'||a.tipo==='_viab_conta') return;
+        if(a.jaViabilizado&&a.empresa&&a.empresa.trim()){
+          const chave=`acao_${subIdx}`;
+          const status=(r.contasViab&&r.contasViab[chave])||{};
+          itens.push({
+            regId:r.id,
+            regIdx:regs.indexOf(r),
+            contaIdx:chave,
+            agencia:r.agencia, gerente:r.gerente, data:r.data,
+            empresa:a.empresa,
+            lv:false,
+            viabObj:a.viab||[],
+            safrapay:!!status.safrapay,
+            credito:!!status.credito,
+            investimento:!!status.investimento,
+            margem:!!status.margem,
+            viabilizada: !!(status.safrapay||status.credito||status.investimento||status.margem),
+            origem:'bussola', tipoAcao:a.tipo,
+          });
+        }
+      });
+    }
   });
   return itens;
 }
@@ -3765,8 +4093,18 @@ function renderViabilizado(){
   const filtroGer=document.getElementById('filtro-viab-ger').value;
   const filtroStatus=document.getElementById('filtro-viab-status').value;
 
+  // Só mostra os dados DEPOIS que uma agência for selecionada
+  if(!filtroAg){
+    el.innerHTML=`<div style="background:#FEF3DC;border:1px solid #D4A030;border-radius:10px;padding:2rem;text-align:center;margin-top:1rem;">
+      <div style="font-size:28px;margin-bottom:8px;">👆</div>
+      <div style="font-size:14px;font-weight:600;color:#A0620D;margin-bottom:4px;">Selecione uma agência</div>
+      <div style="font-size:12px;color:#A0620D;">Escolha a agência no filtro acima para ver as contas e status de viabilização.</div>
+    </div>`;
+    return;
+  }
+
   let itens=coletarContasParaViabilizar();
-  if(filtroAg) itens=itens.filter(r=>r.agencia===filtroAg);
+  itens=itens.filter(r=>r.agencia===filtroAg);
   if(filtroGer) itens=itens.filter(r=>r.gerente===filtroGer);
   if(filtroStatus==='viabilizada') itens=itens.filter(r=>r.viabilizada);
   if(filtroStatus==='pendente') itens=itens.filter(r=>!r.viabilizada);
@@ -3855,6 +4193,7 @@ function renderViabilizado(){
               <th style="text-align:center;background:#F0FAF5;">Investimento</th>
               <th style="text-align:center;background:#F0FAF5;">Margem</th>
               <th style="text-align:center;background:#E6F5EE;">Viabilizada</th>
+              <th style="text-align:center;">Ações</th>
             </tr></thead>
             <tbody>
               ${lista.map(r=>{
@@ -3863,8 +4202,12 @@ function renderViabilizado(){
                 const chkIN=r.investimento?'checked':'';
                 const chkMA=r.margem?'checked':'';
                 const idKey=`${r.regIdx}-${r.contaIdx}`;
+                const badgeOrigem = r.origem==='producao' ? '<span style="font-size:9px;background:#EDE9FB;color:#4535A3;padding:1px 5px;border-radius:8px;margin-left:4px;">Produção</span>'
+                  : r.origem==='bussola' ? '<span style="font-size:9px;background:#F3E6FF;color:#5A1A8A;padding:1px 5px;border-radius:8px;margin-left:4px;">Bússola</span>'
+                  : r.origem==='legacy' ? '<span style="font-size:9px;background:#FEF3DC;color:#A0620D;padding:1px 5px;border-radius:8px;margin-left:4px;">Legado</span>'
+                  : '';
                 return`<tr>
-                  <td><strong>${r.empresa}</strong>${r.lv?' <span class="lv-flag">LV</span>':''}</td>
+                  <td><strong>${r.empresa}</strong>${r.lv?' <span class="lv-flag">LV</span>':''}${badgeOrigem}</td>
                   <td style="text-align:center;font-size:10px;color:var(--safra-text-3);">${fmt(r.data)}</td>
                   <td style="text-align:center;">${r.lv?'✅':'—'}</td>
                   <td style="text-align:center;background:#FBFEFC;"><input type="checkbox" ${chkSP} onchange="toggleViabConta('${idKey}','safrapay',this.checked)" style="width:17px;height:17px;cursor:pointer;accent-color:var(--safra-accent);"></td>
@@ -3872,6 +4215,10 @@ function renderViabilizado(){
                   <td style="text-align:center;background:#FBFEFC;"><input type="checkbox" ${chkIN} onchange="toggleViabConta('${idKey}','investimento',this.checked)" style="width:17px;height:17px;cursor:pointer;accent-color:var(--safra-accent);"></td>
                   <td style="text-align:center;background:#FBFEFC;"><input type="checkbox" ${chkMA} onchange="toggleViabConta('${idKey}','margem',this.checked)" style="width:17px;height:17px;cursor:pointer;accent-color:var(--safra-accent);"></td>
                   <td style="text-align:center;background:${r.viabilizada?'#E6F5EE':'#FEF9E8'};font-weight:700;color:${r.viabilizada?'#1A7A52':'#A0620D'};">${r.viabilizada?'✅ Sim':'⏳ Não'}</td>
+                  <td style="text-align:center;white-space:nowrap;">
+                    <button type="button" onclick="editarContaViab('${idKey}')" title="Editar empresa" style="background:var(--safra-light);color:var(--safra-text);border:1px solid var(--safra-border);padding:3px 8px;border-radius:4px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;">✏️</button>
+                    <button type="button" onclick="excluirContaViab('${idKey}')" title="Excluir" style="background:#FDEAEA;color:#B02020;border:1px solid #CC4444;padding:3px 8px;border-radius:4px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:2px;">🗑</button>
+                  </td>
                 </tr>`;
               }).join('')}
             </tbody>
@@ -3886,13 +4233,13 @@ function renderViabilizado(){
 
 // Alterna status de viabilização de uma conta e salva no banco
 async function toggleViabConta(idKey, campo, valor){
-  const [regIdxStr, contaIdxStr]=idKey.split('-');
-  const regIdx=parseInt(regIdxStr);
-  const contaIdx=parseInt(contaIdxStr);
+  const sep=idKey.indexOf('-');
+  const regIdx=parseInt(idKey.substring(0,sep));
+  const contaIdx=idKey.substring(sep+1); // pode ser número OU string (ex: "prod_credito")
   const r=regs[regIdx];
   if(!r||!r.id) return;
   if(!r.contasViab) r.contasViab={};
-  const chave=`${contaIdx}`;
+  const chave=contaIdx; // já string
   if(!r.contasViab[chave]) r.contasViab[chave]={};
   r.contasViab[chave][campo]=!!valor;
 
@@ -3903,6 +4250,139 @@ async function toggleViabConta(idKey, campo, valor){
     alert('⚠️ Erro ao salvar no banco. Veja o console (F12).');
   }
   bloqueioLeitura=false;
+}
+
+// Editar nome da empresa de uma conta na aba Viabilizado
+async function editarContaViab(idKey){
+  const sep=idKey.indexOf('-');
+  const regIdx=parseInt(idKey.substring(0,sep));
+  const contaIdx=idKey.substring(sep+1);
+  const r=regs[regIdx];
+  if(!r) return;
+
+  // Descobre o nome atual
+  let nomeAtual='';
+  if(String(contaIdx).startsWith('prod_')){
+    const produto=contaIdx.replace('prod_','');
+    nomeAtual=(r.producao&&r.producao[produto]&&r.producao[produto].empresa)||'';
+  } else if(String(contaIdx).startsWith('acao_')){
+    const idx=parseInt(contaIdx.replace('acao_',''));
+    nomeAtual=r.acoesDetalhe?.[idx]?.empresa||'';
+  } else if(String(contaIdx).startsWith('legacy_')){
+    alert('Este é um registro antigo sem nome de empresa individual. Para editar, vá na aba Visão GG → Editar o registro.');
+    return;
+  } else {
+    const idx=parseInt(contaIdx);
+    nomeAtual=r.contasDetalhe?.[idx]?.empresa||'';
+  }
+
+  // Modal simples
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+  overlay.innerHTML=`
+    <div style="background:#fff;border-radius:10px;max-width:400px;width:100%;padding:20px;">
+      <h3 style="margin:0 0 10px;font-size:15px;color:var(--safra-navy);">✏️ Editar conta</h3>
+      <label style="font-size:11px;color:var(--safra-text-2);">Nome da empresa</label>
+      <input type="text" id="edit-conta-nome" value="${nomeAtual.replace(/"/g,'&quot;')}" style="margin:4px 0 14px;">
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" id="ed-cancel" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Cancelar</button>
+        <button type="button" id="ed-save" style="background:var(--safra-accent);color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Salvar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  const novoNome=await new Promise(resolve=>{
+    overlay.querySelector('#ed-cancel').addEventListener('click',()=>{overlay.remove();resolve(null);});
+    overlay.querySelector('#ed-save').addEventListener('click',()=>{
+      const v=overlay.querySelector('#edit-conta-nome').value.trim();
+      overlay.remove();
+      resolve(v);
+    });
+  });
+
+  if(novoNome===null||novoNome===nomeAtual) return;
+
+  bloqueioLeitura=true;
+  if(String(contaIdx).startsWith('prod_')){
+    const produto=contaIdx.replace('prod_','');
+    if(!r.producao) r.producao={};
+    if(!r.producao[produto]) r.producao[produto]={qtd:0,valor:0,empresa:'',estoque:true};
+    r.producao[produto].empresa=novoNome;
+  } else if(String(contaIdx).startsWith('acao_')){
+    const idx=parseInt(contaIdx.replace('acao_',''));
+    if(r.acoesDetalhe?.[idx]) r.acoesDetalhe[idx].empresa=novoNome;
+  } else {
+    const idx=parseInt(contaIdx);
+    if(r.contasDetalhe?.[idx]) r.contasDetalhe[idx].empresa=novoNome;
+  }
+
+  renderViabilizado();
+  const ok=await atualizarRegistro(r.id,r);
+  bloqueioLeitura=false;
+  if(!ok) alert('⚠️ Erro ao salvar. Veja o console (F12).');
+}
+
+// Excluir conta da aba Viabilizado
+async function excluirContaViab(idKey){
+  const sep=idKey.indexOf('-');
+  const regIdx=parseInt(idKey.substring(0,sep));
+  const contaIdx=idKey.substring(sep+1);
+  const r=regs[regIdx];
+  if(!r) return;
+
+  const confirmado=await confirmarInline('Excluir esta conta?<br><small style="color:#666;">A conta será removida do registro do dia.</small>','Sim, excluir','Cancelar','#B02020');
+  if(!confirmado) return;
+
+  bloqueioLeitura=true;
+
+  if(String(contaIdx).startsWith('prod_')){
+    const produto=contaIdx.replace('prod_','');
+    if(r.producao&&r.producao[produto]){
+      r.producao[produto].estoque=false; // desliga o flag — não aparece mais
+    }
+    if(r.contasViab&&r.contasViab[contaIdx]) delete r.contasViab[contaIdx];
+  } else if(String(contaIdx).startsWith('acao_')){
+    const idx=parseInt(contaIdx.replace('acao_',''));
+    if(r.acoesDetalhe?.[idx]) r.acoesDetalhe[idx].jaViabilizado=false;
+    if(r.contasViab&&r.contasViab[contaIdx]) delete r.contasViab[contaIdx];
+  } else if(String(contaIdx).startsWith('legacy_')){
+    // Reduz o contador de contas
+    r.contas=Math.max(0,(r.contas||0)-1);
+    if(r.contasLV>r.contas) r.contasLV=r.contas;
+    r.contasSem=Math.max(0,r.contas-r.contasLV);
+    if(r.contasViab&&r.contasViab[contaIdx]) delete r.contasViab[contaIdx];
+  } else {
+    const idx=parseInt(contaIdx);
+    if(r.contasDetalhe?.[idx]){
+      r.contasDetalhe.splice(idx,1);
+      r.contas=r.contasDetalhe.length;
+      r.contasLV=r.contasDetalhe.filter(c=>c.lv).length;
+      r.contasSem=r.contas-r.contasLV;
+      r.listaVerde=r.contasLV>0;
+      // Reindexa contasViab
+      if(r.contasViab){
+        const novo={};
+        Object.entries(r.contasViab).forEach(([k,v])=>{
+          const ki=parseInt(k);
+          if(!isNaN(ki)){
+            if(ki<idx) novo[k]=v;
+            else if(ki>idx) novo[String(ki-1)]=v;
+            // ki===idx é descartado
+          } else {
+            novo[k]=v; // mantém chaves não numéricas (prod_, acao_, etc.)
+          }
+        });
+        r.contasViab=novo;
+      }
+    }
+  }
+
+  renderViabilizado();
+  renderGG();
+  if(regionalDesbloqueado) renderRegional();
+  const ok=await atualizarRegistro(r.id,r);
+  bloqueioLeitura=false;
+  if(!ok) alert('⚠️ Erro ao salvar. Veja o console (F12).');
 }
 
 function renderTrimestre(){
