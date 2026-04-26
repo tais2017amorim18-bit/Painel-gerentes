@@ -2003,41 +2003,166 @@ function toggleDiag(id){
   }
 }
 
+// Toggle do bloco "Ver detalhe dos registros" na Visão GG por agência
+function toggleDetalheAg(id, btn){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const aberto=el.style.display!=='none';
+  if(aberto){
+    el.style.display='none';
+    const arrow=btn?.querySelector('span:last-child');
+    if(arrow) arrow.textContent='▶';
+  } else {
+    el.style.display='block';
+    const arrow=btn?.querySelector('span:last-child');
+    if(arrow) arrow.textContent='▼';
+  }
+}
+
+// Modal manual quando o popup do WhatsApp é bloqueado
+function mostrarBotaoWhatsManual(reportTxt,url){
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+  overlay.innerHTML=`
+    <div style="background:#fff;border-radius:12px;max-width:520px;width:100%;padding:22px;max-height:80vh;display:flex;flex-direction:column;">
+      <h3 style="margin:0 0 6px;font-size:16px;color:var(--safra-navy);">✅ Registro salvo!</h3>
+      <p style="margin:0 0 14px;font-size:13px;color:var(--safra-text-2);">O WhatsApp não abriu automaticamente (provavelmente bloqueado). Use os botões abaixo:</p>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+        <button type="button" id="wpp-abrir" style="background:#25D366;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;min-width:140px;">📱 Abrir WhatsApp</button>
+        <button type="button" id="wpp-copiar" style="background:var(--safra-accent);color:#fff;border:none;padding:10px 18px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;min-width:140px;">📋 Copiar mensagem</button>
+      </div>
+      <textarea readonly id="wpp-text" style="width:100%;height:200px;font-family:monospace;font-size:11px;border:1px solid var(--safra-border);border-radius:6px;padding:8px;resize:vertical;margin:0 0 12px;">${reportTxt}</textarea>
+      <button type="button" id="wpp-fechar" style="background:#fff;color:var(--safra-text);border:1px solid var(--safra-border);padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;align-self:flex-end;">Fechar</button>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('#wpp-abrir').addEventListener('click',()=>{
+    window.location.href=url; // navega na mesma aba — driblar bloqueio de popup
+  });
+  overlay.querySelector('#wpp-copiar').addEventListener('click',()=>{
+    const ta=overlay.querySelector('#wpp-text');
+    ta.select(); ta.setSelectionRange(0,99999);
+    try{
+      navigator.clipboard.writeText(ta.value);
+      overlay.querySelector('#wpp-copiar').textContent='✓ Copiado!';
+    }catch(e){
+      document.execCommand('copy');
+      overlay.querySelector('#wpp-copiar').textContent='✓ Copiado!';
+    }
+  });
+  overlay.querySelector('#wpp-fechar').addEventListener('click',()=>overlay.remove());
+}
+
 function gerarReportWpp(r){
-  const vl={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem'};
   const vlist=v=>normViab(v).map(x=>vl[x]||x).join(' + ');
   const dd=r.data?r.data.split('-').reverse().join('/'):'';
+  const fmtBR=v=>(v||0).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+
   let txt=`📋 *REPORT DO DIA — ${r.agencia.toUpperCase()}*\n`;
   txt+=`👤 *${r.gerente}* | ${dd}\n`;
   txt+=`─────────────────────\n`;
-  txt+=`📞 *Contatos*\n• Total: *${r.contatos}* | Efetivos: *${r.efetivos}*\n`;
-  if(r.emails)       txt+=`• E-mails: *${r.emails}*\n`;
-  // Ações realizadas (novo formato) ou Visitas abertura (formato antigo)
+  txt+=`📞 *Contatos*\n• Total: *${r.contatos}* | Efetivos: *${r.efetivos}*`;
+  if(r.emails) txt+=` | E-mails: *${r.emails}*`;
+  txt+='\n';
+
+  // 📅 Agendamentos como lista (do acoesDetalhe)
+  const agendsLista = Array.isArray(r.acoesDetalhe)
+    ? r.acoesDetalhe.filter(a=>a.tipo==='agendamento'&&a.empresa).map(a=>a.empresa)
+    : [];
+  if(agendsLista.length){
+    txt+=`\n📅 *Agendamentos (${agendsLista.length})*\n`;
+    agendsLista.slice(0,15).forEach(emp=>{ txt+=`• ${emp}\n`; });
+    if(agendsLista.length>15) txt+=`• ...e mais ${agendsLista.length-15}\n`;
+  } else if(r.agendamentos && typeof r.agendamentos==='string' && r.agendamentos.trim()){
+    txt+=`\n📅 *Agendamentos:* ${r.agendamentos}\n`;
+  }
+
+  // 📧 E-mails enviados como lista
+  const emailsListaR = Array.isArray(r.acoesDetalhe)
+    ? r.acoesDetalhe.filter(a=>a.tipo==='email'&&a.empresa)
+    : [];
+  if(emailsListaR.length){
+    txt+=`\n📧 *E-mails enviados (${emailsListaR.length})*\n`;
+    emailsListaR.slice(0,15).forEach(a=>{
+      const dt=a.agendamento?' · ret. '+a.agendamento.split('-').reverse().join('/'):'';
+      txt+=`• ${a.empresa}${dt}\n`;
+    });
+    if(emailsListaR.length>15) txt+=`• ...e mais ${emailsListaR.length-15}\n`;
+  }
+
+  // 🎯 Ações (visitas + bússola)
   if(r.acoes){
     const a=r.acoes;
     const temAcao=a.prospeccao||a.base||a.fgi||a.altoBacen||a.viabilizaMais;
     if(temAcao){
-      txt+=`\n🎯 *Ação realizada*\n`;
-      if(a.prospeccao)   txt+=`• 🚪 Visita Prospecção: *${a.prospeccao}*\n`;
-      if(a.base)         txt+=`• 🚪 Visita Base: *${a.base}*\n`;
+      txt+=`\n🎯 *Ações realizadas*\n`;
+      if(a.prospeccao)   txt+=`• 🚪 Prospecção: *${a.prospeccao}*\n`;
+      if(a.base)         txt+=`• 🚪 Base: *${a.base}*\n`;
       if(a.fgi)          txt+=`• 🧭 FGI: *${a.fgi}*\n`;
       if(a.altoBacen)    txt+=`• 🧭 Alto Bacen: *${a.altoBacen}*\n`;
       if(a.viabilizaMais)txt+=`• 🧭 Viabiliza+: *${a.viabilizaMais}*\n`;
     }
   } else if(r.visitas){
-    txt+=`• Visitas abertura: *${r.visitas}*\n`;
+    txt+=`• Visitas: *${r.visitas}*\n`;
   }
-  if(r.agendamentos) txt+=`• Agendamento: *${r.agendamentos}*\n`;
+
+  // Detalhes das ações (só os tipos relevantes)
+  const acoesDetailing = Array.isArray(r.acoesDetalhe)
+    ? r.acoesDetalhe.filter(a=>['prospeccao','base','fgi','altobacen','viabilizamais'].includes(a.tipo) && a.empresa)
+    : [];
+  if(acoesDetailing.length){
+    txt+=`\n📍 *Detalhe das ações*\n`;
+    acoesDetailing.slice(0,10).forEach(a=>{
+      const tipoLbl={prospeccao:'Prosp.',base:'Base',fgi:'FGI',altobacen:'A.Bacen',viabilizamais:'Viab+'}[a.tipo]||a.tipo;
+      const vtxt=a.viab&&a.viab.length?' · '+vlist(a.viab):'';
+      const pipeTxt=a.pipe&&a.valorCred?` 💰R$${fmtBR(a.valorCred)}`:'';
+      txt+=`• ${tipoLbl}: ${a.empresa}${vtxt}${pipeTxt}\n`;
+    });
+    if(acoesDetailing.length>10) txt+=`• ...e mais ${acoesDetailing.length-10}\n`;
+  }
+
+  // 📊 Resultados
   txt+=`\n📊 *Resultados*\n`;
-  txt+=`• Contas abertas: *${r.contas}* (✅ LV: ${r.contasLV} | Sem LV: ${r.contasSem})\n`;
-  if(r.contasDetalhe&&r.contasDetalhe.length){
-    r.contasDetalhe.forEach((c,i)=>{
+  txt+=`• Contas: *${r.contas}* (✅ LV: ${r.contasLV} | Sem LV: ${r.contasSem})\n`;
+  if(Array.isArray(r.contasDetalhe) && r.contasDetalhe.length){
+    r.contasDetalhe.slice(0,10).forEach((c,i)=>{
       const vtxt=vlist(c.viab);
       txt+=`  ${i+1}. *${c.empresa||'—'}*${c.lv?' ✅':''}${vtxt?' — '+vtxt:''}\n`;
     });
+    if(r.contasDetalhe.length>10) txt+=`  ...e mais ${r.contasDetalhe.length-10}\n`;
   }
-  txt+=`• Credenciamentos: *${r.credenciamentos}*\n`;
-  if(r.aguardando) txt+=`• Aguard. documentação: *${r.aguardando}*\n`;
+  txt+=`• Credenc.: *${r.credenciamentos}*`;
+  if(r.aguardando) txt+=` | Ag. docs: *${r.aguardando}*`;
+  txt+='\n';
+
+  // 🏆 Produção do dia
+  if(r.producao){
+    const prodLabels={consorcio:'🎯 Consórcio',investimentos:'📈 Investim.',seguros:'🛡️ Seguros',credito:'💰 Crédito',viabilizado:'✅ Viabilizado'};
+    const itens=[];
+    Object.entries(r.producao).forEach(([p,d])=>{
+      if(!d||(d.qtd||0)===0&&(d.valor||0)===0&&!d.empresa) return;
+      const partes=[];
+      if(d.qtd) partes.push(`${d.qtd}`);
+      if(d.valor) partes.push(`R$${fmtBR(d.valor)}`);
+      if(d.empresa) partes.push(d.empresa);
+      const flag=d.estoque?' 🏦':'';
+      itens.push(`• ${prodLabels[p]||p}: ${partes.join(' · ')}${flag}`);
+    });
+    if(itens.length){
+      txt+=`\n🏆 *Produção do dia*\n`+itens.join('\n')+'\n';
+    }
+  }
+
+  // 💰 Pipe de crédito (consolidado)
+  if(Array.isArray(r.acoesDetalhe)){
+    const pipes=r.acoesDetalhe.filter(a=>a.pipe);
+    if(pipes.length){
+      const tot=pipes.reduce((a,p)=>a+(p.valorCred||0),0);
+      txt+=`\n💰 *Pipe de crédito*: R$${fmtBR(tot)} (${pipes.length} cli.)\n`;
+    }
+  }
+
+  // 🔁 Retorno tradicional
   if(r.retEmpresa){
     txt+=`\n🔁 *Retorno gerado*\n• Empresa: *${r.retEmpresa}*\n`;
     if(r.retData)     txt+=`• Data: *${r.retData.split('-').reverse().join('/')}*\n`;
@@ -2045,6 +2170,7 @@ function gerarReportWpp(r){
     if(vret) txt+=`• Objetivo: *${vret}*\n`;
     if(r.retObs)      txt+=`• Obs: ${r.retObs}\n`;
   }
+
   txt+=`─────────────────────\n_Enviado via Painel de Gerentes_`;
   return txt;
 }
@@ -2195,11 +2321,26 @@ async function salvar(){
   msgEl.textContent='✅ Registro salvo com sucesso!';
   setTimeout(()=>{msgEl.style.display='none'; msgEl.textContent='✓ Registro salvo! Abrindo WhatsApp...';},3500);
   renderGG();renderRegional();renderRetornos();
-  // Tenta abrir o WhatsApp — se o navegador bloquear, ignora silenciosamente
+  // Tenta abrir o WhatsApp Web
+  // ATENÇÃO: navegadores limitam o tamanho da URL (~2000 chars). Se passar, truncamos.
   try{
-    const popup=window.open('https://wa.me/?text='+encodeURIComponent(gerarReportWpp(salvo)),'_blank');
-    if(!popup) console.log('Popup do WhatsApp bloqueado pelo navegador — ok, registro já foi salvo');
-  }catch(e){console.log('WhatsApp não abriu, mas registro foi salvo:',e.message);}
+    const reportTxt=gerarReportWpp(salvo);
+    const MAX_URL_LEN=1800; // margem segura
+    let textoFinal=reportTxt;
+    if(textoFinal.length>MAX_URL_LEN){
+      textoFinal=textoFinal.substring(0,MAX_URL_LEN-100)+'\n\n_(mensagem truncada — ver painel para detalhes completos)_';
+    }
+    const url='https://wa.me/?text='+encodeURIComponent(textoFinal);
+    const popup=window.open(url,'_blank');
+    if(!popup){
+      console.log('Popup do WhatsApp bloqueado pelo navegador — registro já foi salvo');
+      // Mostra um botão na tela pra abrir manualmente
+      mostrarBotaoWhatsManual(reportTxt,url);
+    }
+  }catch(e){
+    console.log('WhatsApp não abriu, mas registro foi salvo:',e.message);
+    alert('⚠️ O WhatsApp não pôde ser aberto, mas o registro foi salvo com sucesso. Detalhes: '+e.message);
+  }
   limpar();
   }catch(err){
     console.error('Erro ao salvar registro:',err);
@@ -2292,6 +2433,17 @@ function renderGG(){
   const filtroAg  = document.getElementById('filtro-gg-ag').value;
   const filtroGer = document.getElementById('filtro-gg-ger').value;
   const filtroDia = document.getElementById('filtro-gg-data').value;
+
+  // Só mostra os dados DEPOIS que uma agência for selecionada (igual Retornos e Viabilizado)
+  if(!filtroAg){
+    el.innerHTML=`<div style="background:#FEF3DC;border:1px solid #D4A030;border-radius:10px;padding:2rem;text-align:center;margin-top:1rem;">
+      <div style="font-size:28px;margin-bottom:8px;">👆</div>
+      <div style="font-size:14px;font-weight:600;color:#A0620D;margin-bottom:4px;">Selecione uma agência</div>
+      <div style="font-size:12px;color:#A0620D;">Escolha a agência no filtro acima para ver os dashboards e gerentes.</div>
+    </div>`;
+    return;
+  }
+
   let data=regs;
   if(filtroAg)  data=data.filter(r=>r.agencia===filtroAg);
   if(filtroGer) data=data.filter(r=>r.gerente===filtroGer);
@@ -2302,7 +2454,7 @@ function renderGG(){
     const lista=agencias[r.agencia]||[];
     return lista.includes(r.gerente);
   });
-  if(!data.length){el.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
+  if(!data.length){el.innerHTML='<div class="empty">Nenhum registro encontrado para esta agência.</div>';return;}
 
   const byAg={};
   data.forEach(r=>{
@@ -2590,9 +2742,23 @@ function renderGG(){
 
     /* ── CARDS POR GERENTE: consolidado + retornos ── */
     /* ── CARDS POR GERENTE: contas abertas + retornos ── */
-    nomes.filter(g=>stats[g].contas>0||stats[g].retornos.length>0).forEach(ger=>{
+    /* Quando Acumulado (sem data filtrada), os cards ficam dentro de um bloco colapsável */
+    const gerentesComConteudo=nomes.filter(g=>stats[g].retornos.length>0);
+    const totalRetornos=gerentesComConteudo.reduce((a,g)=>a+stats[g].retornos.length,0);
+    const cardsId=`detalhe-${ag.replace(/\s/g,'_')}`;
+
+    if(!filtroDia && gerentesComConteudo.length>0){
+      // Acumulado: começa colapsado com botão pra expandir
+      html+=`<div style="margin-bottom:12px;">
+        <button type="button" onclick="toggleDetalheAg('${cardsId}',this)" style="background:#FAFCFF;color:var(--safra-navy);border:1px dashed var(--safra-border);padding:10px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;text-align:left;display:flex;justify-content:space-between;align-items:center;font-weight:500;">
+          <span>📋 Ver retornos · <strong>${gerentesComConteudo.length}</strong> gerentes · <strong>${totalRetornos}</strong> retornos</span>
+          <span style="color:var(--safra-text-3);font-size:14px;">▶</span>
+        </button>
+        <div id="${cardsId}" style="display:none;margin-top:8px;">`;
+    }
+
+    gerentesComConteudo.forEach(ger=>{
       const s=stats[ger];
-      const temContas=s.contasAbertas&&s.contasAbertas.length>0;
       const temRet=s.retornos.length>0;
       html+=`<div class="card">
         <div class="g-header">
@@ -2608,25 +2774,8 @@ function renderGG(){
           </div>
         </div>
 
-        ${temContas?`
-        <div class="stitle" style="margin-top:0;">🟢 Contas abertas (${s.contasAbertas.length})</div>
-        ${s.contasAbertas.slice().sort((a,b)=>a.data.localeCompare(b.data)).map(c=>`
-          <div class="retorno-item${c.lv?' lv-border':''}">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
-              <div style="flex:1;min-width:0;">
-                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                  <span style="font-weight:600;color:var(--safra-navy);">${c.empresa||'—'}</span>
-                  ${c.lv?'<span class="lv-flag" style="font-size:10px;">Lista Verde</span>':''}
-                  ${renderViabBadges(c.viab)}
-                </div>
-              </div>
-              <span style="font-size:10px;color:var(--safra-text-3);font-family:'DM Mono',monospace;white-space:nowrap;">${fmt(c.data)}</span>
-            </div>
-          </div>`).join('')}
-        `:''}
-
         ${temRet?`
-        <div class="stitle"${temContas?'':' style="margin-top:0;"'}>🔁 Retornos gerados (${s.retornos.length})</div>
+        <div class="stitle" style="margin-top:0;">🔁 Retornos gerados (${s.retornos.length})</div>
         ${s.retornos.map(r=>`
           <div class="retorno-item${r.listaVerde?' lv-border':''}">
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
@@ -2639,6 +2788,10 @@ function renderGG(){
         `:''}
       </div>`;
     });
+
+    if(!filtroDia && gerentesComConteudo.length>0){
+      html+=`</div></div>`; // fecha o bloco colapsável
+    }
   }
 
   // ═══════════════════════════════════════════════
