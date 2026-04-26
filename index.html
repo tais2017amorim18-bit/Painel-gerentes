@@ -430,6 +430,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .tag-origem.tipo-viabilizamais{background:#FEF3DC;color:#A0620D;border-color:#D4A030;}
 .tag-origem.tipo-retorno  {background:#EEF2F8;color:#2A3B5F;border-color:#9DB0CC;}
 .tag-origem.tipo-agendamento{background:#E0F2E9;color:#1A5A52;border-color:#5AAA8A;}
+.tag-origem.tipo-email{background:#FFF1E5;color:#A0440D;border-color:#E0AA88;}
 
 /* Badge "Virou conta" */
 .badge-conta-sim{background:#E6F5EE;color:#1A7A52;border:1px solid #A8D4BF;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:2px;}
@@ -559,18 +560,26 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   </div>
 
   <div class="stitle">Contatos</div>
-  <div class="frow3">
+  <div class="frow">
     <div><label>Total contatos</label><input type="number" id="f-contatos" placeholder="0" min="0"></div>
     <div><label>Efetivos</label><input type="number" id="f-efetivos" placeholder="0" min="0"></div>
-    <div><label>E-mails enviados</label><input type="number" id="f-emails" placeholder="0" min="0"></div>
   </div>
   <div>
-    <label>Agendamentos <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(digite o nome e pressione Enter ou clique em +)</span></label>
+    <label>📅 Agendamentos <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(digite o nome e pressione Enter ou clique em +)</span></label>
     <div style="display:flex;gap:6px;">
       <input type="text" id="f-agendamentos-nome" placeholder="Ex: Empório Pão de Queijo" style="margin:0;" onkeypress="if(event.key==='Enter'){event.preventDefault();adicionarAgendamento();}">
       <button type="button" class="btn btn-primary" onclick="adicionarAgendamento()" style="white-space:nowrap;padding:8px 14px;">+ Adicionar</button>
     </div>
     <div id="agendamentos-lista" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;"></div>
+  </div>
+  <div style="margin-top:12px;">
+    <label>📧 E-mails enviados <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(empresa + data de retorno — Enter ou clique em +)</span></label>
+    <div class="frow" style="gap:6px;">
+      <div><input type="text" id="f-emails-nome" placeholder="Empresa" style="margin:0;" onkeypress="if(event.key==='Enter'){event.preventDefault();adicionarEmail();}"></div>
+      <div><input type="date" id="f-emails-data" style="margin:0;"></div>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="adicionarEmail()" style="white-space:nowrap;padding:8px 14px;margin-top:6px;">+ Adicionar e-mail</button>
+    <div id="emails-lista" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;"></div>
   </div>
 
   <!-- 🏆 Produção do dia -->
@@ -579,64 +588,47 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
   <div style="border:1px solid var(--safra-border);border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">
     <div style="font-size:12px;font-weight:700;color:var(--safra-navy);margin-bottom:10px;">🎯 Consórcio</div>
-    <div class="frow3" style="margin-bottom:8px;">
+    <div class="frow3" style="margin-bottom:0;">
       <div><label style="margin:0 0 3px;font-size:11px;">Qtd</label><input type="number" id="f-prod-consorcio-qtd" placeholder="0" min="0" style="margin:0;"></div>
       <div><label style="margin:0 0 3px;font-size:11px;">Valor (R$)</label><input type="text" inputmode="decimal" id="f-prod-consorcio-valor" placeholder="Ex: 50.000" style="margin:0;"></div>
       <div><label style="margin:0 0 3px;font-size:11px;">Empresa (opcional)</label><input type="text" id="f-prod-consorcio-empresa" placeholder="Nome" style="margin:0;"></div>
     </div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;">
-      <input type="checkbox" id="f-prod-consorcio-estoque" style="width:16px;height:16px;cursor:pointer;accent-color:#1A7A52;">
-      🏦 Estoque — envia direto para aba Viabilizado
-    </label>
   </div>
 
   <div style="border:1px solid var(--safra-border);border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">
     <div style="font-size:12px;font-weight:700;color:var(--safra-navy);margin-bottom:10px;">📈 Investimentos</div>
-    <div class="frow3" style="margin-bottom:8px;">
+    <div class="frow3" style="margin-bottom:0;">
       <div><label style="margin:0 0 3px;font-size:11px;">Qtd</label><input type="number" id="f-prod-investimentos-qtd" placeholder="0" min="0" style="margin:0;"></div>
       <div><label style="margin:0 0 3px;font-size:11px;">Valor (R$)</label><input type="text" inputmode="decimal" id="f-prod-investimentos-valor" placeholder="Ex: 50.000" style="margin:0;"></div>
       <div><label style="margin:0 0 3px;font-size:11px;">Empresa (opcional)</label><input type="text" id="f-prod-investimentos-empresa" placeholder="Nome" style="margin:0;"></div>
     </div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;">
-      <input type="checkbox" id="f-prod-investimentos-estoque" style="width:16px;height:16px;cursor:pointer;accent-color:#1A7A52;">
-      🏦 Estoque — envia direto para aba Viabilizado
-    </label>
   </div>
 
   <div style="border:1px solid var(--safra-border);border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">
     <div style="font-size:12px;font-weight:700;color:var(--safra-navy);margin-bottom:10px;">🛡️ Seguros</div>
-    <div class="frow3" style="margin-bottom:8px;">
+    <div class="frow3" style="margin-bottom:0;">
       <div><label style="margin:0 0 3px;font-size:11px;">Qtd</label><input type="number" id="f-prod-seguros-qtd" placeholder="0" min="0" style="margin:0;"></div>
       <div><label style="margin:0 0 3px;font-size:11px;">Valor (R$)</label><input type="text" inputmode="decimal" id="f-prod-seguros-valor" placeholder="Ex: 50.000" style="margin:0;"></div>
       <div><label style="margin:0 0 3px;font-size:11px;">Empresa (opcional)</label><input type="text" id="f-prod-seguros-empresa" placeholder="Nome" style="margin:0;"></div>
     </div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;">
-      <input type="checkbox" id="f-prod-seguros-estoque" style="width:16px;height:16px;cursor:pointer;accent-color:#1A7A52;">
-      🏦 Estoque — envia direto para aba Viabilizado
-    </label>
   </div>
 
   <div style="border:1px solid var(--safra-border);border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">
     <div style="font-size:12px;font-weight:700;color:var(--safra-navy);margin-bottom:10px;">💰 Crédito</div>
-    <div class="frow3" style="margin-bottom:8px;">
+    <div class="frow3" style="margin-bottom:0;">
       <div><label style="margin:0 0 3px;font-size:11px;">Qtd</label><input type="number" id="f-prod-credito-qtd" placeholder="0" min="0" style="margin:0;"></div>
       <div><label style="margin:0 0 3px;font-size:11px;">Valor (R$)</label><input type="text" inputmode="decimal" id="f-prod-credito-valor" placeholder="Ex: 50.000" style="margin:0;"></div>
       <div><label style="margin:0 0 3px;font-size:11px;">Empresa (opcional)</label><input type="text" id="f-prod-credito-empresa" placeholder="Nome" style="margin:0;"></div>
     </div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;">
-      <input type="checkbox" id="f-prod-credito-estoque" style="width:16px;height:16px;cursor:pointer;accent-color:#1A7A52;">
-      🏦 Estoque — envia direto para aba Viabilizado
-    </label>
   </div>
 
   <div style="border:1px solid var(--safra-border);border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">
     <div style="font-size:12px;font-weight:700;color:var(--safra-navy);margin-bottom:10px;">✅ Viabilizado</div>
-    <div class="frow3" style="margin-bottom:8px;">
+    <div class="frow" style="margin-bottom:8px;">
       <div><label style="margin:0 0 3px;font-size:11px;">Qtd</label><input type="number" id="f-prod-viabilizado-qtd" placeholder="0" min="0" style="margin:0;"></div>
-      <div><label style="margin:0 0 3px;font-size:11px;">Valor (R$)</label><input type="text" inputmode="decimal" id="f-prod-viabilizado-valor" placeholder="Ex: 50.000" style="margin:0;"></div>
       <div><label style="margin:0 0 3px;font-size:11px;">Empresa (opcional)</label><input type="text" id="f-prod-viabilizado-empresa" placeholder="Nome" style="margin:0;"></div>
     </div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;">
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--safra-text-2);margin:0;cursor:pointer;user-select:none;padding:6px 8px;background:#F0FAF5;border:1px solid #A8D4BF;border-radius:6px;">
       <input type="checkbox" id="f-prod-viabilizado-estoque" style="width:16px;height:16px;cursor:pointer;accent-color:#1A7A52;">
       🏦 Estoque — envia direto para aba Viabilizado
     </label>
@@ -1479,6 +1471,7 @@ const tiposAcao={
   altobacen:    {grupo:'bussola', label:'Alto Bacen',        icone:'🧭', css:'tipo-altobacen'},
   viabilizamais:{grupo:'bussola', label:'Viabiliza+',        icone:'🧭', css:'tipo-viabilizamais'},
   agendamento:  {grupo:'agendamento', label:'Agendamento',   icone:'📅', css:'tipo-agendamento'},
+  email:        {grupo:'email',       label:'E-mail',         icone:'📧', css:'tipo-email'},
 };
 
 // Seleção de viabilização nas ações da Bússola (chave composta tipo+índice)
@@ -1511,6 +1504,38 @@ function adicionarAgendamento(){
   inp.value='';
   inp.focus();
   renderAgendamentos();
+}
+
+// E-mails enviados como lista de chips: cada item = {empresa, data}
+let emailsLista=[];
+function renderEmails(){
+  const el=document.getElementById('emails-lista');
+  if(!el) return;
+  if(!emailsLista.length){ el.innerHTML=''; return; }
+  el.innerHTML=emailsLista.map((item,i)=>`
+    <div style="display:inline-flex;align-items:center;gap:6px;background:#FFF1E5;color:#A0440D;border:1px solid #E0AA88;padding:4px 8px 4px 10px;border-radius:14px;font-size:12px;font-weight:500;">
+      📧 ${item.empresa}${item.data?` <span style="font-size:10px;color:#A0440D;opacity:0.75;">· ${item.data.split('-').reverse().join('/')}</span>`:''}
+      <button type="button" data-rem-email="${i}" style="background:none;border:none;cursor:pointer;color:#A0440D;font-size:14px;padding:0;line-height:1;" title="Remover">✕</button>
+    </div>`).join('');
+  el.querySelectorAll('button[data-rem-email]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const i=parseInt(btn.getAttribute('data-rem-email'));
+      emailsLista.splice(i,1);
+      renderEmails();
+    });
+  });
+}
+function adicionarEmail(){
+  const inpNome=document.getElementById('f-emails-nome');
+  const inpData=document.getElementById('f-emails-data');
+  const empresa=(inpNome?.value||'').trim();
+  const data=(inpData?.value||'').trim();
+  if(!empresa) return;
+  emailsLista.push({empresa,data});
+  inpNome.value='';
+  inpData.value='';
+  inpNome.focus();
+  renderEmails();
 }
 
 function selectViabAcao(v,el,tipo,idx){
@@ -1696,21 +1721,71 @@ function gerarSnapshot(){
   const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const [ano,m]=mes.split('-');
   const label=`${meses[parseInt(m)-1]}/${ano}`;
+  const fimMes=new Date(parseInt(ano),parseInt(m),0).toISOString().slice(0,10);
 
   const porAg={};
   Object.keys(agencias).forEach(ag=>{
-    porAg[ag]={contas:0,credenciamentos:0,contatos:0,efetivos:0,lv:0,ngerentes:agencias[ag].length};
-  });
-  regs.forEach(r=>{
-    if(!porAg[r.agencia]) porAg[r.agencia]={contas:0,credenciamentos:0,contatos:0,efetivos:0,lv:0,ngerentes:0};
-    porAg[r.agencia].contas+=r.contas||0;
-    porAg[r.agencia].credenciamentos+=r.credenciamentos||0;
-    porAg[r.agencia].contatos+=r.contatos||0;
-    porAg[r.agencia].efetivos+=r.efetivos||0;
-    if(r.listaVerde)porAg[r.agencia].lv++;
+    porAg[ag]={contas:0,credenciamentos:0,contatos:0,efetivos:0,lv:0,ngerentes:agencias[ag].length,
+      viabilizadas:0,viabPorTipo:{safrapay:0,credito:0,investimento:0,margem:0},
+      pipeTotal:0,pipeCount:0,
+      contasPorGerente:{}};
   });
 
-  return {mes,label,agencias:porAg,totalRegs:regs.length,dataSnapshot:today};
+  // Lista de viabilizados/pipe que ultrapassam o mês (ficam pendentes)
+  const pendentes={viabilizados:[],pipe:[]};
+
+  regs.forEach(r=>{
+    if(!porAg[r.agencia]) porAg[r.agencia]={contas:0,credenciamentos:0,contatos:0,efetivos:0,lv:0,ngerentes:0,
+      viabilizadas:0,viabPorTipo:{safrapay:0,credito:0,investimento:0,margem:0},pipeTotal:0,pipeCount:0,contasPorGerente:{}};
+    const ag=porAg[r.agencia];
+    ag.contas+=r.contas||0;
+    ag.credenciamentos+=r.credenciamentos||0;
+    ag.contatos+=r.contatos||0;
+    ag.efetivos+=r.efetivos||0;
+    if(r.listaVerde) ag.lv++;
+    // Contas por gerente (do mês)
+    if(!ag.contasPorGerente[r.gerente]) ag.contasPorGerente[r.gerente]=0;
+    ag.contasPorGerente[r.gerente]+=r.contas||0;
+    // Soma viabilizações
+    if(Array.isArray(r.contasDetalhe)){
+      r.contasDetalhe.forEach((c,idx)=>{
+        const st=(r.contasViab&&r.contasViab[`${idx}`])||{};
+        const viab=!!(st.safrapay||st.credito||st.investimento||st.margem);
+        if(viab){
+          ag.viabilizadas++;
+          if(st.safrapay) ag.viabPorTipo.safrapay++;
+          if(st.credito) ag.viabPorTipo.credito++;
+          if(st.investimento) ag.viabPorTipo.investimento++;
+          if(st.margem) ag.viabPorTipo.margem++;
+          // Adiciona aos pendentes (carrega pro próximo mês com info)
+          pendentes.viabilizados.push({
+            agencia:r.agencia, gerente:r.gerente, mes,
+            empresa:c.empresa||'', dataReg:r.data,
+            tipos:[st.safrapay&&'SafraPay',st.credito&&'Crédito',st.investimento&&'Investimento',st.margem&&'Margem'].filter(Boolean),
+          });
+        }
+      });
+    }
+    // Pipe de crédito (Base + Bússola)
+    if(Array.isArray(r.acoesDetalhe)){
+      r.acoesDetalhe.forEach(a=>{
+        if(a.pipe){
+          ag.pipeCount++;
+          ag.pipeTotal+=a.valorCred||0;
+          // Pipe que ultrapassou o agendamento (fica pendente)
+          if(a.agendamento && a.agendamento>fimMes){
+            pendentes.pipe.push({
+              agencia:r.agencia, gerente:r.gerente, mes,
+              empresa:a.empresa||'', valor:a.valorCred||0,
+              agendamento:a.agendamento,
+            });
+          }
+        }
+      });
+    }
+  });
+
+  return {mes,label,agencias:porAg,totalRegs:regs.length,dataSnapshot:today,pendentes};
 }
 
 async function confirmarNovoMes(){
@@ -1789,6 +1864,144 @@ function toggleSenha(inputId, btn){
 function initials(s){return s.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
 // Formata valor em R$ (separador de milhar PT-BR, sem decimais)
 function fmtBRL(v){return (v||0).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});}
+
+// ═══════════════════════════════════════════════
+// DIAGNÓSTICO DE EFETIVIDADE
+// Compara o gerente com a média do Q1 (top performers) e identifica o gargalo
+// Retorna: { tipo, icone, titulo, cor, dica, comparacao }
+// ═══════════════════════════════════════════════
+function diagnosticarGerente(g, mediaQ1){
+  // mediaQ1 = {contatos, efetivos, agendamentos, visitas, contas, viabilizacoes}
+  // g = mesmas métricas do gerente
+  const m=mediaQ1||{};
+  // Calcula % do gerente em relação ao Q1 (cap em 100%)
+  const pct=(v,base)=> base>0 ? Math.min(Math.round((v/base)*100),200) : 0;
+
+  const pctContatos=pct(g.contatos,m.contatos);
+  const pctAgend = m.contatos>0 && g.contatos>0
+    ? Math.round((g.agendamentos/g.contatos*100) / Math.max(1,(m.agendamentos/m.contatos*100)) * 100)
+    : 0;
+  const pctVisitas=pct(g.visitas, m.visitas);
+  const pctContas=pct(g.contas, m.contas);
+  const pctViab = g.contas>0 ? Math.round((g.viabilizacoes/g.contas)*100) : 0;
+  const pctViabQ1 = m.contas>0 ? Math.round((m.viabilizacoes/m.contas)*100) : 0;
+
+  // Detecção em cascata: do mais cedo no funil pro mais tarde
+  // 1. Inativo: tudo muito baixo
+  if(g.contatos<10 && g.agendamentos<3 && g.contas<1){
+    return {
+      tipo:'inativo',
+      icone:'⚠️',
+      titulo:'Inativo / atenção urgente',
+      cor:'#B02020',
+      corBg:'#FDEAEA',
+      dica:'Praticamente sem atividade. Conversar pessoalmente para entender o que está acontecendo.',
+    };
+  }
+  // 2. Pouco volume de contatos
+  if(g.contatos < (m.contatos*0.5)){
+    return {
+      tipo:'pouco-volume',
+      icone:'📞',
+      titulo:'Falta volume de contatos',
+      cor:'#B02020',
+      corBg:'#FDEAEA',
+      dica:`Fazendo apenas ${g.contatos} contatos vs. ${Math.round(m.contatos)} da média Q1 (${pctContatos}%). Aumentar o volume de ligações e abordagens diárias.`,
+    };
+  }
+  // 3. Aborda mal: contatos OK mas poucos agendamentos
+  const taxaAgendG=g.contatos>0?(g.agendamentos/g.contatos):0;
+  const taxaAgendQ=m.contatos>0?(m.agendamentos/m.contatos):0;
+  if(taxaAgendG < (taxaAgendQ*0.5) && g.agendamentos<3){
+    return {
+      tipo:'aborda-mal',
+      icone:'🚪',
+      titulo:'Conversão contato → agendamento baixa',
+      cor:'#A0620D',
+      corBg:'#FEF3DC',
+      dica:`Apenas ${g.agendamentos} agendamentos em ${g.contatos} contatos (${(taxaAgendG*100).toFixed(0)}% vs ${(taxaAgendQ*100).toFixed(0)}% do Q1). Revisar script de abordagem.`,
+    };
+  }
+  // 4. Não materializa: agenda mas não visita (Base/Bússola)
+  if(g.agendamentos>=3 && g.visitas < (g.agendamentos*0.5) && g.visitas<m.visitas*0.5){
+    return {
+      tipo:'nao-materializa',
+      icone:'📅',
+      titulo:'Agenda mas não visita',
+      cor:'#A0620D',
+      corBg:'#FEF3DC',
+      dica:`${g.agendamentos} agendamentos, mas só ${g.visitas} visitas Base/Bússola executadas. Acompanhar agenda diária pra garantir que vá na empresa.`,
+    };
+  }
+  // 5. Não fecha: visita mas não abre conta
+  if(g.visitas>=5 && g.contas < (m.contas*0.5)){
+    return {
+      tipo:'nao-fecha',
+      icone:'💼',
+      titulo:'Visita mas não fecha conta',
+      cor:'#A0620D',
+      corBg:'#FEF3DC',
+      dica:`${g.visitas} visitas resultaram em apenas ${g.contas} contas. Trabalhar argumentação/objeções na visita.`,
+    };
+  }
+  // 6. Não rentabiliza: abre conta mas não viabiliza produtos
+  if(g.contas>=2 && pctViab<30 && pctViab<(pctViabQ1*0.5)){
+    return {
+      tipo:'nao-rentabiliza',
+      icone:'🎯',
+      titulo:'Abre conta sem rentabilizar',
+      cor:'#C8922A',
+      corBg:'#FEF9E8',
+      dica:`Apenas ${pctViab}% das contas viabilizadas vs ${pctViabQ1}% no Q1. Após abrir, ofertar SafraPay, Crédito, Investimentos.`,
+    };
+  }
+  // Caso geral: abaixo da média mas sem padrão claro
+  return {
+    tipo:'geral',
+    icone:'📊',
+    titulo:'Performance abaixo da média',
+    cor:'#6B7280',
+    corBg:'#F1F3F7',
+    dica:'Performance geral abaixo do Q1, mas sem um único gargalo claro. Revisar todo o funil com o gerente.',
+  };
+}
+
+// Calcula métricas médias dos gerentes Q1 (≥5 contas)
+function calcularMediaQ1(todos){
+  const q1 = todos.filter(g=>g.contas>=5);
+  if(q1.length===0) return null;
+  const soma=q1.reduce((a,g)=>({
+    contatos:a.contatos+(g.contatos||0),
+    efetivos:a.efetivos+(g.efetivos||0),
+    agendamentos:a.agendamentos+(g.agendamentos||0),
+    visitas:a.visitas+(g.visitas||0),
+    contas:a.contas+(g.contas||0),
+    viabilizacoes:a.viabilizacoes+(g.viabilizacoes||0),
+  }),{contatos:0,efetivos:0,agendamentos:0,visitas:0,contas:0,viabilizacoes:0});
+  return {
+    contatos:soma.contatos/q1.length,
+    efetivos:soma.efetivos/q1.length,
+    agendamentos:soma.agendamentos/q1.length,
+    visitas:soma.visitas/q1.length,
+    contas:soma.contas/q1.length,
+    viabilizacoes:soma.viabilizacoes/q1.length,
+    qtd:q1.length,
+  };
+}
+
+// Toggle do card expandível de diagnóstico
+function toggleDiag(id){
+  const el=document.getElementById('diag-detalhe-'+id);
+  const arrow=document.getElementById('diag-arrow-'+id);
+  if(!el) return;
+  if(el.style.display==='none'||!el.style.display){
+    el.style.display='block';
+    if(arrow) arrow.textContent='▼';
+  } else {
+    el.style.display='none';
+    if(arrow) arrow.textContent='▶';
+  }
+}
 
 function gerarReportWpp(r){
   const vl={credito:'Crédito',safrapay:'SafraPay',cobranca:'Cobrança',ativos:'Passivo',margem:'Margem'};
@@ -1920,20 +2133,36 @@ async function salvar(){
     }
   });
 
-  // Coleta produção do dia (5 produtos: qtd + valor + empresa + estoque)
+  // Coleta a lista de e-mails enviados e inclui cada um como item tipo 'email'
+  const listaEmails=(function(){
+    const inpN=document.getElementById('f-emails-nome');
+    const inpD=document.getElementById('f-emails-data');
+    const empExtra=(inpN?.value||'').trim();
+    const dataExtra=(inpD?.value||'').trim();
+    const lista=[...emailsLista];
+    if(empExtra) lista.push({empresa:empExtra,data:dataExtra});
+    return lista;
+  })();
+  listaEmails.forEach(item=>{
+    if(item.empresa && item.empresa.trim()){
+      acoesDetalhe.push({tipo:'email',empresa:item.empresa.trim(),agendamento:item.data||'',obs:'',virouConta:false});
+    }
+  });
+
+  // Coleta produção do dia. Estoque SÓ no 'viabilizado'. Valor SÓ pros 4 primeiros (viabilizado não tem valor).
   const producao={};
   ['consorcio','investimentos','seguros','credito','viabilizado'].forEach(p=>{
     const q=parseInt(document.getElementById(`f-prod-${p}-qtd`)?.value)||0;
-    const v=parseValor(document.getElementById(`f-prod-${p}-valor`)?.value);
+    const v=p==='viabilizado' ? 0 : parseValor(document.getElementById(`f-prod-${p}-valor`)?.value);
     const emp=(document.getElementById(`f-prod-${p}-empresa`)?.value||'').trim();
-    const est=!!document.getElementById(`f-prod-${p}-estoque`)?.checked;
+    const est=p==='viabilizado' ? !!document.getElementById(`f-prod-${p}-estoque`)?.checked : false;
     if(q>0||v>0||emp||est) producao[p]={qtd:q,valor:v,empresa:emp,estoque:est};
   });
 
   const reg={agencia,gerente,data,
     contatos:parseInt(document.getElementById('f-contatos').value)||0,
     efetivos:parseInt(document.getElementById('f-efetivos').value)||0,
-    emails:parseInt(document.getElementById('f-emails').value)||0,
+    emails:listaEmails.length,
     visitas:totalAcoes,
     acoes,
     acoesDetalhe,
@@ -1980,12 +2209,10 @@ async function salvar(){
 }
 
 function limpar(){
-  ['f-contatos','f-efetivos','f-emails','f-acao-prospeccao','f-acao-base','f-acao-fgi','f-acao-altobacen','f-acao-viabilizamais','f-agendamentos-nome','f-contas','f-credenciamentos','f-aguardando','f-ret-empresa','f-ret-data','f-ret-obs','f-prod-consorcio-qtd','f-prod-consorcio-valor','f-prod-consorcio-empresa','f-prod-investimentos-qtd','f-prod-investimentos-valor','f-prod-investimentos-empresa','f-prod-seguros-qtd','f-prod-seguros-valor','f-prod-seguros-empresa','f-prod-credito-qtd','f-prod-credito-valor','f-prod-credito-empresa','f-prod-viabilizado-qtd','f-prod-viabilizado-valor','f-prod-viabilizado-empresa'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  // Desmarca checkboxes de estoque
-  ['consorcio','investimentos','seguros','credito','viabilizado'].forEach(p=>{
-    const cb=document.getElementById(`f-prod-${p}-estoque`);
-    if(cb) cb.checked=false;
-  });
+  ['f-contatos','f-efetivos','f-acao-prospeccao','f-acao-base','f-acao-fgi','f-acao-altobacen','f-acao-viabilizamais','f-agendamentos-nome','f-emails-nome','f-emails-data','f-contas','f-credenciamentos','f-aguardando','f-ret-empresa','f-ret-data','f-ret-obs','f-prod-consorcio-qtd','f-prod-consorcio-valor','f-prod-consorcio-empresa','f-prod-investimentos-qtd','f-prod-investimentos-valor','f-prod-investimentos-empresa','f-prod-seguros-qtd','f-prod-seguros-valor','f-prod-seguros-empresa','f-prod-credito-qtd','f-prod-credito-valor','f-prod-credito-empresa','f-prod-viabilizado-qtd','f-prod-viabilizado-empresa'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  // Desmarca checkbox de estoque (só existe pro viabilizado)
+  const cbEst=document.getElementById('f-prod-viabilizado-estoque');
+  if(cbEst) cbEst.checked=false;
   document.getElementById('f-data').value=today;
   document.getElementById('f-agencia').value='';
   document.getElementById('f-gerente').innerHTML='<option value="">Selecione a agência primeiro</option>';
@@ -2004,21 +2231,33 @@ function limpar(){
   // Limpa lista de agendamentos
   agendamentosLista=[];
   renderAgendamentos();
+  emailsLista=[];
+  renderEmails();
 }
 
 function calcGerente(rlist){
   const dias=[...new Set(rlist.map(r=>r.data))].sort();
   const contasAbertas=[];
   let pipeTotal=0, pipeCount=0;
+  let visitas=0, agendamentos=0, viabilizacoes=0;
   const prod={consorcio:{qtd:0,valor:0},investimentos:{qtd:0,valor:0},seguros:{qtd:0,valor:0},credito:{qtd:0,valor:0},viabilizado:{qtd:0,valor:0}};
   rlist.forEach(r=>{
     if(r.contasDetalhe&&r.contasDetalhe.length){
-      r.contasDetalhe.forEach(c=>contasAbertas.push({...c,data:r.data}));
+      r.contasDetalhe.forEach((c,idx)=>{
+        contasAbertas.push({...c,data:r.data});
+        const st=(r.contasViab&&r.contasViab[`${idx}`])||{};
+        if(st.safrapay||st.credito||st.investimento||st.margem) viabilizacoes++;
+      });
     }
+    visitas+=r.visitas||0;
     if(Array.isArray(r.acoesDetalhe)){
       r.acoesDetalhe.forEach(a=>{
         if(a.pipe){pipeCount++; pipeTotal+=a.valorCred||0;}
+        if(a.tipo==='agendamento'&&a.empresa) agendamentos++;
       });
+    }
+    if(agendamentos===0 && r.agendamentos && typeof r.agendamentos==='string'){
+      agendamentos+=r.agendamentos.split(/[;,\n]/).map(s=>s.trim()).filter(Boolean).length;
     }
     if(r.producao){
       Object.keys(prod).forEach(p=>{
@@ -2042,6 +2281,7 @@ function calcGerente(rlist){
     retornos:        rlist.filter(r=>r.retEmpresa),
     contasAbertas,
     pipeTotal, pipeCount,
+    visitas, agendamentos, viabilizacoes,
     prod,
     ultData:         dias[dias.length-1],
   };
@@ -2056,6 +2296,12 @@ function renderGG(){
   if(filtroAg)  data=data.filter(r=>r.agencia===filtroAg);
   if(filtroGer) data=data.filter(r=>r.gerente===filtroGer);
   if(filtroDia) data=data.filter(r=>r.data===filtroDia);
+  // Filtro: ignora registros de gerentes que já não estão cadastrados na sua agência atual
+  // (evita duplicação quando o mesmo nome existe em agências diferentes)
+  data=data.filter(r=>{
+    const lista=agencias[r.agencia]||[];
+    return lista.includes(r.gerente);
+  });
   if(!data.length){el.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
 
   const byAg={};
@@ -2212,15 +2458,34 @@ function renderGG(){
 
     /* ── CARD DE PIPE DA AGÊNCIA (se houver) ── */
     if(agPipeCount>0){
-      html+=`<div style="background:linear-gradient(135deg,#FEF3DC 0%,#FDE9B5 100%);border:1px solid #D4A030;border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-        <div>
-          <div style="font-size:10px;font-weight:700;color:#A0620D;text-transform:uppercase;letter-spacing:0.05em;">💰 Pipe de crédito · ${ag}</div>
-          <div style="font-size:11px;color:#633806;margin-top:1px;">Somatório das ações Base e Bússola com flag de pipe</div>
+      // Coleta pipe por gerente
+      const pipePorGer=[];
+      nomes.forEach(g=>{
+        const s=stats[g];
+        if(s.pipeCount>0) pipePorGer.push({gerente:g,valor:s.pipeTotal||0,count:s.pipeCount});
+      });
+      pipePorGer.sort((a,b)=>b.valor-a.valor);
+      html+=`<div style="background:linear-gradient(135deg,#FEF3DC 0%,#FDE9B5 100%);border:1px solid #D4A030;border-radius:8px;padding:12px 14px;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;${pipePorGer.length>0?'border-bottom:1px dashed #D4A030;padding-bottom:10px;margin-bottom:10px;':''}">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#A0620D;text-transform:uppercase;letter-spacing:0.05em;">💰 Pipe de crédito · ${ag}</div>
+            <div style="font-size:11px;color:#633806;margin-top:1px;">Somatório das ações Base e Bússola com flag de pipe</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:18px;font-weight:700;color:#A0620D;line-height:1;">R$ ${fmtBRL(agPipeTotal)}</div>
+            <div style="font-size:11px;color:#633806;">${agPipeCount} cliente${agPipeCount!==1?'s':''}</div>
+          </div>
         </div>
-        <div style="text-align:right;">
-          <div style="font-size:18px;font-weight:700;color:#A0620D;line-height:1;">R$ ${fmtBRL(agPipeTotal)}</div>
-          <div style="font-size:11px;color:#633806;">${agPipeCount} cliente${agPipeCount!==1?'s':''}</div>
-        </div>
+        ${pipePorGer.length>0?`<div>
+          <div style="font-size:10px;font-weight:700;color:#A0620D;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Por gerente</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;">
+            ${pipePorGer.map(p=>`<div style="background:#fff;border:1px solid #D4A030;border-radius:6px;padding:6px 10px;">
+              <div style="font-size:11px;font-weight:600;color:var(--safra-navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.gerente}</div>
+              <div style="font-size:13px;font-weight:700;color:#A0620D;">R$ ${fmtBRL(p.valor)}</div>
+              <div style="font-size:10px;color:var(--safra-text-3);">${p.count} cliente${p.count!==1?'s':''}</div>
+            </div>`).join('')}
+          </div>
+        </div>`:''}
       </div>`;
     }
 
@@ -2375,6 +2640,74 @@ function renderGG(){
       </div>`;
     });
   }
+
+  // ═══════════════════════════════════════════════
+  // DIAGNÓSTICO TOP 10 PIORES (Visão GG)
+  // ═══════════════════════════════════════════════
+  // Coleta todos os gerentes com pelo menos 1 contato
+  const todosGer=[];
+  Object.entries(byAg).forEach(([ag,gerentes])=>{
+    Object.entries(gerentes).forEach(([ger,rlist])=>{
+      const s=calcGerente(rlist);
+      if(s.contatos>0||s.contas>0){
+        todosGer.push({
+          agencia:ag, gerente:ger,
+          contatos:s.contatos, efetivos:s.efetivos,
+          agendamentos:s.agendamentos, visitas:s.visitas,
+          contas:s.contas, viabilizacoes:s.viabilizacoes,
+          score: s.contas*10 + (s.contas>0?Math.round(s.efetivos/Math.max(1,s.contatos)*100):0)/2,
+        });
+      }
+    });
+  });
+  if(todosGer.length>=2){
+    const top10=todosGer.sort((a,b)=>a.score-b.score).slice(0,10);
+    const mediaQ1=calcularMediaQ1(todosGer);
+    html+=`<div class="card-title" style="margin-top:1rem;">⚠️ Diagnóstico — Top 10 piores gerentes <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(clique no card para ver detalhes)</span></div>
+    <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:0.75rem;">Performance abaixo da média. Diagnóstico baseado em comparação com a média Q1${mediaQ1?` (${mediaQ1.qtd} gerentes com 5+ contas)`:''}.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px;margin-bottom:1rem;">`;
+    top10.forEach((g,i)=>{
+      const diag=mediaQ1?diagnosticarGerente(g,mediaQ1):{tipo:'sem-q1',icone:'📊',titulo:'Sem Q1 para comparação',cor:'#6B7280',corBg:'#F1F3F7',dica:'Não há gerentes com 5+ contas para servir de referência.'};
+      const id=`gg-${i}`;
+      html+=`<div style="border:1px solid ${diag.cor};border-radius:8px;background:${diag.corBg};overflow:hidden;">
+        <div onclick="toggleDiag('${id}')" style="padding:10px 12px;cursor:pointer;user-select:none;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:10px;color:var(--safra-text-3);font-weight:600;">#${i+1} · ${g.agencia}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--safra-navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${g.gerente}</div>
+            <div style="font-size:11px;color:${diag.cor};font-weight:600;margin-top:2px;">${diag.icone} ${diag.titulo}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:18px;font-weight:700;color:${diag.cor};line-height:1;">${g.contas}</div>
+            <div style="font-size:9px;color:var(--safra-text-3);">contas</div>
+            <div id="diag-arrow-${id}" style="font-size:11px;color:${diag.cor};margin-top:2px;">▶</div>
+          </div>
+        </div>
+        <div id="diag-detalhe-${id}" style="display:none;padding:0 12px 12px;border-top:1px dashed ${diag.cor};">
+          <div style="font-size:11px;color:var(--safra-text-2);font-weight:500;margin-top:8px;line-height:1.45;">${diag.dica}</div>
+          <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:10px;">
+            <div style="background:#fff;border:1px solid var(--safra-border);border-radius:6px;padding:6px 8px;">
+              <div style="font-weight:700;color:var(--safra-navy);font-size:9px;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Este gerente</div>
+              <div style="display:flex;justify-content:space-between;"><span>Contatos:</span><strong>${g.contatos}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Agendam.:</span><strong>${g.agendamentos}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Visitas:</span><strong>${g.visitas||0}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Contas:</span><strong>${g.contas}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Viab.:</span><strong>${g.viabilizacoes||0}</strong></div>
+            </div>
+            <div style="background:#F8FCFA;border:1px solid #A8D4BF;border-radius:6px;padding:6px 8px;">
+              <div style="font-weight:700;color:#1A7A52;font-size:9px;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Média Q1${mediaQ1?'':' (n/d)'}</div>
+              ${mediaQ1?`<div style="display:flex;justify-content:space-between;"><span>Contatos:</span><strong>${Math.round(mediaQ1.contatos)}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Agendam.:</span><strong>${Math.round(mediaQ1.agendamentos)}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Visitas:</span><strong>${Math.round(mediaQ1.visitas)}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Contas:</span><strong>${Math.round(mediaQ1.contas)}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Viab.:</span><strong>${Math.round(mediaQ1.viabilizacoes)}</strong></div>`:'<div style="color:var(--safra-text-3);">Sem dados</div>'}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  }
+
   el.innerHTML=html;
 }
 
@@ -2584,11 +2917,12 @@ function renderRegional(){
   const byGer={};
   dadosReg.forEach(r=>{
     const key=r.agencia+'||'+r.gerente;
-    if(!byGer[key])byGer[key]={agencia:r.agencia,gerente:r.gerente,contatos:0,efetivos:0,contas:0,credenciamentos:0,agendamentos:0,dias:new Set()};
+    if(!byGer[key])byGer[key]={agencia:r.agencia,gerente:r.gerente,contatos:0,efetivos:0,contas:0,credenciamentos:0,agendamentos:0,visitas:0,viabilizacoes:0,dias:new Set()};
     byGer[key].contatos+=r.contatos;
     byGer[key].efetivos+=r.efetivos;
     byGer[key].contas+=r.contas;
     byGer[key].credenciamentos+=r.credenciamentos;
+    byGer[key].visitas+=r.visitas||0;
     // Conta agendamentos: prioriza acoesDetalhe (formato novo), senão quebra o texto antigo
     let nAgend=0;
     if(Array.isArray(r.acoesDetalhe)){
@@ -2598,6 +2932,13 @@ function renderRegional(){
       nAgend=r.agendamentos.split(/[;,\n]/).map(s=>s.trim()).filter(Boolean).length;
     }
     byGer[key].agendamentos+=nAgend;
+    // Conta viabilizações (contas com pelo menos 1 flag marcada)
+    if(Array.isArray(r.contasDetalhe)){
+      r.contasDetalhe.forEach((c,idx)=>{
+        const st=(r.contasViab&&r.contasViab[`${idx}`])||{};
+        if(st.safrapay||st.credito||st.investimento||st.margem) byGer[key].viabilizacoes++;
+      });
+    }
     byGer[key].dias.add(r.data);
   });
   const todos=Object.values(byGer).map(g=>({...g,dias:g.dias.size})).filter(g=>g.contatos>0);
@@ -3031,36 +3372,60 @@ function renderRegional(){
   </div>
   `:''}
 
-  <!-- ⚠️ 15 PIORES GERENTES -->
-  ${todos.length>=2?`
-  <div class="card-title" style="margin-bottom:0.35rem;">⚠️ Atenção — 15 piores gerentes</div>
-  <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:0.75rem;">Fora do relógio + baixa efetividade (score baixo).</div>
-  <div class="card" style="border-color:#F5C6C6;margin-bottom:1rem;">
-    <table class="rtable">
-      <thead><tr>
-        <th>#</th><th>Gerente</th><th>Agência</th>
-        <th style="text-align:center;">Contas</th>
-        <th style="text-align:center;">Relógio</th>
-        <th style="text-align:center;">Agend.%</th>
-        <th style="text-align:center;">Score</th>
-      </tr></thead>
-      <tbody>${pioresScore.map((g,i)=>{
-        const statusRelogio=g.noRelogio
-          ?`<span style="background:#E6F5EE;color:#1A7A52;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;">✓ ${Math.round(g.pctRelogio)}%</span>`
-          :`<span style="background:#FDEAEA;color:#B02020;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;">${Math.round(g.pctRelogio)}%</span>`;
-        return`<tr>
-          <td style="width:32px;color:#B02020;font-weight:600;">${i+1}</td>
-          <td><strong>${g.gerente}</strong> ${badgeNovo(g.agencia,g.gerente)}</td>
-          <td style="font-size:11px;color:var(--safra-text-3);">${g.agencia}</td>
-          <td style="text-align:center;font-weight:600;color:${g.contas>0?'var(--safra-text)':'#B02020'};">${g.contas}</td>
-          <td style="text-align:center;">${statusRelogio}</td>
-          <td style="text-align:center;font-weight:600;">${g.pctAgend.toFixed(1)}%</td>
-          <td style="text-align:center;font-weight:700;color:#B02020;">${Math.round(g.score)}</td>
-        </tr>`;
-      }).join('')}</tbody>
-    </table>
-  </div>
-  `:`<div class="empty" style="margin-bottom:1rem;">Registre pelo menos 2 gerentes para ver o comparativo de desempenho.</div>`}
+  <!-- ⚠️ TOP 10 PIORES GERENTES com diagnóstico expandível -->
+  ${todos.length>=2?(()=>{
+    const top10=pioresScore.slice(0,10);
+    const mediaQ1=calcularMediaQ1(todos);
+    let blocoHtml=`<div class="card-title" style="margin-bottom:0.35rem;">⚠️ Atenção — Top 10 piores gerentes <span style="font-weight:400;color:var(--safra-text-3);font-size:11px;">(clique no card para ver diagnóstico)</span></div>
+    <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:0.75rem;">Fora do relógio + baixa efetividade. Diagnóstico baseado em comparação com a média Q1${mediaQ1?` (${mediaQ1.qtd} gerentes)`:''}.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px;margin-bottom:1rem;">`;
+    top10.forEach((g,i)=>{
+      const diag=mediaQ1?diagnosticarGerente(g,mediaQ1):{tipo:'sem-q1',icone:'📊',titulo:'Sem Q1 para comparação',cor:'#6B7280',corBg:'#F1F3F7',dica:'Não há gerentes com 5+ contas para servir de referência.'};
+      const id=`reg-${i}`;
+      blocoHtml+=`<div style="border:1px solid ${diag.cor};border-radius:8px;background:${diag.corBg};overflow:hidden;">
+        <div onclick="toggleDiag('${id}')" style="padding:10px 12px;cursor:pointer;user-select:none;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:10px;color:var(--safra-text-3);font-weight:600;">#${i+1} · ${g.agencia}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--safra-navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${g.gerente} ${badgeNovo(g.agencia,g.gerente)}</div>
+            <div style="font-size:11px;color:${diag.cor};font-weight:600;margin-top:2px;">${diag.icone} ${diag.titulo}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:18px;font-weight:700;color:${diag.cor};line-height:1;">${Math.round(g.score)}</div>
+            <div style="font-size:9px;color:var(--safra-text-3);">score</div>
+            <div id="diag-arrow-${id}" style="font-size:11px;color:${diag.cor};margin-top:2px;">▶</div>
+          </div>
+        </div>
+        <div id="diag-detalhe-${id}" style="display:none;padding:0 12px 12px;border-top:1px dashed ${diag.cor};">
+          <div style="font-size:11px;color:var(--safra-text-2);font-weight:500;margin-top:8px;line-height:1.45;">${diag.dica}</div>
+          <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:10px;">
+            <div style="background:#fff;border:1px solid var(--safra-border);border-radius:6px;padding:6px 8px;">
+              <div style="font-weight:700;color:var(--safra-navy);font-size:9px;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Este gerente</div>
+              <div style="display:flex;justify-content:space-between;"><span>Contatos:</span><strong>${g.contatos}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Agendam.:</span><strong>${g.agendamentos}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Visitas:</span><strong>${g.visitas||0}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Contas:</span><strong>${g.contas}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Viab.:</span><strong>${g.viabilizacoes||0}</strong></div>
+            </div>
+            <div style="background:#F8FCFA;border:1px solid #A8D4BF;border-radius:6px;padding:6px 8px;">
+              <div style="font-weight:700;color:#1A7A52;font-size:9px;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Média Q1${mediaQ1?'':' (n/d)'}</div>
+              ${mediaQ1?`<div style="display:flex;justify-content:space-between;"><span>Contatos:</span><strong>${Math.round(mediaQ1.contatos)}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Agendam.:</span><strong>${Math.round(mediaQ1.agendamentos)}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Visitas:</span><strong>${Math.round(mediaQ1.visitas)}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Contas:</span><strong>${Math.round(mediaQ1.contas)}</strong></div>
+              <div style="display:flex;justify-content:space-between;"><span>Viab.:</span><strong>${Math.round(mediaQ1.viabilizacoes)}</strong></div>`:'<div style="color:var(--safra-text-3);">Sem dados</div>'}
+            </div>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;font-size:10px;">
+            <span style="background:#fff;border:1px solid var(--safra-border);border-radius:10px;padding:2px 8px;">Relógio: <strong style="color:${g.noRelogio?'#1A7A52':'#B02020'};">${Math.round(g.pctRelogio)}%</strong></span>
+            <span style="background:#fff;border:1px solid var(--safra-border);border-radius:10px;padding:2px 8px;">Agend%: <strong>${g.pctAgend.toFixed(1)}%</strong></span>
+            <span style="background:#fff;border:1px solid var(--safra-border);border-radius:10px;padding:2px 8px;">Efetiv: <strong>${g.efetividade}%</strong></span>
+          </div>
+        </div>
+      </div>`;
+    });
+    blocoHtml+='</div>';
+    return blocoHtml;
+  })():`<div class="empty" style="margin-bottom:1rem;">Registre pelo menos 2 gerentes para ver o comparativo de desempenho.</div>`}
   `;
 
   // RANKING POR AGÊNCIA (só em visão geral, sem filtro de agência)
@@ -3295,8 +3660,8 @@ function renderRegional(){
 function coletarItensRetorno(){
   const itens=[];
   regs.forEach((r,regIdx)=>{
-    // Retorno tradicional (campo retEmpresa)
-    if(r.retEmpresa){
+    // Retorno tradicional (campo retEmpresa) — pula se já virou conta (foi pra Viabilizado)
+    if(r.retEmpresa && !r.retVirouConta){
       itens.push({
         regIdx, subIdx:-1, tipo:'retorno',
         agencia:r.agencia, gerente:r.gerente, dataReg:r.data,
@@ -3310,6 +3675,12 @@ function coletarItensRetorno(){
     if(Array.isArray(r.acoesDetalhe)){
       r.acoesDetalhe.forEach((a,subIdx)=>{
         if(!a.empresa||!a.empresa.trim()) return;
+        // Pula tipos especiais (produção e viabilização ficam na aba Viabilizado)
+        if(a.tipo==='_producao'||a.tipo==='_viab_conta') return;
+        // Pula itens marcados como "Já viabilizado" (vão pra aba Viabilizado)
+        if(a.jaViabilizado) return;
+        // Pula itens que já viraram conta (foram pra Viabilizado também)
+        if(a.virouConta) return;
         itens.push({
           regIdx, subIdx, tipo:a.tipo,
           agencia:r.agencia, gerente:r.gerente, dataReg:r.data,
@@ -4515,7 +4886,194 @@ function renderTrimestre(){
         ${selecionados.length>=2?`<td></td>`:''}
       </tr></tfoot>
     </table>
-  </div>`;
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ✅ VIABILIZADOS POR AGÊNCIA (do snapshot)          -->
+  <!-- ═══════════════════════════════════════════════ -->
+  ${selecionados.some(m=>agList.some(ag=>(m.agencias[ag]?.viabilizadas||0)>0))?`
+  <div class="card" style="overflow-x:auto;">
+    <div class="card-title">✅ Viabilizações por agência</div>
+    <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:10px;">Contas com pelo menos 1 flag de viabilização marcada (SafraPay / Crédito / Investimento / Margem).</div>
+    <table class="rtable" style="font-size:12px;">
+      <thead><tr style="background:var(--safra-light);">
+        <th>Agência</th>
+        ${selecionados.map(m=>`<th style="text-align:center;">${m.label}</th>`).join('')}
+      </tr></thead>
+      <tbody>
+        ${agList.map(ag=>{
+          const valores=selecionados.map(m=>m.agencias[ag]?.viabilizadas||0);
+          if(valores.every(v=>v===0)) return '';
+          return `<tr>
+            <td style="font-weight:600;color:var(--safra-navy);">${ag}</td>
+            ${valores.map((v,i)=>{
+              const ehUltimo=i===valores.length-1;
+              return `<td style="text-align:center;${ehUltimo?'background:#E6F5EE;font-weight:700;color:#1A7A52;':''}">${v||'-'}</td>`;
+            }).join('')}
+          </tr>`;
+        }).filter(Boolean).join('')}
+      </tbody>
+      <tfoot><tr style="background:var(--safra-light);font-weight:700;">
+        <td>TOTAL</td>
+        ${selecionados.map(m=>{
+          const tot=agList.reduce((a,ag)=>a+(m.agencias[ag]?.viabilizadas||0),0);
+          return `<td style="text-align:center;color:#1A7A52;">${tot||'-'}</td>`;
+        }).join('')}
+      </tr></tfoot>
+    </table>
+  </div>`:''}
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- 💰 PIPE DE CRÉDITO POR AGÊNCIA                    -->
+  <!-- ═══════════════════════════════════════════════ -->
+  ${selecionados.some(m=>agList.some(ag=>(m.agencias[ag]?.pipeTotal||0)>0))?`
+  <div class="card" style="overflow-x:auto;">
+    <div class="card-title">💰 Pipe de crédito por agência</div>
+    <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:10px;">Valor total e quantidade de clientes flagados como pipe nas ações Base / Bússola.</div>
+    <table class="rtable" style="font-size:12px;">
+      <thead><tr style="background:var(--safra-light);">
+        <th>Agência</th>
+        ${selecionados.map(m=>`<th style="text-align:center;" colspan="2">${m.label}</th>`).join('')}
+      </tr>
+      <tr style="background:#FAFCFF;">
+        <th></th>
+        ${selecionados.map(()=>`<th style="text-align:center;font-size:9px;">R$</th><th style="text-align:center;font-size:9px;">Cli.</th>`).join('')}
+      </tr></thead>
+      <tbody>
+        ${agList.map(ag=>{
+          const linhas=selecionados.map(m=>({valor:m.agencias[ag]?.pipeTotal||0,count:m.agencias[ag]?.pipeCount||0}));
+          if(linhas.every(l=>l.valor===0&&l.count===0)) return '';
+          return `<tr>
+            <td style="font-weight:600;color:var(--safra-navy);">${ag}</td>
+            ${linhas.map((l,i)=>{
+              const ehUltimo=i===linhas.length-1;
+              const bg=ehUltimo?'background:#FEF3DC;':'';
+              return `<td style="text-align:center;font-weight:${ehUltimo?'700':'400'};color:${ehUltimo?'#A0620D':'var(--safra-text)'};${bg}">${l.valor>0?'R$ '+fmtBRL(l.valor):'-'}</td>
+                      <td style="text-align:center;font-size:11px;color:var(--safra-text-3);${bg}">${l.count||'-'}</td>`;
+            }).join('')}
+          </tr>`;
+        }).filter(Boolean).join('')}
+      </tbody>
+      <tfoot><tr style="background:var(--safra-light);font-weight:700;">
+        <td>TOTAL</td>
+        ${selecionados.map(m=>{
+          const tv=agList.reduce((a,ag)=>a+(m.agencias[ag]?.pipeTotal||0),0);
+          const tc=agList.reduce((a,ag)=>a+(m.agencias[ag]?.pipeCount||0),0);
+          return `<td style="text-align:center;color:#A0620D;">R$ ${fmtBRL(tv)}</td><td style="text-align:center;font-size:11px;">${tc}</td>`;
+        }).join('')}
+      </tr></tfoot>
+    </table>
+  </div>`:''}
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- 👤 CONTAS POR GERENTE — POR MÊS                   -->
+  <!-- ═══════════════════════════════════════════════ -->
+  ${selecionados.some(m=>agList.some(ag=>Object.keys(m.agencias[ag]?.contasPorGerente||{}).length>0))?`
+  <div class="card" style="overflow-x:auto;">
+    <div class="card-title">👤 Contas por gerente · Por mês</div>
+    <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:10px;">Quantidade de contas abertas por gerente em cada mês selecionado.</div>
+    ${agList.map(ag=>{
+      // Coleta todos os gerentes únicos que apareceram em algum mês
+      const gerSet=new Set();
+      selecionados.forEach(m=>{
+        const ger=m.agencias[ag]?.contasPorGerente||{};
+        Object.keys(ger).forEach(g=>gerSet.add(g));
+      });
+      if(gerSet.size===0) return '';
+      const gerList=[...gerSet].sort();
+      return `<div style="margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--safra-navy);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">${ag}</div>
+        <table class="rtable" style="font-size:11px;">
+          <thead><tr style="background:var(--safra-light);">
+            <th>Gerente</th>
+            ${selecionados.map(m=>`<th style="text-align:center;">${m.label}</th>`).join('')}
+          </tr></thead>
+          <tbody>
+            ${gerList.map(ger=>{
+              const valores=selecionados.map(m=>m.agencias[ag]?.contasPorGerente?.[ger]||0);
+              return `<tr>
+                <td style="font-weight:500;">${ger}</td>
+                ${valores.map((v,i)=>{
+                  const ehUltimo=i===valores.length-1;
+                  return `<td style="text-align:center;${ehUltimo?'background:#F0FAF5;font-weight:700;color:var(--green);':''}">${v||'-'}</td>`;
+                }).join('')}
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>`;
+    }).filter(Boolean).join('')}
+  </div>`:''}
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ⏳ PIPE QUE ULTRAPASSOU O MÊS (pendentes)         -->
+  <!-- ═══════════════════════════════════════════════ -->
+  ${(()=>{
+    const todosPipe=selecionados.flatMap(m=>(m.pendentes?.pipe||[]).map(p=>({...p,mesLabel:m.label})));
+    if(!todosPipe.length) return '';
+    return `<div class="card" style="overflow-x:auto;border-color:#D4A030;background:#FFFCF5;">
+      <div class="card-title" style="color:#A0620D;">⏳ Pipe pendente — agendamentos que ultrapassaram o mês</div>
+      <div style="font-size:11px;color:#633806;margin-bottom:10px;">Pipe de crédito que foi flagado mas tem agendamento de fechamento depois do fim do mês.</div>
+      <table class="rtable" style="font-size:11.5px;">
+        <thead><tr style="background:var(--safra-light);">
+          <th>Mês origem</th>
+          <th>Agência</th>
+          <th>Gerente</th>
+          <th>Empresa</th>
+          <th style="text-align:right;">Valor (R$)</th>
+          <th>Agendamento</th>
+        </tr></thead>
+        <tbody>
+          ${todosPipe.sort((a,b)=>(b.agendamento||'').localeCompare(a.agendamento||'')).map(p=>`<tr>
+            <td style="font-size:10px;color:var(--safra-text-3);">${p.mesLabel}</td>
+            <td><strong>${p.agencia}</strong></td>
+            <td>${p.gerente}</td>
+            <td>${p.empresa||'-'}</td>
+            <td style="text-align:right;font-weight:700;color:#A0620D;">R$ ${fmtBRL(p.valor)}</td>
+            <td style="font-size:11px;">${p.agendamento?fmt(p.agendamento):'-'}</td>
+          </tr>`).join('')}
+        </tbody>
+        <tfoot><tr style="background:#FEF3DC;font-weight:700;">
+          <td colspan="4" style="color:#A0620D;">TOTAL</td>
+          <td style="text-align:right;color:#A0620D;">R$ ${fmtBRL(todosPipe.reduce((a,p)=>a+p.valor,0))}</td>
+          <td>${todosPipe.length} ${todosPipe.length===1?'cliente':'clientes'}</td>
+        </tr></tfoot>
+      </table>
+    </div>`;
+  })()}
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ✅ VIABILIZADOS PENDENTES (do snapshot)           -->
+  <!-- ═══════════════════════════════════════════════ -->
+  ${(()=>{
+    const todosViab=selecionados.flatMap(m=>(m.pendentes?.viabilizados||[]).map(p=>({...p,mesLabel:m.label})));
+    if(!todosViab.length) return '';
+    return `<div class="card" style="overflow-x:auto;border-color:#A8D4BF;background:#F8FCFA;">
+      <div class="card-title" style="color:#1A7A52;">✅ Viabilizações registradas no histórico</div>
+      <div style="font-size:11px;color:#0E5538;margin-bottom:10px;">Lista de empresas com flag de viabilização nos meses selecionados.</div>
+      <table class="rtable" style="font-size:11.5px;">
+        <thead><tr style="background:var(--safra-light);">
+          <th>Mês</th>
+          <th>Agência</th>
+          <th>Gerente</th>
+          <th>Empresa</th>
+          <th>Tipos</th>
+          <th>Data registro</th>
+        </tr></thead>
+        <tbody>
+          ${todosViab.sort((a,b)=>(b.dataReg||'').localeCompare(a.dataReg||'')).slice(0,200).map(p=>`<tr>
+            <td style="font-size:10px;color:var(--safra-text-3);">${p.mesLabel}</td>
+            <td><strong>${p.agencia}</strong></td>
+            <td>${p.gerente}</td>
+            <td>${p.empresa||'-'}</td>
+            <td style="font-size:10px;">${(p.tipos||[]).join(', ')}</td>
+            <td style="font-size:11px;">${p.dataReg?fmt(p.dataReg):'-'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      ${todosViab.length>200?`<div style="font-size:10px;color:var(--safra-text-3);margin-top:8px;">Mostrando os 200 mais recentes de ${todosViab.length} viabilizações.</div>`:''}
+    </div>`;
+  })()}`;
 
   el.innerHTML=html;
 }
