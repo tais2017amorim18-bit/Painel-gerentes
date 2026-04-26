@@ -2703,9 +2703,12 @@ function renderGG(){
     });
     regsAg.sort((a,b)=>b.data.localeCompare(a.data)); // mais recente primeiro
 
-    html+=`<div class="card" style="overflow-x:auto;margin-top:-0.5rem;">
-      <div class="card-title">📝 Registros diários · ${ag} · ${periodoLabel}</div>
-      <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:8px;">Clique em ✏️ para editar os dados de um dia anterior.</div>
+    // Lista detalhada de registros: só aparece quando filtra por uma data específica
+    // (sem filtro = mostra apenas consolidado, sem inflar a página)
+    if(filtroDia){
+      html+=`<div class="card" style="overflow-x:auto;margin-top:-0.5rem;">
+      <div class="card-title">📝 Registros · ${ag} · ${periodoLabel}</div>
+      <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:8px;">Clique em ✏️ para editar os dados.</div>
       <table class="rtable" style="font-size:11.5px;">
         <thead><tr>
           <th style="white-space:nowrap;">Data</th>
@@ -2739,6 +2742,53 @@ function renderGG(){
         </tbody>
       </table>
     </div>`;
+    } else {
+      // Sem data: mostra consolidado por gerente (uma linha por gerente, somando todos os dias)
+      const consolGer={};
+      regsAg.forEach(r=>{
+        if(!consolGer[r.gerente]) consolGer[r.gerente]={contatos:0,efetivos:0,visitas:0,agend:0,contas:0,credenc:0,dias:new Set()};
+        const c=consolGer[r.gerente];
+        c.contatos+=r.contatos||0;
+        c.efetivos+=r.efetivos||0;
+        c.visitas+=r.visitas||0;
+        const nAgend=Array.isArray(r.acoesDetalhe)?r.acoesDetalhe.filter(a=>a.tipo==='agendamento'&&a.empresa).length:0;
+        c.agend+=nAgend;
+        c.contas+=r.contas||0;
+        c.credenc+=r.credenciamentos||0;
+        c.dias.add(r.data);
+      });
+      const linhas=Object.entries(consolGer).map(([ger,c])=>({ger,...c,dias:c.dias.size})).sort((a,b)=>b.contas-a.contas);
+      if(linhas.length>0){
+        html+=`<div class="card" style="overflow-x:auto;margin-top:-0.5rem;">
+        <div class="card-title">📊 Consolidado por gerente · ${ag} · Acumulado</div>
+        <div style="font-size:11px;color:var(--safra-text-3);margin-bottom:8px;">Selecione uma data acima para ver o detalhe dia a dia.</div>
+        <table class="rtable" style="font-size:11.5px;">
+          <thead><tr>
+            <th>Gerente</th>
+            <th style="text-align:center;">Dias</th>
+            <th style="text-align:center;">Cont.</th>
+            <th style="text-align:center;">Ef.</th>
+            <th style="text-align:center;">Visit.</th>
+            <th style="text-align:center;">Agend.</th>
+            <th style="text-align:center;background:#E6F5EE;color:#1A7A52;">Contas ⭐</th>
+            <th style="text-align:center;">Cred.</th>
+          </tr></thead>
+          <tbody>
+            ${linhas.map(c=>`<tr>
+              <td><strong>${c.ger}</strong></td>
+              <td style="text-align:center;color:var(--safra-text-3);font-size:10px;">${c.dias}</td>
+              <td style="text-align:center;">${c.contatos}</td>
+              <td style="text-align:center;color:var(--safra-mid);">${c.efetivos}</td>
+              <td style="text-align:center;">${c.visitas}</td>
+              <td style="text-align:center;">${c.agend||'-'}</td>
+              <td style="text-align:center;background:#F0FAF5;color:${c.contas>0?'var(--green)':'var(--safra-text-3)'};font-weight:700;font-size:13px;">${c.contas}</td>
+              <td style="text-align:center;">${c.credenc}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+      }
+    }
 
     /* ── CARDS POR GERENTE: consolidado + retornos ── */
     /* ── CARDS POR GERENTE: contas abertas + retornos ── */
