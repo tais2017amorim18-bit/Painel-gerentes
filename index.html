@@ -3456,6 +3456,74 @@ function renderRegional(){
     </table>
   </div>
 
+  <!-- ⚠️ ATENÇÃO — Agências sem registro em dias úteis -->
+  ${(()=>{
+    // Calcula os dias úteis (seg-sex) que já passaram no mês atual
+    const hoje=new Date();
+    const ano=hoje.getFullYear(), mes=hoje.getMonth(), diaHoje=hoje.getDate();
+    const diasUteisDecorridos=[];
+    for(let d=1; d<=diaHoje; d++){
+      const data=new Date(ano,mes,d);
+      const dow=data.getDay(); // 0=dom, 6=sab
+      if(dow>=1 && dow<=5){
+        const iso=data.toISOString().slice(0,10);
+        diasUteisDecorridos.push(iso);
+      }
+    }
+    if(diasUteisDecorridos.length===0) return '';
+
+    // Para cada agência, descobre os dias do mês em que NINGUÉM registrou
+    const agsParaAvaliar = filtroAg ? [filtroAg] : Object.keys(agencias);
+    const ausencias=[];
+    agsParaAvaliar.forEach(ag=>{
+      const diasRegistradosAg = new Set(
+        regs.filter(r=>r.agencia===ag && diasUteisDecorridos.includes(r.data))
+          .map(r=>r.data)
+      );
+      const diasFaltando = diasUteisDecorridos.filter(d=>!diasRegistradosAg.has(d));
+      if(diasFaltando.length>=1){
+        ausencias.push({agencia:ag, diasFaltando, diasRegistrados:diasRegistradosAg.size});
+      }
+    });
+    if(ausencias.length===0){
+      return `<div style="background:#E6F5EE;border:1px solid #A8D4BF;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:10px;">
+        <div style="font-size:20px;">✅</div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#1A7A52;">Todas as agências em dia</div>
+          <div style="font-size:11px;color:var(--safra-text-2);">Todas registraram em todos os ${diasUteisDecorridos.length} dias úteis do mês.</div>
+        </div>
+      </div>`;
+    }
+    // Ordena pelas mais faltosas
+    ausencias.sort((a,b)=>b.diasFaltando.length-a.diasFaltando.length);
+    return `<div style="background:linear-gradient(135deg,#FEF3DC 0%,#FDE9B5 100%);border:1px solid #D4A030;border-radius:10px;padding:1rem 1.1rem;margin-bottom:1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:0.6rem;flex-wrap:wrap;">
+        <div>
+          <div class="card-title" style="color:#A0620D;margin:0;font-size:14px;">⚠️ Atenção — Agências com dias sem registro</div>
+          <div style="font-size:11px;color:#633806;margin-top:2px;">${ausencias.length} agência${ausencias.length!==1?'s':''} faltou registrar algum dia útil deste mês (${diasUteisDecorridos.length} dias úteis decorridos).</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;">
+        ${ausencias.map(a=>{
+          const pct=Math.round((a.diasRegistrados/diasUteisDecorridos.length)*100);
+          const cor=pct>=80?'#1A7A52':pct>=50?'#A0620D':'#B02020';
+          // formata os dias faltando como dd/mm
+          const diasFmt=a.diasFaltando.slice(0,8).map(d=>{const[y,m,dd]=d.split('-');return `${dd}/${m}`;}).join(', ');
+          const maisQ=a.diasFaltando.length>8?` +${a.diasFaltando.length-8}`:'';
+          return `<div style="background:#fff;border:1px solid #D4A030;border-radius:8px;padding:8px 12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:4px;">
+              <div style="font-size:12px;font-weight:700;color:var(--safra-navy);">${a.agencia}</div>
+              <div style="font-size:11px;font-weight:700;color:${cor};">${pct}%</div>
+            </div>
+            <div style="font-size:11px;color:#A0620D;font-weight:600;">${a.diasFaltando.length} dia${a.diasFaltando.length!==1?'s':''} sem registro</div>
+            <div style="font-size:10px;color:var(--safra-text-3);margin-top:3px;">${a.diasRegistrados}/${diasUteisDecorridos.length} dias úteis OK</div>
+            <div style="font-size:9px;color:var(--safra-text-3);margin-top:4px;font-family:'DM Mono',monospace;background:#FEF9E8;padding:2px 6px;border-radius:4px;">${diasFmt}${maisQ}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  })()}
+
   <!-- 🏆 DESTAQUE: CONTAS ABERTAS — FOCO PRINCIPAL -->
   ${todos.length>=1?`
   <div style="background:linear-gradient(135deg,#E6F5EE 0%,#F4F7FB 100%);border:1px solid #A8D4BF;border-radius:10px;padding:1rem 1.1rem;margin-bottom:1rem;">
