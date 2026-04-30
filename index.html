@@ -1,4 +1,3 @@
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -698,6 +697,9 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 <!-- VISÃO GG -->
 <div id="tab-gg" class="section">
   <div class="filter-bar">
+    <select id="filtro-mes-gg" onchange="trocarFiltroMes(this.value)" style="max-width:160px;margin:0;" title="Filtrar por mês">
+      <option value="">Mês atual</option>
+    </select>
     <select id="filtro-gg-ag" onchange="atualizaFiltroGer();renderGG();">
       <option value="">Todas as agências</option>
       <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
@@ -736,6 +738,9 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   <!-- CONTEÚDO (bloqueado até senha correta) -->
   <div id="regional-desbloqueado" style="display:none;">
     <div class="filter-bar">
+      <select id="filtro-mes-regional" onchange="trocarFiltroMes(this.value)" style="max-width:160px;margin:0;" title="Filtrar por mês">
+        <option value="">Mês atual</option>
+      </select>
       <select id="filtro-reg-ag" onchange="renderRegional()" style="max-width:200px;margin:0;">
         <option value="">Todas as agências</option>
         <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
@@ -753,6 +758,9 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 <!-- VIABILIZADO -->
 <div id="tab-viabilizado" class="section">
   <div class="filter-bar">
+    <select id="filtro-mes-viabilizado" onchange="trocarFiltroMes(this.value)" style="max-width:160px;margin:0;" title="Filtrar por mês">
+      <option value="">Mês atual</option>
+    </select>
     <select id="filtro-viab-ag" onchange="renderViabilizado()" style="max-width:200px;margin:0;">
       <option value="">Todas as agências</option>
       <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
@@ -800,6 +808,9 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 <!-- RETORNOS -->
 <div id="tab-retornos" class="section">
   <div class="filter-bar">
+    <select id="filtro-mes-retornos" onchange="trocarFiltroMes(this.value)" style="max-width:160px;margin:0;" title="Filtrar por mês">
+      <option value="">Mês atual</option>
+    </select>
     <select id="filtro-ret-ag" onchange="atualizaFiltroRetGer();renderRetornos();">
       <option value="">Todas as agências</option>
       <option>Alphaville</option><option>Cidade Jardim</option><option>Itaim</option>
@@ -816,17 +827,17 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
 <!-- NOVO MÊS -->
 <div id="tab-novomes" class="section">
-  <div class="card" style="border-color:#F5C6C6;max-width:520px;margin:0 auto;">
-    <div class="card-title" style="color:#B02020;">🗓 Virada de mês</div>
+  <div class="card" style="border-color:#A8D4BF;max-width:520px;margin:0 auto;">
+    <div class="card-title" style="color:#1A7A52;">🗓 Fechamento de mês</div>
     <p style="font-size:13px;color:var(--safra-text-2);margin-bottom:1rem;line-height:1.6;">
-      Os dados permanecem <strong>salvos indefinidamente</strong> até que você execute a virada de mês manualmente.
-      Esta ação apaga <strong>todos os registros do mês atual</strong> para começar um novo ciclo. Os gerentes cadastrados são mantidos.
+      Os dados <strong>NÃO são apagados</strong> ao fechar o mês. Esta ação apenas <strong>salva um snapshot</strong> do mês atual no histórico do Trimestre.
+      Use o filtro de mês em cada aba para alternar entre o mês atual e meses anteriores.
     </p>
 
     <div id="novomes-resumo" style="margin-bottom:1.25rem;"></div>
 
-    <div style="background:#FEF3DC;border:1px solid #D4A030;border-radius:8px;padding:10px 14px;font-size:12px;color:#633806;margin-bottom:1.25rem;">
-      ⚠️ Essa ação não pode ser desfeita. Certifique-se de ter exportado ou anotado os resultados antes de continuar.
+    <div style="background:#E6F5EE;border:1px solid #A8D4BF;border-radius:8px;padding:10px 14px;font-size:12px;color:#1A7A52;margin-bottom:1.25rem;">
+      ✅ Os registros continuam salvos. Você poderá vê-los depois usando o filtro de mês.
     </div>
 
     <div style="background:#FDEAEA;border:1px solid #CC4444;border-radius:8px;padding:12px 14px;margin-bottom:1rem;">
@@ -840,7 +851,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
     <div style="display:flex;gap:10px;justify-content:flex-end;">
       <button class="btn" onclick="showTab('registrar',document.querySelector('.tab'))">Cancelar</button>
-      <button class="btn" style="background:#B02020;color:#fff;border-color:#B02020;font-weight:600;" onclick="confirmarNovoMes()">Limpar e iniciar novo mês</button>
+      <button class="btn" style="background:#1A7A52;color:#fff;border-color:#1A7A52;font-weight:600;" onclick="confirmarNovoMes()">Salvar snapshot do mês</button>
     </div>
   </div>
 </div>
@@ -1137,6 +1148,53 @@ const SUPABASE_HEADERS = {
 };
 
 let regs=[],lvOn=false,viabSel='';
+// Filtro global de mês (formato YYYY-MM). Default = mês atual.
+let filtroMesGlobal=new Date().toISOString().slice(0,7);
+// Helper: filtra a lista de registros pelo mês selecionado ('all' = todos)
+function filtrarPorMes(lista){
+  if(filtroMesGlobal==='all') return lista;
+  return lista.filter(r=>r.data && r.data.startsWith(filtroMesGlobal));
+}
+// Helper: gera lista de meses com registros (ordenado mais recente primeiro)
+function mesesComRegistros(){
+  const set=new Set();
+  regs.forEach(r=>{if(r.data) set.add(r.data.slice(0,7));});
+  // Garante o mês atual mesmo sem dados
+  set.add(new Date().toISOString().slice(0,7));
+  return [...set].sort().reverse();
+}
+// Helper: formata YYYY-MM em "Mês/Ano"
+function fmtMes(mes){
+  if(!mes||mes==='all') return 'Todos os meses';
+  const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const [ano,m]=mes.split('-');
+  return `${meses[parseInt(m)-1]}/${ano}`;
+}
+// Atualiza o select de filtro de mês de uma aba
+function atualizarFiltroMes(selectId){
+  const sel=document.getElementById(selectId);
+  if(!sel) return;
+  const meses=mesesComRegistros();
+  const valorAtual=sel.value||filtroMesGlobal;
+  let html='';
+  meses.forEach(m=>{html+=`<option value="${m}">${fmtMes(m)}</option>`;});
+  html+=`<option value="all">Todos os meses</option>`;
+  sel.innerHTML=html;
+  // Tenta manter a seleção atual; se não existir mais, usa filtroMesGlobal
+  if([...sel.options].some(o=>o.value===valorAtual)) sel.value=valorAtual;
+  else sel.value=filtroMesGlobal;
+}
+// Quando o usuário muda o filtro em qualquer aba, sincroniza global
+function trocarFiltroMes(novo){
+  filtroMesGlobal=novo;
+  // Sincroniza todos os selects
+  ['filtro-mes-gg','filtro-mes-regional','filtro-mes-retornos','filtro-mes-viabilizado'].forEach(id=>{
+    const s=document.getElementById(id);
+    if(s) s.value=novo;
+  });
+  renderGG(); renderRegional(); renderRetornos();
+  if(typeof renderViabilizado==='function') renderViabilizado();
+}
 let historico=[]; // snapshots mensais
 let bloqueioLeitura=false;
 document.getElementById('f-data').value=today;
@@ -1799,51 +1857,29 @@ async function confirmarNovoMes(){
     return;
   }
   erroEl.style.display='none';
-  if(!confirm('Tem certeza? Todos os registros serão apagados e o painel começará zerado para o novo mês.\n\nOs dados atuais serão salvos no histórico do Trimestre.'))return;
+  if(!confirm('Marcar fim de mês?\n\n✅ Os registros NÃO serão apagados — ficam todos guardados no banco.\n📊 Um snapshot do mês atual será salvo no histórico do Trimestre.\n📅 Use o filtro de mês em cada aba para alternar entre o mês atual e meses anteriores.'))return;
 
-  // Salvar snapshot do mês atual no histórico
+  // Salvar snapshot do mês atual no histórico (não limita mais a 12 meses)
   if(regs.length>0){
     const snap=gerarSnapshot();
     historico=historico.filter(h=>h.mes!==snap.mes);
     historico.push(snap);
     historico.sort((a,b)=>a.mes.localeCompare(b.mes));
-    if(historico.length>12) historico=historico.slice(-12);
   }
 
   bloqueioLeitura=true;
-  setSyncStatus('⏳ Zerando mês...','#ffcc00');
+  setSyncStatus('⏳ Salvando histórico...','#ffcc00');
 
-  // Apaga TODOS os registros do Supabase
-  try{
-    const res=await fetch(`${SUPABASE_URL}/rest/v1/${TABELA_REGISTROS}?id=neq.00000000-0000-0000-0000-000000000000`,{
-      method:'DELETE',headers:SUPABASE_HEADERS
-    });
-    if(!res.ok){
-      const txt=await res.text();
-      console.error('Zerar registros falhou:',res.status,txt);
-      alert('⚠️ Erro ao apagar os registros no banco: '+res.status);
-      bloqueioLeitura=false;
-      return;
-    }
-  }catch(e){
-    console.error('Zerar registros erro:',e);
-    alert('⚠️ Erro de rede ao apagar os registros. Tente novamente.');
-    bloqueioLeitura=false;
-    return;
-  }
-
-  // Salva o histórico atualizado na meta
+  // Salva o histórico atualizado na meta (NÃO apaga registros)
   await salvarMeta();
 
-  regs=[];
   bloqueioLeitura=false;
 
   document.getElementById('novomes-senha').value='';
   renderGG();renderRegional();renderRetornos();renderTrimestre();
-  const tabBtn=document.querySelector('.tab');
-  showTab('registrar',tabBtn);
-  setSyncStatus('✅ Mês zerado','#90EE90');
-  alert('✅ Painel zerado! Histórico salvo no Trimestre. Bom início de mês!');
+  if(typeof renderViabilizado==='function') renderViabilizado();
+  setSyncStatus('✅ Histórico salvo','#90EE90');
+  alert('✅ Snapshot do mês salvo no histórico!\n\nOs registros continuam disponíveis. Use o filtro de mês em cada aba pra ver o mês anterior ou o atual.');
 }
 
 function fmt(d){if(!d)return'';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;}
@@ -1994,6 +2030,20 @@ function calcularMediaQ1(todos){
 function toggleDiag(id){
   const el=document.getElementById('diag-detalhe-'+id);
   const arrow=document.getElementById('diag-arrow-'+id);
+  if(!el) return;
+  if(el.style.display==='none'||!el.style.display){
+    el.style.display='block';
+    if(arrow) arrow.textContent='▼';
+  } else {
+    el.style.display='none';
+    if(arrow) arrow.textContent='▶';
+  }
+}
+
+// Toggle do detalhe de produção por gerente (cards clicáveis na Visão GG)
+function toggleProdDet(cardId){
+  const el=document.getElementById('det-'+cardId);
+  const arrow=document.getElementById('arrow-'+cardId);
   if(!el) return;
   if(el.style.display==='none'||!el.style.display){
     el.style.display='block';
@@ -2431,6 +2481,8 @@ function calcGerente(rlist){
 
 function renderGG(){
   const el=document.getElementById('gg-content');
+  // Atualiza o select de mês desta aba
+  atualizarFiltroMes('filtro-mes-gg');
   const filtroAg  = document.getElementById('filtro-gg-ag').value;
   const filtroGer = document.getElementById('filtro-gg-ger').value;
   const filtroDia = document.getElementById('filtro-gg-data').value;
@@ -2445,17 +2497,17 @@ function renderGG(){
     return;
   }
 
-  let data=regs;
+  // Aplica filtro de mês ANTES dos demais filtros
+  let data=filtrarPorMes(regs);
   if(filtroAg)  data=data.filter(r=>r.agencia===filtroAg);
   if(filtroGer) data=data.filter(r=>r.gerente===filtroGer);
   if(filtroDia) data=data.filter(r=>r.data===filtroDia);
   // Filtro: ignora registros de gerentes que já não estão cadastrados na sua agência atual
-  // (evita duplicação quando o mesmo nome existe em agências diferentes)
   data=data.filter(r=>{
     const lista=agencias[r.agencia]||[];
     return lista.includes(r.gerente);
   });
-  if(!data.length){el.innerHTML='<div class="empty">Nenhum registro encontrado para esta agência.</div>';return;}
+  if(!data.length){el.innerHTML=`<div class="empty">Nenhum registro encontrado para esta agência em ${fmtMes(filtroMesGlobal)}.</div>`;return;}
 
   const byAg={};
   data.forEach(r=>{
@@ -2551,19 +2603,52 @@ function renderGG(){
     const prodLabels={consorcio:'Consórcio',investimentos:'Investimentos',seguros:'Seguros',credito:'Crédito',viabilizado:'Viabilizado'};
     const prodTotalQtd=Object.values(totGG.prod).reduce((a,p)=>a+p.qtd,0);
     const prodTotalValor=Object.values(totGG.prod).reduce((a,p)=>a+p.valor,0);
+    // Calcula produção por gerente por produto (sem nomes de empresa)
+    const prodPorGer={}; // {produto: [{gerente, qtd, valor}]}
+    ['consorcio','investimentos','seguros','credito','viabilizado'].forEach(p=>{prodPorGer[p]=[];});
+    data.forEach(r=>{
+      if(!r.producao) return;
+      Object.entries(r.producao).forEach(([prod,d])=>{
+        if(!d||(!d.qtd&&!d.valor)) return;
+        if(!prodPorGer[prod]) return;
+        let item=prodPorGer[prod].find(x=>x.gerente===r.gerente);
+        if(!item){item={gerente:r.gerente,qtd:0,valor:0}; prodPorGer[prod].push(item);}
+        item.qtd+=d.qtd||0;
+        item.valor+=d.valor||0;
+      });
+    });
+    Object.keys(prodPorGer).forEach(p=>{prodPorGer[p].sort((a,b)=>b.valor-a.valor||b.qtd-a.qtd);});
+
     html+=`<div style="background:#fff;border:1px solid var(--safra-border);border-radius:10px;padding:14px 16px;margin-bottom:1rem;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
         <div style="font-size:13px;font-weight:700;color:var(--safra-navy);">🏆 Produção · ${periodoLabel}</div>
-        <div style="font-size:11px;color:var(--safra-text-3);">Total: <strong style="color:var(--safra-navy);">R$ ${fmtBRL(prodTotalValor)}</strong> · ${prodTotalQtd} operação${prodTotalQtd!==1?'ões':''}</div>
+        <div style="font-size:11px;color:var(--safra-text-3);">Total: <strong style="color:var(--safra-navy);">R$ ${fmtBRL(prodTotalValor)}</strong> · ${prodTotalQtd} operação${prodTotalQtd!==1?'ões':''} · <span style="color:var(--safra-accent);">clique para detalhar</span></div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">
-        ${Object.keys(totGG.prod).map(p=>{
+        ${Object.keys(totGG.prod).map((p,idx)=>{
           const d=totGG.prod[p];
           const ativo=d.qtd>0||d.valor>0;
-          return `<div style="border:1px solid ${ativo?'#A8D4BF':'var(--safra-border)'};border-radius:7px;padding:8px 10px;background:${ativo?'#F0FAF5':'#FAFCFF'};">
-            <div style="font-size:10px;font-weight:700;color:${ativo?'#1A7A52':'var(--safra-text-3)'};text-transform:uppercase;letter-spacing:0.04em;">${prodIcones[p]} ${prodLabels[p]}</div>
-            <div style="font-size:15px;font-weight:700;color:${ativo?'var(--safra-navy)':'var(--safra-text-3)'};margin-top:2px;line-height:1.1;">R$ ${fmtBRL(d.valor)}</div>
-            <div style="font-size:10px;color:var(--safra-text-3);margin-top:1px;">${d.qtd} ${d.qtd===1?'operação':'operações'}</div>
+          const cardId=`prod-card-${p}-${idx}`;
+          return `<div ${ativo?`onclick="toggleProdDet('${cardId}')"`:''} style="border:1px solid ${ativo?'#A8D4BF':'var(--safra-border)'};border-radius:7px;padding:8px 10px;background:${ativo?'#F0FAF5':'#FAFCFF'};${ativo?'cursor:pointer;':''}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;">
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:10px;font-weight:700;color:${ativo?'#1A7A52':'var(--safra-text-3)'};text-transform:uppercase;letter-spacing:0.04em;">${prodIcones[p]} ${prodLabels[p]}</div>
+                <div style="font-size:15px;font-weight:700;color:${ativo?'var(--safra-navy)':'var(--safra-text-3)'};margin-top:2px;line-height:1.1;">R$ ${fmtBRL(d.valor)}</div>
+                <div style="font-size:10px;color:var(--safra-text-3);margin-top:1px;">${d.qtd} ${d.qtd===1?'operação':'operações'}</div>
+              </div>
+              ${ativo?`<div id="arrow-${cardId}" style="font-size:11px;color:#1A7A52;line-height:1;">▶</div>`:''}
+            </div>
+            ${ativo?`<div id="det-${cardId}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed #A8D4BF;">
+              <div style="font-size:9px;font-weight:700;color:#1A7A52;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Por gerente</div>
+              ${prodPorGer[p].length>0?prodPorGer[p].map(g=>`
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #E8F2EC;font-size:11px;">
+                  <div style="font-weight:600;color:var(--safra-navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;">${g.gerente}</div>
+                  <div style="text-align:right;white-space:nowrap;">
+                    <div style="font-weight:700;color:var(--safra-navy);font-size:11px;">R$ ${fmtBRL(g.valor)}</div>
+                    <div style="font-size:9px;color:var(--safra-text-3);">${g.qtd} op.</div>
+                  </div>
+                </div>`).join(''):'<div style="font-size:10px;color:var(--safra-text-3);">Sem detalhe</div>'}
+            </div>`:''}
           </div>`;
         }).join('')}
       </div>
@@ -3107,10 +3192,12 @@ async function editarGerente(ag,idx){
 
 function renderRegional(){
   const el=document.getElementById('regional-content');
+  // Atualiza select de mês desta aba
+  atualizarFiltroMes('filtro-mes-regional');
   const filtroAg=document.getElementById('filtro-reg-ag').value;
-  let dadosReg=regs;
+  let dadosReg=filtrarPorMes(regs);
   if(filtroAg) dadosReg=dadosReg.filter(r=>r.agencia===filtroAg);
-  if(!dadosReg.length){el.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
+  if(!dadosReg.length){el.innerHTML=`<div class="empty">Nenhum registro encontrado em ${fmtMes(filtroMesGlobal)}.</div>`;return;}
 
   // Totais gerais
   const tot={contatos:0,efetivos:0,contas:0,credenciamentos:0,aguardando:0};
@@ -3984,6 +4071,7 @@ function coletarItensRetorno(){
 
 function renderRetornos(){
   const el=document.getElementById('retornos-content');
+  atualizarFiltroMes('filtro-mes-retornos');
   const filtroAgEl=document.getElementById('filtro-ret-ag');
   const filtroGerEl=document.getElementById('filtro-ret-ger');
   if(!el||!filtroAgEl||!filtroGerEl) return;
@@ -4001,10 +4089,14 @@ function renderRetornos(){
   }
 
   let itens=coletarItensRetorno();
+  // Aplica filtro de mês (pelo dataReg do registro de origem)
+  if(filtroMesGlobal!=='all'){
+    itens=itens.filter(r=>r.dataReg && r.dataReg.startsWith(filtroMesGlobal));
+  }
   itens=itens.filter(r=>r.agencia===filtroAg);
   if(filtroGer) itens=itens.filter(r=>r.gerente===filtroGer);
 
-  if(!itens.length){el.innerHTML='<div class="empty">Nenhum retorno encontrado para esta agência.</div>';return;}
+  if(!itens.length){el.innerHTML=`<div class="empty">Nenhum retorno encontrado para esta agência em ${fmtMes(filtroMesGlobal)}.</div>`;return;}
 
   // ═══ Dashboard de PIPE DE CRÉDITO da agência ═══
   // Soma o pipe de todos os itens flagados da agência filtrada
@@ -4045,6 +4137,75 @@ function renderRetornos(){
             </div>`).join('')}
         </div>
       </div>`:''}
+    </div>`;
+  }
+
+  // ═══ Dashboard de PIPE DE PRODUÇÃO POR GERENTE POR PRODUTO ═══
+  // Soma a produção do dia (consórcio, investim., seguros, crédito, viabilizado)
+  // por gerente da agência filtrada — com nome de empresa quando informado
+  const prodPorGerProduto={}; // {gerente: {produto: {qtd, valor, empresas:[]}}}
+  const prodIcones={consorcio:'🎯',investimentos:'📈',seguros:'🛡️',credito:'💰',viabilizado:'✅'};
+  const prodLabels={consorcio:'Consórcio',investimentos:'Investim.',seguros:'Seguros',credito:'Crédito',viabilizado:'Viabilizado'};
+  regs.filter(r=>r.agencia===filtroAg).forEach(r=>{
+    if(!r.producao) return;
+    if(!prodPorGerProduto[r.gerente]) prodPorGerProduto[r.gerente]={};
+    Object.entries(r.producao).forEach(([prod,d])=>{
+      if(!d||(!d.qtd&&!d.valor&&!d.empresa)) return;
+      if(!prodPorGerProduto[r.gerente][prod]) prodPorGerProduto[r.gerente][prod]={qtd:0,valor:0,empresas:[]};
+      const slot=prodPorGerProduto[r.gerente][prod];
+      slot.qtd+=d.qtd||0;
+      slot.valor+=d.valor||0;
+      if(d.empresa && d.empresa.trim()) slot.empresas.push(d.empresa.trim());
+    });
+  });
+  const gersComProd=Object.entries(prodPorGerProduto).filter(([,prods])=>Object.keys(prods).length>0);
+  if(gersComProd.length>0){
+    let totalPipeProd=0;
+    gersComProd.forEach(([,prods])=>{Object.values(prods).forEach(p=>{totalPipeProd+=p.valor||0;});});
+    dashHtml+=`<div style="background:linear-gradient(135deg,#EDE9FB 0%,#DCD3F5 100%);border:1px solid #6F5FC9;border-radius:10px;padding:14px 16px;margin-bottom:1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#4535A3;text-transform:uppercase;letter-spacing:0.06em;">📦 Pipe de Produção · ${filtroAg}</div>
+          <div style="font-size:11px;color:#3B2A8C;margin-top:2px;">Produção do dia gerada por gerente em cada produto</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:18px;font-weight:700;color:#4535A3;line-height:1;">R$ ${fmtBRLret(totalPipeProd)}</div>
+          <div style="font-size:11px;color:#3B2A8C;">${gersComProd.length} gerente${gersComProd.length!==1?'s':''}</div>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="rtable" style="font-size:11.5px;background:#fff;border-radius:6px;">
+          <thead><tr style="background:#F4F1FA;">
+            <th>Gerente</th>
+            ${Object.keys(prodLabels).map(p=>`<th style="text-align:center;font-size:10px;">${prodIcones[p]} ${prodLabels[p]}</th>`).join('')}
+            <th style="text-align:center;background:#E8E0F7;color:#4535A3;">Total</th>
+          </tr></thead>
+          <tbody>
+            ${gersComProd.sort((a,b)=>{
+              const tA=Object.values(a[1]).reduce((s,p)=>s+(p.valor||0),0);
+              const tB=Object.values(b[1]).reduce((s,p)=>s+(p.valor||0),0);
+              return tB-tA;
+            }).map(([ger,prods])=>{
+              const totalGer=Object.values(prods).reduce((s,p)=>s+(p.valor||0),0);
+              return `<tr>
+                <td><strong>${ger}</strong></td>
+                ${Object.keys(prodLabels).map(p=>{
+                  const d=prods[p];
+                  if(!d||(!d.qtd&&!d.valor&&!d.empresas.length)) return '<td style="text-align:center;color:var(--safra-text-3);">-</td>';
+                  const empUnique=[...new Set(d.empresas)];
+                  const empTxt=empUnique.length?`<div style="font-size:9px;color:#3B2A8C;margin-top:2px;line-height:1.2;font-weight:500;">${empUnique.slice(0,2).join(', ')}${empUnique.length>2?` +${empUnique.length-2}`:''}</div>`:'';
+                  return `<td style="text-align:center;background:#FBF9FF;">
+                    <div style="font-weight:700;color:#4535A3;font-size:11px;">${d.valor>0?'R$ '+fmtBRLret(d.valor):'-'}</div>
+                    <div style="font-size:9px;color:var(--safra-text-3);">${d.qtd||0} op.</div>
+                    ${empTxt}
+                  </td>`;
+                }).join('')}
+                <td style="text-align:center;background:#E8E0F7;color:#4535A3;font-weight:700;font-size:12px;">R$ ${fmtBRLret(totalGer)}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
     </div>`;
   }
 
@@ -4732,6 +4893,7 @@ function coletarContasParaViabilizar(){
 function renderViabilizado(){
   const el=document.getElementById('viabilizado-content');
   if(!el) return;
+  atualizarFiltroMes('filtro-mes-viabilizado');
   const filtroAg=document.getElementById('filtro-viab-ag').value;
   const filtroGer=document.getElementById('filtro-viab-ger').value;
   const filtroStatus=document.getElementById('filtro-viab-status').value;
@@ -4747,6 +4909,10 @@ function renderViabilizado(){
   }
 
   let itens=coletarContasParaViabilizar();
+  // Filtra pelo mês via campo data (data do registro de origem)
+  if(filtroMesGlobal!=='all'){
+    itens=itens.filter(r=>r.data && r.data.startsWith(filtroMesGlobal));
+  }
   itens=itens.filter(r=>r.agencia===filtroAg);
   if(filtroGer) itens=itens.filter(r=>r.gerente===filtroGer);
   if(filtroStatus==='viabilizada') itens=itens.filter(r=>r.viabilizada);
